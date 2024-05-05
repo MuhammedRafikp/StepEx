@@ -1,0 +1,339 @@
+<%- include('../admin_layouts/header.ejs') %>
+
+    <style>
+        .card {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+            word-wrap: break-word;
+            background-color: #ffffff;
+            /* background-color: #f8f9fa; */
+            background-clip: border-box;
+            border: 1 solid;
+            border-radius: .25rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 6px 0 rgb(218 218 253 / 50%), 0 2px 6px 0 rgb(206 206 238 / 50%);
+        }
+    </style>
+
+    <div class="container-scroller">
+
+        <%-include('navbar.ejs')%>
+
+            <div class="container-fluid page-body-wrapper">
+
+                <%-include('sidebar.ejs')%>
+
+                    <div class="main-panel">
+                        <div class="content-wrapper">
+
+                            <div class="col-lg-12">
+                                <h4 class="card-title">ORDER DETAILS</h4>
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="d-flex mb-3">
+                                            <span class="mb-0">
+                                                #Order ID:<%=order.orderId%> | Ordered on
+                                                    <%=order.date.toLocaleDateString('en-US',{day: 'numeric' ,
+                                                        month: 'short' , year: 'numeric' })%>
+                                            </span>
+
+                                        </div>
+                                        <hr>
+                                        <div class="row">
+
+                                            <div class="col-lg-4  ">
+                                                <h6> <i class="mdi mdi-account-circle"> </i> User details</h6>
+
+                                                <p class="mb-0 ">
+                                                    <%= order.user.name %>
+                                                </p>
+
+                                                <p class="mb-0 ">
+                                                    <%= order.user.email %>
+                                                </p>
+                                                <p class="mb-0 ">
+                                                    <%= order.user.mobile %>
+                                                </p>
+
+                                            </div>
+                                            <div class="col-lg-4  ">
+                                                <h6> <i class="mdi mdi-map-marker-multiple"></i> Shipping address</h6>
+                                                <p class="mb-0 ">
+                                                    <%= order.address.name %>
+                                                </p>
+                                                <p class="mb-0 ">
+                                                    <%= order.address.street_address %>
+                                                </p>
+                                                <p class="mb-0 ">
+                                                    <%= order.address.place %>
+                                                </p>
+                                                <p class="mb-0 ">
+                                                    <%= order.address.city %>,<%= order.address.state %>
+                                                </p>
+                                                <p class="mb-0 ">
+                                                    Mobile: <%= order.address.mobile %>
+                                                </p>
+                                                <p class="mb-0 ">
+                                                    Pin: <%= order.address.pincode %>
+                                                </p>
+
+                                            </div>
+                                            <div class="col-lg-4  ">
+                                                <h6> <i class="mdi mdi-wallet"></i> Payment method</h6>
+                                                <p class="mb-0 ">
+                                                    <%= order.payment_method %>
+                                                </p>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="col-lg-12">
+
+                                <div class="card">
+                                    <div class="card-body">
+
+                                        <div class="d-flex mb-3">
+                                            <h6 class="mb-0">Product Deatails</h6>
+
+                                        </div>
+                                        <hr>
+
+
+                                        <% order.items.forEach((item,index)=> { %>
+
+                                            <div class="row">
+
+                                                <div class="col-lg-2">
+                                                    <img src="\uploads\productImages\<%=item.imageUrl%>" width="90"
+                                                        height="90" alt="">
+                                                </div>
+                                                <div class="col-lg-4 ">
+                                                    <div class="row">
+                                                        <div class="col-lg-12">
+                                                            <span>
+                                                                <%= item.brand %>
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row my-2 ">
+                                                        <div class="col-lg-12">
+                                                            <span>
+                                                                <%= item.name %>
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-lg-12">
+                                                            <span style="color: #000;"> ₹<%= item.price %></span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-lg-12">
+                                                            <span style="color: #000;"> Qty:<%= item.quantity %></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-lg-1">
+
+                                                    <div class="row">
+                                                        <div class="col-lg-12">
+                                                            <span> Total </span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-lg-12">
+                                                            <span style="color: #000; font-size: 14px;"> ₹<%=
+                                                                    item.quantity*item.price %> </span>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                                <div class="col-lg-2">
+                                                    <div class="row">
+                                                        <div class="col-lg-12">
+                                                            <span> Delivery status: </span>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="row">
+                                                        <div class="col-lg-12 m-2">
+                                                            <span class="badge 
+    <% if (item.status === 'Confirmed') { %>
+        badge-info
+    <% } else if (item.status === 'Shipped') { %>
+        badge-warning
+    <% } else if (item.status === 'Delivered') { %>
+        badge-success
+    <% } else if (item.status === 'Cancelled' || item.status === 'Returned') { %>
+        badge-danger
+    <% } else { %>
+        badge-secondary
+    <% } %> p-0">
+                                                                <%= item.status %>
+                                                            </span>
+
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                                <% if (item.status !="Cancelled" && item.status !="Returned" &&
+                                                    item.status !="Delivered" ) { %>
+
+                                                    <div class="col-lg-3 d-block  ">
+                                                        <button class="change-btn btn btn-success py-1 px-4 mt-3"
+                                                            onclick="changeStatus('<%=index%>')">Change</button>
+                                                        <select id="status-<%= index %>" class="status mt-2 "
+                                                            orderId="<%= order.orderId %>"
+                                                            productId="<%= item.product_id %>">
+                                                            <option value="<%= item.status %>">
+                                                                <%= item.status %>
+                                                            </option>
+                                                            <% status.forEach((status)=> { %>
+                                                                <% if(status !==item.status) { %>
+                                                                    <option value="<%= status %>">
+                                                                        <%= status %>
+                                                                    </option>
+                                                                    <% } %>
+                                                                        <% }); %>
+                                                        </select>
+                                                    </div>
+
+
+                                                    <%} %>
+                                                        <% if (item.return_approval==1 ) { %>
+                                                            <div class="col-lg-3 mt-2">
+                                                                <div class="row">
+                                                                    <div class="col-lg-12 text-center">
+                                                                        <span class="alert alert-danger p-1"> Return
+                                                                            requested!
+                                                                        </span>
+
+                                                                    </div>
+                                                                    <div class="col-lg-12 text-center mt-2">
+                                                                        <span style="font-size: 12px;">Reason : <%=
+                                                                                item.reason %>
+                                                                        </span>
+
+                                                                    </div>
+                                                                    <div
+                                                                        class="col-lg-12 d-flex justify-content-center mt-2">
+                                                                        <button class="btn btn-danger p-2 mx-1"
+                                                                            onclick="declineReturn('<%= order.orderId %>', '<%= item.product_id %>','<%= item.reason%>')">Decline</button>
+                                                                        <button class="btn btn-success p-2 mx-1"
+                                                                            onclick="approveReturn('<%= order.orderId %>', '<%= item.product_id %>','<%= item.reason%>')">Approve</button>
+
+                                                                    </div>
+
+                                                                </div>
+                                                            </div>
+                                                            <%} %>
+                                            </div>
+                                            <hr>
+                                            <% }); %>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+    </div>
+    </div>
+
+    <script>
+
+        function changeStatus(index) {
+            console.log("hello")
+            const selectedStatus = document.querySelector(`#status-${index}`).value;
+            const productId = document.querySelector(`#status-${index}`).getAttribute('productId');
+            const orderId = document.querySelector(`#status-${index}`).getAttribute('orderId');
+            console.log(selectedStatus, productId, orderId)
+            fetch('/admin/orders/order-details/change-status', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    status: selectedStatus,
+                    productId: productId,
+                    orderId: orderId
+                })
+            })
+                .then(response => {
+                    if (response.ok) {
+
+                        console.log('Order status changed successfully');
+                        location.reload();
+                    } else {
+
+                        console.error('Failed to change order status');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        }
+
+        function approveReturn(orderId, productId, reason) {
+            console.log(orderId, productId, reason)
+            fetch('/admin/orders/order-details/return-approve', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    orderId: orderId,
+                    productId: productId,
+                    reason: reason
+                })
+            })
+                .then(response => {
+                    if (response.ok) {
+                        console.log('Return approved successfully');
+                        location.reload();
+                    } else {
+                        console.error('Failed to approve return');
+                        // Handle failure, maybe show an error message
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    // Handle errors
+                });
+        }
+
+        function declineReturn(orderId, productId) {
+            console.log(orderId, productId)
+
+            fetch('/admin/orders/order-details/return-decline', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    orderId: orderId,
+                    productId: productId
+                })
+            })
+                .then(response => {
+                    if (response.ok) {
+                        console.log('Return declined successfully');
+                        location.reload();
+                    } else {
+                        console.error('Failed to decline return');
+
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+
+                });
+        }
+
+    </script>

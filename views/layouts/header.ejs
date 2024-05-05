@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StepEx</title>
+
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/open-iconic-bootstrap.min.css">
+    <link rel="stylesheet" href="/assets/css/animate.css">
+    <link rel="stylesheet" href="/assets/css/owl.carousel.min.css">
+    <link rel="stylesheet" href="/assets/css/owl.theme.default.min.css">
+    <link rel="stylesheet" href="/assets/css/magnific-popup.css">
+    <link rel="stylesheet" href="/assets/css/aos.css">
+    <link rel="stylesheet" href="/assets/css/ionicons.min.css">
+    <link rel="stylesheet" href="/assets/css/bootstrap-datepicker.css">
+    <link rel="stylesheet" href="/assets/css/jquery.timepicker.css">
+    <link rel="stylesheet" href="/assets/css/flaticon.css">
+    <link rel="stylesheet" href="/assets/css/icomoon.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10/dist/sweetalert2.min.css">
+    <link rel="stylesheet" href="/assets/css/style.css">
+
+</head>
+
+<body class="goto-here">
+    <nav class="navbar navbar-expand-lg  navbar-dark ftco_navbar bg-dark ftco-navbar-light" id="ftco-navbar">
+        <div class="container">
+            <img src="\logo\stepexlogo.png" width="40" height="40" alt="">
+            <a class="navbar-brand" href="/">StepEx</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#ftco-nav"
+                aria-controls="ftco-nav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="oi oi-menu"></span> Menu
+            </button>
+
+            <div class="collapse navbar-collapse" id="ftco-nav">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item active"><a href="/" class="nav-link">Home</a></li>
+                    <li class="nav-item"><a href="/shop" class="nav-link">Shop</a></li>
+                    <li class="nav-item"><a href="about.html" class="nav-link">About</a></li>
+                    <li class="nav-item"><a href="contact.html" class="nav-link">Contact</a></li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="dropdown04" data-toggle="dropdown"
+                            aria-haspopup="true" aria-expanded="false"><span class="icon-person"></a>
+                        <div class="dropdown-menu" aria-labelledby="dropdown04" style="z-index: 1;">
+
+                            <% if(user) {%>
+                                <a class="dropdown-item" href="/profile"><span class="icon-person"></span>My account</a>
+
+                                <a class="dropdown-item" href="/cart"><span class="icon-shopping_cart"> </span>
+                                    Cart</a>
+                                <a class="dropdown-item" href="/wishlist"><span class="icon-heart"> </span>
+                                    Wishlist</a>
+                                <a class="dropdown-item" href="/logout"><span class="icon-exit_to_app">
+                                    </span>Logout</a>
+
+                                <% } else{%>
+
+                                    <a class="dropdown-item" href="/login"><span class="icon-person"></span>My
+                                        account</a>
+                                    <a class="dropdown-item" href="/login">Sign in</a>
+                                    <a class="dropdown-item" href="/login"><span class="icon-shopping_cart"> </span>
+                                        Cart</a>
+                                    <a class="dropdown-item" href="/login"><span class="icon-heart"> </span>
+                                        Wishlist</a>
+
+                                    <% }%>
+
+
+                        </div>
+                    </li>
+                    <% if(user) {%>
+                        <li class="nav-item cta cta-colored"><a href="/cart" class="nav-link"><span
+                                    class="icon-shopping_cart"></span>[<%=cartCount%>]</a></li>
+
+                        <% } else{%>
+                            <li class="nav-item cta cta-colored"><a href="/login" class="nav-link"><span
+                                        class="icon-shopping_cart"></span>[0]</a></li>
+                            <% }%>
+                                <!-- <li class="nav-item cta cta-colored"><a href="cart.html" class="nav-link"><span
+								class="icon-heart"></span></a></li> -->
+                </ul>
+            </div>
+        </div>
+    </nav>

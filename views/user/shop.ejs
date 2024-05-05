@@ -1,0 +1,358 @@
+<%- include("../layouts/header.ejs") %>
+	<style>
+		.hero-wrap {
+			margin-top: 110px;
+			display: flex;
+			align-items: center;
+
+		}
+
+		.shop-heading {
+			text-align: left;
+		}
+
+		.breadcrumbs {
+			text-align: right;
+		}
+	</style>
+
+	<div style="background-color: #f0f0f0; height: 60px;" class="hero-wrap">
+		<div class="container">
+			<div class="row no-gutters slider-text align-items-start">
+
+				<div class="col-md-6 ftco-animate shop-heading">
+					<h6 style="font-weight: bold; color: #000;">SHOP</h6>
+				</div>
+
+				<div class="col-md-6 ftco-animate breadcrumbs">
+					<div class="breadcrumbs">
+						<span class="mr-2">
+							<a href="/"><span class="icon-home"></span>Home ></a>
+							<a href="/shop">Shop</a>
+						</span>
+
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<section class="ftco-section ">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-8 col-lg-10 order-md-last">
+					<div class="row">
+						<% if(products.length>0){ %>
+							<% products.forEach((product)=>{%>
+								<div class="col-sm-12 col-md-12 col-lg-4 ftco-animate d-flex">
+									<div class="product d-flex flex-column">
+
+										<a href="/shop/single?id=<%= product._id %>" class="img-prod"><img
+												class="img-fluid " src="/uploads/productImages/<%=product.images[0]%>"
+												alt="Colorlib Template">
+
+											<span class="status"><%= ((product.price-product.offer_price)/product.price)*100 %>% off</span>
+											
+											<div class="overlay"></div>
+										</a>
+										<div class="text py-3 pb-4 px-3">
+											<div class="d-flex">
+												<div class="cat">
+													<span>
+														<%= product.brand %>
+													</span>
+												</div>
+												<div class="rating">
+													<p class="text-right mb-0">
+														<a href="#"><span class="ion-ios-star"></span></a>
+														<a href="#"><span class="ion-ios-star"></span></a>
+														<a href="#"><span class="ion-ios-star"></span></a>
+														<a href="#"><span class="ion-ios-star"></span></a>
+														<a href="#"><span class="ion-ios-star-outline"></span></a>
+													</p>
+												</div>
+											</div>
+											<h3><a href="#">
+													<%= product.name %>
+												</a></h3>
+											<div class="pricing d-flex">
+												<s class="price text-secondary"><span>₹ <%= product.price %>
+													</span></s>
+												<p class="price mx-3" style="font-weight: 600;" ><span>₹ <%= product.offer_price %> </span></p>
+											</div>
+											<div>
+												<p class="badge badge-success mt-2"><span>save ₹ <%=
+															product.price-product.offer_price %></span></p>
+											</div>
+
+											<p class="bottom-area d-flex px-3">
+
+												<% if (product.quantity==0) { %>
+
+													<p style="color: #BA0933;">
+														Currently unavailable.
+													</p>
+
+													<% } else { %>
+														<% if (user) { %>
+
+															<a href="#"
+																class="addToCart add-to-cart text-center py-2 mr-1"
+																data-product-id="<%= product._id %>" data-quantity="1">
+																<span><i class="ion-ios-cart ml-1"></i>Add to cart
+																</span>
+															</a>
+
+															<% } else { %>
+
+																<a href="/login"
+																	class="add-to-cart text-center py-2 mr-1">
+																	<span>Add to cart <i
+																			class="ion-ios-add ml-1"></i></span>
+																</a>
+
+																<% } %>
+																	<% } %>
+
+											</p>
+										</div>
+									</div>
+								</div>
+								<%})%>
+									<%}%>
+
+					</div>
+
+					<div class="pagination d-flex justify-content-center mt-5 ">
+						<% if (currentPage> 1) { %>
+							<a href="?page=1">&laquo;</a>
+							<% } %>
+								<% for (let i=1; i <=totalPages; i++) { %>
+									<% if (i==currentPage) { %>
+										<span class="btn btn-primary ">
+											<%= i %>
+										</span>
+										<% } else { %>
+											<span> <a href="?page=<%= i %>" class="btn btn-secondary pagination-btn">
+
+													<%= i %>
+
+												</a></span>
+											<% } %>
+												<% } %>
+													<% if (currentPage < totalPages) { %>
+														<a href="?page=<%= totalPages %>">&raquo;</a>
+														<% } %>
+					</div>
+
+				</div>
+
+				<div class="col-md-4 col-lg-2">
+					<div class="sidebar">
+						<div class="sidebar-box-2">
+							<h2 class="heading">Categories</h2>
+							<div class="fancy-collapse-panel">
+								<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+									<div class="panel panel-default">
+										<div class="panel-heading" role="tab" id="headingOne">
+											<h4 class="panel-title">
+												<a data-toggle="collapse" data-parent="#accordion" href="#collapseOne"
+													aria-expanded="true" aria-controls="collapseOne">Men's Shoes
+												</a>
+											</h4>
+										</div>
+										<div id="collapseOne" class="panel-collapse collapse" role="tabpanel"
+											aria-labelledby="headingOne">
+											<div class="panel-body">
+												<ul>
+													<li><a href="#">Sport</a></li>
+													<li><a href="#">Casual</a></li>
+													<li><a href="#">Formal</a></li>
+												</ul>
+											</div>
+										</div>
+									</div>
+									<div class="panel panel-default">
+										<div class="panel-heading" role="tab" id="headingTwo">
+											<h4 class="panel-title">
+												<a class="collapsed" data-toggle="collapse" data-parent="#accordion"
+													href="#collapseTwo" aria-expanded="false"
+													aria-controls="collapseTwo">Women's Shoes
+												</a>
+											</h4>
+										</div>
+										<div id="collapseTwo" class="panel-collapse collapse" role="tabpanel"
+											aria-labelledby="headingTwo">
+											<div class="panel-body">
+												<ul>
+													<li><a href="#">Sport</a></li>
+													<li><a href="#">Casual</a></li>
+													<li><a href="#">Formal</a></li>
+												</ul>
+											</div>
+										</div>
+									</div>
+
+								</div>
+							</div>
+						</div>
+						<div class="sidebar-box-2">
+							<h2 class="heading">Price Range</h2>
+							<form method="post" class="colorlib-form-2">
+								<div class="row">
+									<div class="col-md-12">
+										<div class="form-group">
+											<label for="guests">Price from:</label>
+											<div class="form-field">
+												<i class="icon icon-arrow-down3"></i>
+												<select name="people" id="people" class="form-control">
+													<option value="#">1</option>
+													<option value="#">200</option>
+													<option value="#">300</option>
+													<option value="#">400</option>
+													<option value="#">1000</option>
+												</select>
+											</div>
+										</div>
+									</div>
+									<div class="col-md-12">
+										<div class="form-group">
+											<label for="guests">Price to:</label>
+											<div class="form-field">
+												<i class="icon icon-arrow-down3"></i>
+												<select name="people" id="people" class="form-control">
+													<option value="#">2000</option>
+													<option value="#">4000</option>
+													<option value="#">6000</option>
+													<option value="#">8000</option>
+													<option value="#">10000</option>
+												</select>
+											</div>
+										</div>
+									</div>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<section class="ftco-gallery">
+		<div class="container-fluid px-0">
+			<div class="row no-gutters">
+				<div class="col-md-4 col-lg-2 ftco-animate">
+					<a href="/assets/images/gallery-1.jpg" class="gallery image-popup img d-flex align-items-center"
+						style="background-image: url(/assets/images/gallery-1.jpg);">
+					</a>
+				</div>
+				<div class="col-md-4 col-lg-2 ftco-animate">
+					<a href="/assets/images/gallery-2.jpg" class="gallery image-popup img d-flex align-items-center"
+						style="background-image: url(/assets/images/gallery-2.jpg);">
+					</a>
+				</div>
+				<div class="col-md-4 col-lg-2 ftco-animate">
+					<a href="/assets/images/gallery-3.jpg" class="gallery image-popup img d-flex align-items-center"
+						style="background-image: url(/assets/images/gallery-3.jpg);">
+					</a>
+				</div>
+				<div class="col-md-4 col-lg-2 ftco-animate">
+					<a href="/assets/images/gallery-4.jpg" class="gallery image-popup img d-flex align-items-center"
+						style="background-image: url(/assets/images/gallery-4.jpg);">
+					</a>
+				</div>
+				<div class="col-md-4 col-lg-2 ftco-animate">
+					<a href="/assets/images/gallery-5.jpg" class="gallery image-popup img d-flex align-items-center"
+						style="background-image: url(/assets/images/gallery-5.jpg);">
+
+					</a>
+				</div>
+				<div class="col-md-4 col-lg-2 ftco-animate">
+					<a href="/assets/images/gallery-6.jpg" class="gallery image-popup img d-flex align-items-center"
+						style="background-image: url(/assets/images/gallery-6.jpg);">
+						<!-- <div class="icon mb-4 d-flex align-items-center justify-content-center"></div> -->
+					</a>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+	<script>
+		const addToCartButtons = document.querySelectorAll('.addToCart');
+
+		addToCartButtons.forEach(button => {
+			button.addEventListener('click', async (event) => {
+				event.preventDefault();
+				const productId = event.currentTarget.dataset.productId;
+				const response = await addToCart(productId);
+
+
+				async function addToCart(productId) {
+					const response = await fetch('/add-to-cart', {
+						method: 'POST',
+						headers: {
+							'Content-Type': 'application/json'
+						},
+						body: JSON.stringify({ productId })
+					});
+					return await response.json();
+				}
+
+				if (response.success) {
+
+					console.log('Product added to cart:', response.data);
+
+					const Toast = Swal.mixin({
+						toast: true,
+						position: "top",
+						showConfirmButton: false,
+						timer: 2000,
+						timerProgressBar: true,
+						didOpen: (toast) => {
+							toast.addEventListener('mouseenter', Swal.stopTimer);
+							toast.addEventListener('mouseleave', Swal.resumeTimer);
+						}
+					});
+
+					Toast.fire({
+						icon: "success",
+						title: "This product has been added to your cart"
+					}).then(() => {
+						window.location.href = "/cart";
+					});
+
+				} else {
+
+					if (response.message === 'Product already in cart') {
+
+						const Toast = Swal.mixin({
+							toast: true,
+							position: "top",
+							showConfirmButton: false,
+							timer: 2000,
+							timerProgressBar: true,
+							didOpen: (toast) => {
+								toast.addEventListener('mouseenter', Swal.stopTimer);
+								toast.addEventListener('mouseleave', Swal.resumeTimer);
+							}
+						});
+
+						Toast.fire({
+							icon: "warning",
+							title: "This product is already in your cart"
+						});
+
+					} else {
+						console.error('Error adding to cart:', response.error);
+					}
+				}
+			});
+		});
+
+
+	</script>
+
+	<%- include("../layouts/footer.ejs") %>

@@ -1,0 +1,219 @@
+<%- include('../admin_layouts/header.ejs') %>
+
+    <style>
+        .no-spinners::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+    </style>
+
+    <div class="container-scroller">
+
+        <%-include('navbar.ejs')%>
+
+            <div class="container-fluid page-body-wrapper">
+
+                <%-include('sidebar.ejs')%>
+
+                    <div class="main-panel">
+                        <div class="content-wrapper">
+                            <div class="col-md-9 grid-margin stretch-card">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h4 class="card-title">ADD CATEGORY OFFER</h4>
+                                        <hr><br>
+                                        <div class="form-group">
+                                            <input type="hidden" id="categoryOffer-id"
+                                                value="<%=categoryOffer._id %>">
+                                            <label for="category">Category</label>
+                                            <select class="form-control" name="category">
+                                                <option>
+                                                    <%=categoryOffer.category.name%>
+                                                </option>
+                                                <%category.forEach((category)=>{%>
+                                                    <%if(category.name!==categoryOffer.category.name){%>
+                                                        <option>
+                                                            <%=category.name%>
+                                                        </option>
+                                                        <%}%>
+                                                            <%})%>
+                                            </select>
+                                            <span id="category-error" style="color:  #BA0933; font-size: 13px;"></span>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group row">
+                                                    <div class="col-sm-9">
+                                                        <label for="offer">Offer (%)</label>
+                                                        <input type="number" id="offer" class="form-control no-spinners"
+                                                            value="<%=categoryOffer.offer%>">
+                                                        <span id="offer-error"
+                                                            style="color:  #BA0933; font-size: 13px;"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group row">
+
+                                                    <div class="col-sm-9">
+                                                        <label for="validity">Validity</label>
+                                                        <input type="date" id="validity" class="form-control">
+                                                        <span id="validity-error"
+                                                            style="color:  #BA0933; font-size: 13px;"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <button type="button" id="edit-btn"
+                                            class="btn btn-gradient-primary mr-2 px-4 py-3">Update</button>
+                                        <a href="/admin/offers-category" class="btn btn-secondary px-4 py-3">Cancel</a>
+
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+    </div>
+
+
+
+    <script>
+
+        const validityDate = new Date('<%= categoryOffer.validity.toISOString() %>');
+        const formattedValidity = validityDate.toISOString().split('T')[0]; // Extract YYYY-MM-DD
+        document.getElementById('validity').value = formattedValidity;
+
+    </script>
+    
+    <script>
+        function validateForm() {
+
+            const category = document.querySelector("select[name='category']").value.trim();
+            const offer = document.getElementById("offer").value.trim();
+            const validity = document.getElementById("validity").value.trim();
+
+            var isValid = true;
+
+            if (category === "") {
+                document.getElementById("category-error").textContent = "Category is required.";
+                isValid = false;
+            } else {
+                document.getElementById("category-error").textContent = "";
+            }
+
+            if (offer === "") {
+                document.getElementById("offer-error").textContent = "Offer % is required.";
+                isValid = false;
+            } else if (parseFloat(offer) <= 0 || parseFloat(offer) > 80) {
+                document.getElementById("offer-error").textContent = "Offer should be between 1% and 80%.";
+                isValid = false;
+            } else {
+                document.getElementById("offer-error").textContent = "";
+            }
+
+
+            if (validity === "") {
+                document.getElementById("validity-error").textContent = "Validity date is required.";
+                isValid = false;
+            } else {
+                var today = new Date();
+                var validityDate = new Date(validity);
+
+                // Set both dates to the same time zone
+                today.setHours(0, 0, 0, 0);
+                validityDate.setHours(0, 0, 0, 0);
+
+                if (validityDate < today) {
+                    document.getElementById("validity-error").textContent = "Validity date should be today or later.";
+                    isValid = false;
+                } else {
+                    document.getElementById("validity-error").textContent = "";
+                }
+            }
+
+            return isValid;
+        }
+
+        document.getElementById('edit-btn').addEventListener('click', function () {
+
+            if (validateForm()) {
+
+                const id = document.getElementById("categoryOffer-id").value;
+                const category = document.querySelector("select[name='category']").value;
+                const offer = document.getElementById("offer").value;
+                const validity = document.getElementById("validity").value;
+
+                const data = { id, category, offer, validity };
+                console.log(data);
+                fetch("/admin/offers-category/edit-offer", {
+                    method: "POST",
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Category offer added successfully
+
+                            const Toast = Swal.mixin({
+                                toast: true,
+                                position: "top",
+                                showConfirmButton: false,
+                                timer: 1500,
+                                timerProgressBar: true,
+                                didOpen: (toast) => {
+                                    toast.addEventListener('mouseenter', Swal.stopTimer);
+                                    toast.addEventListener('mouseleave', Swal.resumeTimer);
+                                }
+                            });
+                            Toast.fire({
+                                icon: "success",
+                                width: "350",
+                                title: data.message
+
+                            }).then(() => {
+                                window.location.href = "/admin/offers-category"; // Redirect to "/wallet" after the alert is closed
+                            });
+                        } else {
+                            // Category offer already exists
+
+                            const Toast = Swal.mixin({
+                                toast: true,
+                                position: "top",
+                                showConfirmButton: false,
+                                timer: 1500,
+                                timerProgressBar: true,
+                                didOpen: (toast) => {
+                                    toast.addEventListener('mouseenter', Swal.stopTimer);
+                                    toast.addEventListener('mouseleave', Swal.resumeTimer);
+                                }
+                            });
+
+                            Toast.fire({
+                                icon: "warning",
+                                width: "425",
+                                title: data.message
+                            });
+
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Error:", error);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: error.message || 'Something went wrong!'
+                        });
+                    });
+            }
+        });
+
+    </script>
+
+
+    <%- include('../admin_layouts/footer.ejs') %>

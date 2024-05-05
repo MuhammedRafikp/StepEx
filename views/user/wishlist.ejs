@@ -1,0 +1,250 @@
+<%- include("../layouts/header.ejs") %>
+
+    <style>
+        .hero-wrap {
+            margin-top: 110px;
+            display: flex;
+            align-items: center;
+
+        }
+
+        .shop-heading {
+            text-align: left;
+        }
+
+        .breadcrumbs {
+            text-align: right;
+        }
+    </style>
+
+    <div style="background-color: #f0f0f0; height: 60px;" class="hero-wrap">
+        <div class="container">
+            <div class="row no-gutters slider-text align-items-start">
+
+                <div class="col-md-6 ftco-animate shop-heading">
+                    <h6 style="font-weight: bold; color: #000;">WISHLIST</h6>
+                </div>
+
+                <div class="col-md-6 ftco-animate breadcrumbs">
+                    <div class="breadcrumbs">
+                        <span class="mr-2">
+                            <a href="/"><span class="icon-home"></span>Home ></a>
+                            <a href="/wishlist">Wishlist</a>
+                        </span>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <section class="ftco-section ftco-cart">
+        <div class="container " style="margin-top:-50px;">
+            <div class="row">
+                <div class="col-md-12 ftco-animate">
+                    <% if(wishlist && wishlist.items.length> 0){ %>
+                        <div class="cart-list">
+
+                            <table class="table">
+                                <!-- <thead class=" thead-primary">
+                                <tr class="text-center">
+                                    <th>Image</th>
+                                    <th>Product</th>
+                                    <th>Price</th>
+                                    <th></th>
+                                </tr>
+                            </thead> -->
+
+                                <% wishlist.items.reverse().forEach((item)=>{%>
+                                    <% if(!item.product_id.is_delete){ %>
+                                        <tbody>
+
+                                            <tr class="text-center p-0 ">
+                                                <td class="image-prod">
+                                                    <img src="\uploads\productImages\<%=item.product_id.images[0] %>"
+                                                        width="75" height="75" alt="">
+                                                </td>
+
+                                                <td class="product-name">
+                                                    <h3>
+                                                        <%= item.product_id.name%>
+                                                    </h3>
+                                                </td>
+
+                                                <td class="price">₹3000</td>
+
+                                                <td class="product-remove ">
+                                                    <div class="add-to-cart btn btn-primary mx-2"
+                                                        data-product-id="<%= item.product_id._id %>"
+                                                        data-product-quantity="<%= item.product_id.quantity %>"><span
+                                                            class="icon-shopping_cart"></span>Add
+                                                        to
+                                                        Cart</div>
+                                                    <a href="#" class="remove-item btn mx-2"
+                                                        data-product-id="<%= item.product_id._id %>">
+                                                        <span class="ion-ios-close"></span>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                        <%} %>
+                                            <%})%>
+                            </table>
+
+                        </div>
+                        <% } else { %>
+                            <h6 style="text-align: center; font-weight: bold;">No items in wishlist !</h6>
+                            <% } %>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+
+        function showOutOfStockAlert() {
+            console.log("out of stock");
+
+            const Toast = Swal.mixin({
+                toast: true,
+                position: "top",
+                showConfirmButton: false,
+                timer: 2000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer);
+                    toast.addEventListener('mouseleave', Swal.resumeTimer);
+                }
+            });
+
+            Toast.fire({
+                icon: "warning",
+                width: "250",
+                title: 'Out of Stock'
+            });
+        };
+
+        async function addToCart(productId) {
+            console.log(productId);
+            const response = await fetch('/add-to-cart', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ productId })
+            });
+            return await response.json();
+        };
+
+
+        //Add to cart
+        const addToCartButtons = document.querySelectorAll('.add-to-cart');
+
+        addToCartButtons.forEach(button => {
+            button.addEventListener('click', async (event) => {
+                event.preventDefault();
+
+                var isOutOfStock = event.target.dataset.productQuantity <= 0;
+
+                if (isOutOfStock) {
+                    showOutOfStockAlert();
+                } else {
+
+                    const productId = event.target.dataset.productId;
+
+                    const response = await addToCart(productId);
+
+                    if (response.success) {
+
+                        console.log('Product added to cart');
+
+                        const Toast = Swal.mixin({
+                            toast: true,
+                            position: "top",
+                            showConfirmButton: false,
+                            timer: 2000,
+                            timerProgressBar: true,
+                            didOpen: (toast) => {
+                                toast.addEventListener('mouseenter', Swal.stopTimer);
+                                toast.addEventListener('mouseleave', Swal.resumeTimer);
+                            }
+                        });
+
+                        Toast.fire({
+                            icon: "success",
+                            width: "450",
+                            title: "This product has been added to your cart"
+                        });
+
+                    } else {
+
+                        if (response.message === 'Product already in cart') {
+                            const Toast = Swal.mixin({
+                                toast: true,
+                                position: "top",
+                                showConfirmButton: false,
+                                timer: 2000,
+                                timerProgressBar: true,
+                                didOpen: (toast) => {
+                                    toast.addEventListener('mouseenter', Swal.stopTimer);
+                                    toast.addEventListener('mouseleave', Swal.resumeTimer);
+                                }
+                            });
+
+                            Toast.fire({
+                                icon: "warning",
+                                width: "400",
+                                title: "This product is already in your cart"
+                            });
+                        } else {
+                            console.error('Error adding to cart:', response.error);
+
+                        }
+                    }
+                }
+            });
+        });
+
+
+
+        //Remove product
+        const removeItemButtons = document.querySelectorAll('.remove-item');
+
+        removeItemButtons.forEach(button => {
+            button.addEventListener('click', (event) => {
+                event.preventDefault();
+                const productId = event.currentTarget.dataset.productId;
+                removeProduct(productId);
+            });
+        });
+
+        function removeProduct(productId) {
+            console.log("product Id:", productId);
+            fetch('/wishlist/remove-product', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ productId: productId }),
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+
+                    console.log('Product removed');
+                    window.location.reload();
+                })
+                .catch(error => {
+                    console.error('Error removing product:', error);
+                });
+        }
+
+    </script>
+
+    <%- include("../layouts/footer.ejs") %>

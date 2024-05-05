@@ -1,0 +1,167 @@
+<%- include("../form_layouts/header.ejs") %>
+
+    <section class="ftco-section">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-12 col-lg-10">
+                    <div class="wrap d-md-flex">
+                        <div class="img"
+                            style="background-image: url(assets/images/air-jordan-1-low-se-shoes-ZbxSRp.jpeg);">
+                        </div>
+                        <div class="login-wrap p-3 p-md-5">
+
+                            <form action="/verify-otp" method="post" class="signin-form" onsubmit="return validateForm()">
+                                <div class="form-group mb-3">
+                                    <label class="label m-0" for="name">Enter OTP</label>
+                                    <input type="text" id="otp" name="otp" class="form-control" placeholder="OTP">
+                                    <span id="otp-error" style="color: red; font-size: 14px;" class="error"></span>
+                                </div>
+                                <% if (typeof message !=="undefined" ) { %>
+                                    <p id="message" style="color: red; text-align: center;">
+                                        <%= message %>
+                                    </p>
+                                    <% } %>
+
+                                        <div id="timer" class="text-center"></div>
+
+                                        <div class="form-group">
+                                            <button type="submit"
+                                                class="form-control btn btn-primary rounded submit px-3">Verify</button>
+                                        </div>
+
+                            </form>
+                            <button style="display: none;" id="resendOTP" class="btn btn-primary rounded submit "
+                                onclick="resendOtp()">Resend OTP</button>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+
+        function validateForm() {
+    var otp = document.getElementById("otp").value.trim();
+    var numericRegex = /^[0-9]+$/; 
+    var otpRegex = /^[0-9]{4}$/; 
+
+    var isValid = true;
+
+    if (otp === "") {
+        document.getElementById("otp-error").textContent = "OTP is required.";
+        isValid = false;
+    } else if (!numericRegex.test(otp)) {
+        document.getElementById("otp-error").textContent = "OTP must be a number.";
+        isValid = false;
+    } else if (otp.length !== 4) {
+        document.getElementById("otp-error").textContent = "OTP must be 4 digits.";
+        isValid = false;
+    } else {
+        document.getElementById("otp-error").textContent = "";
+    }
+
+    return isValid;
+}
+
+(function () {
+      setTimeout(() => {
+        const message = document.getElementById("message");
+		message.style.textAlign="center"
+        message.textContent = "";
+      }, 3000)
+    })();
+
+    </script>
+    
+
+        <script>
+
+            const timerElement = document.getElementById('timer');
+            const resendOTP = document.getElementById('resendOTP');
+            const expirationTime = Date.now() + 20000;
+
+            function updateTimer() {
+        
+                const now = new Date().getTime();
+                const distance = expirationTime - now;
+
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                timerElement.innerHTML = "Time remaining: " + minutes + "m " + seconds + "s ";
+
+                if (distance < 0) {
+
+                    clearInterval(timerInterval);
+                    timerElement.innerHTML = "OTP expired";
+                    resendOTP.style.display = 'block';
+
+                }
+            }
+
+            const timerInterval = setInterval(updateTimer, 1000);
+            updateTimer();
+
+        </script>
+
+        <script>
+
+            document.getElementById("resendOTP").addEventListener("click", resendOTP);
+
+            function resendOtp() {
+                console.log("hello");
+                fetch("/resend-otp", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    
+                })
+                    .then(response => {
+                        if (response.ok) {
+
+                            const timerElement = document.getElementById('timer');
+                            const resendOTP = document.getElementById('resendOTP');
+                            resendOTP.style.display = 'none';
+                            const expirationTime = Date.now() + 30000;
+                            function updateTimer() {
+
+                                const now = new Date().getTime();
+                                const distance = expirationTime - now;
+
+                                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                                timerElement.innerHTML = "Time remaining: " + minutes + "m " + seconds + "s ";
+
+                                if (distance < 0) {
+
+                                    clearInterval(timerInterval);
+                                    timerElement.innerHTML = "OTP expired";
+                                    resendOTP.style.display = 'block';
+                                }
+                            }
+
+                            const timerInterval = setInterval(updateTimer, 1000);
+                            updateTimer();
+                            return response.json();
+                        }
+                        throw new Error('Network response was not ok.');
+                    })
+                    .then(data => {
+
+
+                        console.log(data); 
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Error: ' + error.message);
+                    });
+            }
+
+        </script>
+
+
+<%- include("../form_layouts/footer.ejs") %>

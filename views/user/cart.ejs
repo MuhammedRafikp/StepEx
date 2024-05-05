@@ -1,0 +1,509 @@
+<%- include("../layouts/header.ejs") %>
+
+	<style>
+		.hero-wrap {
+			margin-top: 110px;
+			display: flex;
+			align-items: center;
+
+		}
+
+		.shop-heading {
+			text-align: left;
+		}
+
+		.breadcrumbs {
+			text-align: right;
+		}
+
+
+		.quantity .input-group-btn .btn {
+			border-radius: 0;
+
+		}
+
+		.quantity .input-group-btn .btn:hover {
+			background-color: #87c1ff;
+
+		}
+
+		.account-action-box {
+			border: 1px solid #ddd;
+			padding: 15px;
+			border-radius: 5px;
+
+		}
+
+		.account-action-box li {
+			margin-bottom: 10px;
+		}
+	</style>
+
+	<div style="background-color: #f0f0f0; height: 60px;" class="hero-wrap">
+		<div class="container">
+			<div class="row no-gutters slider-text align-items-start">
+
+				<div class="col-md-6 ftco-animate shop-heading">
+					<h6 style="font-weight: bold; color: #000;">CART</h6>
+				</div>
+
+				<div class="col-md-6 ftco-animate breadcrumbs">
+					<div class="breadcrumbs">
+						<span class="mr-2">
+							<a href="/"><span class="icon-home"></span>Home ></a>
+							<a href="/cart">cart</a>
+						</span>
+
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<section class="ftco-section ftco-cart">
+		<div class="container " style="margin-top:-50px;">
+			<div class="row">
+				<div class="col-md-12 ftco-animate">
+					<% let subtotal=0; %>
+						<% if(cart && cart.items.length> 0){ %>
+							<div class="cart-list">
+								<table class="table">
+									<!-- <thead class=" thead-primary">
+										<tr class="text-center">
+											<th></th>
+											<th>Product</th>
+											<th>Price</th>
+											<th>Quantity</th>
+											<th>Total</th>
+											<th>&nbsp;</th>
+										</tr>
+									</thead> -->
+
+									<% cart.items.reverse().forEach((item)=> { %>
+										<% if(!item.products.is_delete){ %>
+											<tbody>
+												<tr >
+													<td class="image-prod">
+														<img src="/uploads/productImages/<%=item.products.images[0]%>"
+															width="75" height="75" alt="">
+													</td>
+													<td class="product-name ">
+														<h3>
+															<%=item.products.name%>
+														</h3>
+														<span> <s class="text-secondary" style="font-size: 13px;"> ₹<%= item.products.price%></s><span class="price mx-1">  ₹<%= item.products.offer_price%></span></span>
+														<span class="mx-2 text-success " style="font-weight:600;" ><%= ((item.products.price-item.products.offer_price)/item.products.price)*100 %>% off</span>
+
+													</td>
+													
+													<td class="quantity">
+														<%if(item.products.quantity==0){%>
+															<div class="input-group mb-3">
+																<span class="input-group-btn mr-2">
+																	<button type="button"
+																		class="quantity-left-minus btn"
+																		data-type="minus" data-field="">
+																		<i class="ion-ios-remove"></i>
+																	</button>
+																</span>
+																<input type="text" name="quantity"
+																	class="quantity form-control input-number"
+																	value="<%= item.quantity %>" min="1" max="100"
+																	data-product-id="<%=item.products._id%>"
+																	data-max-stock="<%=item.products.quantity%>">
+																<span class="input-group-btn ml-2">
+																	<button type="button"
+																		class="quantity-right-plus btn" data-type="plus"
+																		data-field="">
+																		<i class="ion-ios-add"></i>
+																	</button>
+																</span>
+															</div>
+
+															<p style="color: #BA0933; font-size: 13px;">
+																Out of stock
+															</p>
+															<%}else if(item.quantity>item.products.quantity){%>
+
+																<div class="input-group mb-3">
+																	<span class="input-group-btn mr-2">
+																		<button type="button"
+																			class="quantity-left-minus btn"
+																			data-type="minus" data-field="">
+																			<i class="ion-ios-remove"></i>
+																		</button>
+																	</span>
+																	<input type="text" name="quantity"
+																		class="quantity form-control input-number"
+																		value="<%= item.quantity %>" min="1" max="100"
+																		data-product-id="<%=item.products._id%>"
+																		data-max-stock="<%=item.products.quantity%>">
+																	<span class="input-group-btn ml-2">
+																		<button type="button"
+																			class="quantity-right-plus btn"
+																			data-type="plus" data-field="">
+																			<i class="ion-ios-add"></i>
+																		</button>
+																	</span>
+																</div>
+
+																<p style="color: #BA0933; font-size: 13px;">
+																	stocks left :<%=item.products.quantity%>
+																</p>
+																<%}else{%>
+																	<div class="input-group mb-3">
+																		<span class="input-group-btn mr-2">
+																			<button type="button"
+																				class="quantity-left-minus btn"
+																				data-type="minus" data-field="">
+																				<i class="ion-ios-remove"></i>
+																			</button>
+																		</span>
+																		<input type="text" name="quantity"
+																			class="quantity form-control input-number"
+																			value="<%= item.quantity %>" min="1"
+																			max="100"
+																			data-product-id="<%=item.products._id%>"
+																			data-max-stock="<%=item.products.quantity%>">
+																		<span class="input-group-btn ml-2">
+																			<button type="button"
+																				class="quantity-right-plus btn"
+																				data-type="plus" data-field="">
+																				<i class="ion-ios-add"></i>
+																			</button>
+																		</span>
+																	</div>
+																	<%}%>
+
+													</td>
+
+													<td class="total" style="font-weight: 600;">
+														<span>Total : </span><br>
+														<span>₹<%=item.quantity * item.products.offer_price %></span>
+
+													</td>
+
+													<td class="product-remove">
+														<a href="#" class="remove-item"
+															data-product-id="<%= item.products._id %>">
+															<span class="ion-ios-close"></span>
+														</a>
+													</td>
+
+												</tr>
+											</tbody>
+
+											<% subtotal +=item.quantity * item.products.offer_price; %>
+
+												<%} %>
+
+													<% }); %>
+								</table>
+
+							</div>
+				</div>
+			</div>
+
+			<div class="row justify-content-start">
+				<div class="col col-lg-5 col-md-6 mt-5 cart-wrap ftco-animate">
+					<div class="cart-total mb-3">
+						<h3>Summary</h3>
+						<p class="d-flex">
+							<span>Subtotal</span>
+							<span class="subtotal">
+								<%= subtotal %>
+							</span>
+						</p>
+						<p class="d-flex">
+							<span>Delivery</span>
+							<span>₹0.00</span>
+						</p>
+						<hr>
+						<p class="d-flex total-price">
+							<span>Total</span>
+							<span class="total-amount">₹<%= subtotal %>.00</span>
+						</p>
+					</div>
+					<p class="text-center"><a href="#" class="btn btn-primary checkout-btn py-3 px-4"
+							style="font-size: 15;font-weight: bold;">Proceed to Checkout</a></p>
+				</div>
+			</div>
+
+			<% } else { %>
+				<h6 style="text-align: center; font-weight: bold;">No items in cart !</h6>
+				<% } %>
+		</div>
+	</section>
+
+
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+	<script>
+		document.addEventListener('DOMContentLoaded', function () {
+			var quantityInputs = document.querySelectorAll('.quantity input[type="text"]');
+			var priceElements = document.querySelectorAll('.price');
+			var totalElements = document.querySelectorAll('.total');
+			var subtotalElement = document.querySelector('.subtotal');
+			var totalAmountSpan = document.querySelector('.total-amount'); // Selecting the total amount span
+
+			// Functions to update total amount based on quantity
+			function updateTotal(index) {
+				var quantity = parseInt(quantityInputs[index].value);
+				var price = Number(priceElements[index].innerText.replace(/[^\d.]/g, ''));
+				totalElements[index].innerText = 'Total :\n₹' + (price * quantity).toFixed(2);
+				updateSubtotal();
+			}
+
+
+			function updateSubtotal() {
+				var subtotal = 0;
+				totalElements.forEach(function (totalElement) {
+					subtotal += Number(totalElement.innerText.replace(/[^\d.]/g, ''));
+				});
+				subtotalElement.innerText = '₹' + subtotal.toFixed(2);
+				updateTotalAmount(subtotal);
+			}
+
+
+			function updateTotalAmount(subtotal) {
+				totalAmountSpan.innerHTML = '₹' + subtotal.toFixed(2) + '</span>';
+			}
+
+			// Function to send quantity to the server
+			function sendQuantity(productId, quantity) {
+				fetch('/cart/update-quantity', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify({ productId: productId, quantity: quantity }),
+				})
+					.then(response => {
+						if (!response.ok) {
+							throw new Error('Network response was not ok');
+						}
+						return response.json();
+					})
+					.then(data => {
+						console.log('Quantity updated:', data);
+					})
+					.catch(error => {
+						console.error('Error updating quantity:', error);
+					});
+			}
+
+
+			var minusButtons = document.querySelectorAll('.quantity-left-minus');
+			for (var i = 0; i < minusButtons.length; i++) {
+				minusButtons[i].addEventListener('click', createDecreaseQuantityListener(i));
+			}
+
+
+			var plusButtons = document.querySelectorAll('.quantity-right-plus');
+			for (var i = 0; i < plusButtons.length; i++) {
+				plusButtons[i].addEventListener('click', createIncreaseQuantityListener(i));
+			}
+
+
+			function createDecreaseQuantityListener(index) {
+				return function () {
+					var currentValue = parseInt(quantityInputs[index].value);
+					if (!isNaN(currentValue) && currentValue > 1) {
+						quantityInputs[index].value = currentValue - 1;
+						var productId = quantityInputs[index].getAttribute('data-product-id');
+						sendQuantity(productId, quantityInputs[index].value); // Send updated quantity
+						updateTotal(index);
+					}
+				};
+			}
+
+
+			function createIncreaseQuantityListener(index) {
+				return function () {
+					var currentValue = parseInt(quantityInputs[index].value);
+					var maxStock = parseInt(quantityInputs[index].getAttribute('data-max-stock'));
+					var currentStock = parseInt(quantityInputs[index].value); // Current stock value from the input field
+
+					if (!isNaN(currentValue)) {
+						if (currentValue >= maxStock) {
+							showStockQuantityAlert();
+							quantityInputs[index].value = maxStock;
+						} else if (currentValue >= 10) {
+							showQuantityAlert();
+							quantityInputs[index].value = 10;
+						} else {
+							quantityInputs[index].value = currentValue + 1;
+						}
+
+						var productId = quantityInputs[index].getAttribute('data-product-id');
+						sendQuantity(productId, quantityInputs[index].value); // Send updated quantity
+						updateTotal(index);
+					}
+				};
+			}
+
+
+
+
+			function showQuantityAlert() {
+
+				const Toast = Swal.mixin({
+					toast: true,
+					position: "top",
+					showConfirmButton: false,
+					timer: 2000,
+					timerProgressBar: true,
+					didOpen: (toast) => {
+						toast.addEventListener('mouseenter', Swal.stopTimer);
+						toast.addEventListener('mouseleave', Swal.resumeTimer);
+					}
+				});
+
+				Toast.fire({
+					icon: "warning",
+
+					title: 'Maximum Quantity Reached',
+
+				});
+
+			}
+
+			function showStockQuantityAlert() {
+
+				const Toast = Swal.mixin({
+					toast: true,
+					position: "top",
+					showConfirmButton: false,
+					timer: 2000,
+					timerProgressBar: true,
+					didOpen: (toast) => {
+						toast.addEventListener('mouseenter', Swal.stopTimer);
+						toast.addEventListener('mouseleave', Swal.resumeTimer);
+					}
+				});
+
+				Toast.fire({
+					icon: "warning",
+					title: 'Maximum Quantity Reached',
+				});
+
+			}
+
+
+			quantityInputs.forEach(function (input, index) {
+				input.addEventListener('input', function () {
+					var value = parseInt(this.value);
+					if (isNaN(value) || value < 1) {
+						this.value = 1;
+						var productId = this.getAttribute('data-product-id');
+						sendQuantity(productId, 1); // Send updated quantity
+					} else if (value > 10) {
+						this.value = 10;
+						var productId = this.getAttribute('data-product-id');
+						sendQuantity(productId, 10); // Send updated quantity
+						showQuantityAlert();
+					} else {
+						var productId = this.getAttribute('data-product-id');
+						sendQuantity(productId, value); // Send updated quantity
+					}
+					updateTotal(index);
+				});
+			});
+		});
+
+
+		//To remove item
+		document.addEventListener('DOMContentLoaded', function () {
+
+			var removeButtons = document.querySelectorAll('.remove-item');
+
+			removeButtons.forEach(function (button) {
+				button.addEventListener('click', function (event) {
+					event.preventDefault();
+
+					var productId = button.getAttribute('data-product-id');
+
+					Swal.fire({
+						title: 'Are you sure?',
+						// text: 'You are about to remove this item from your cart.',
+						// icon: "question",
+						width: "450",	
+						showCancelButton: true,
+						confirmButtonColor: '#3085d6',
+						cancelButtonColor: '#d33',
+						confirmButtonText: 'Yes, remove it!',
+						reverseButtons: true,
+						
+					}).then((result) => {
+						if (result.isConfirmed) {
+
+							removeProduct(productId);
+						}
+					});
+				});
+			});
+
+
+			function removeProduct(productId) {
+				fetch('/cart/remove-product', {
+					method: 'DELETE',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify({ productId: productId }),
+				})
+					.then(response => {
+						if (!response.ok) {
+							throw new Error('Network response was not ok');
+						}
+						return response.json();
+					})
+					.then(data => {
+						console.log('Product removed');
+						window.location.reload();
+
+					})
+					.catch(error => {
+						console.error('Error removing product:', error);
+					});
+			}
+		});
+
+		//proceed-to-checkout
+		document.addEventListener('DOMContentLoaded', function () {
+			const checkoutButton = document.querySelector('.checkout-btn');
+
+			checkoutButton.addEventListener('click', function (event) {
+
+				console.log("checkout");
+				fetch('/proceed-to-checkout', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json'
+					}
+				})
+					.then(response => {
+						if (response.ok) {
+							window.location.href = '/checkout-details';
+						} else {
+							return response.json();
+						}
+					})
+					.then(data => {
+						if (data && data.message) {
+							Swal.fire({
+								icon: 'warning',
+								text: data.message
+							}).then(() => {
+								location.reload();
+							});
+						}
+					})
+					.catch(error => {
+						console.error('Error while proceeding to checkout:', error);
+					});
+			});
+		});
+
+	</script>
+
+	<%- include("../layouts/footer.ejs") %>

@@ -1,0 +1,425 @@
+<!------- Add Address Modal -------->
+
+<div class="modal fade" id="addAddressModal" tabindex="-1" role="dialog" aria-labelledby="addAddressModalLabel"
+	aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title font-weight-bold" id="addAddressModalLabel">Add New Address</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<!-- Address form fields -->
+				<form id="addAddressForm">
+					<div class="form-group">
+						<label for="name" class="font-weight-bold">Name*</label>
+						<input type="text" class="form-control rounded" id="name" name="name" placeholder="Enter name"
+							style="font-size: 14px;">
+						<span id="name-error" style="color: #BA0933; font-size: 13px;"></span>
+					</div>
+					<div class="form-group">
+						<label for="address" class="font-weight-bold">Street address*</label>
+						<input type="text" class="form-control rounded" id="street_address" name="street_address"
+							placeholder="Enter street address" style="font-size: 14px;">
+						<span id="street-address-error" style="color: #BA0933; font-size: 13px;"></span>
+
+					</div>
+					<div class="form-row">
+						<div class="form-group col-md-6">
+							<label for="place" class="font-weight-bold">Place</label>
+							<input type="text" class="form-control rounded" id="place" name="place"
+								placeholder="Enter place" style="font-size: 14px;">
+
+						</div>
+						<div class="form-group col-md-6">
+							<label for="city" class="font-weight-bold">City*</label>
+							<input type="text" class="form-control rounded" id="city" name="city"
+								placeholder="Enter city" style="font-size: 14px;"> <span id="place-error"
+								style="color: red; font-size: 13px;"></span>
+							<span id="city-error" style="color: #BA0933; font-size: 13px;"></span>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="state" class="font-weight-bold">State*</label>
+						<input type="text" class="form-control rounded" id="state" name="state"
+							placeholder="Enter state" style="font-size: 14px;">
+						<span id="state-error" style="color: #BA0933; font-size: 13px;"></span>
+					</div>
+
+					<div class="form-row">
+						<div class="form-group col-md-6">
+							<label for="mobile" class="font-weight-bold">Mobile*</label>
+							<input type="text" class="form-control rounded" id="mobile" name="mno"
+								placeholder="Enter mobile" style="font-size: 14px;">
+							<span id="mobile-error" style="color: #BA0933; font-size: 13px;"></span>
+						</div>
+						<div class="form-group col-md-6">
+							<label class="font-weight-bold">Pincode*</label>
+							<input type="text" class="form-control rounded" id="pincode" name="pincode"
+								placeholder="Enter pincode" style="font-size: 14px;">
+							<span id="pincode-error" style="color: #BA0933; font-size: 13px;"></span>
+						</div>
+					</div>
+
+					<div class="modal-footer">
+						<button type="button" class="btn btn-black" data-dismiss="modal">Close</button>
+						<button type="button" id="add-submit-button" class="btn btn-primary">Add Address</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!------ Add Address Modal end------->
+
+<!------ Edit Address Modal ------>
+
+<div class="modal fade" id="editAddressModal" tabindex="-1" role="dialog" aria-labelledby="editAddressModalLabel"
+	aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title font-weight-bold" id="editAddressModalLabel">Edit Address</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<!-- Address form fields -->
+
+				<form id="editAddressForm">
+					<div class="form-group">
+						<label for="name" class="font-weight-bold">Name*</label>
+						<input type="text" class="form-control rounded" id="name-edit" name="name"
+							style="font-size: 14px;">
+						<span id="name-edit-error" style="color: #BA0933; font-size: 13px;"></span>
+					</div>
+					<div class="form-group">
+						<label for="address" class="font-weight-bold">Street address*</label>
+						<input type="text" class="form-control rounded" id="street_address-edit" name="street_address"
+							style="font-size: 14px;">
+						<span id="street-address-edit-error" style="color: #BA0933; font-size: 13px;"></span>
+
+					</div>
+					<div class="form-row">
+						<div class="form-group col-md-6">
+							<label for="place" class="font-weight-bold">Place</label>
+							<input type="text" class="form-control rounded" id="place-edit" name="place"
+								placeholder="Enter place" style="font-size: 14px;">
+
+						</div>
+						<div class="form-group col-md-6">
+							<label for="city" class="font-weight-bold">City*</label>
+							<input type="text" class="form-control rounded" id="city-edit" name="city"
+								style="font-size: 14px;"> <span id="place-error"
+								style="color: red; font-size: 13px;"></span>
+							<span id="city-edit-error" style="color: #BA0933; font-size: 13px;"></span>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="state" class="font-weight-bold">State*</label>
+						<input type="text" class="form-control rounded" id="state-edit" name="state"
+							style="font-size: 14px;">
+						<span id="state-edit-error" style="color: #BA0933; font-size: 13px;"></span>
+					</div>
+
+					<div class="form-row">
+						<div class="form-group col-md-6">
+							<label for="mobile" class="font-weight-bold">Mobile*</label>
+							<input type="text" class="form-control rounded" id="mobile-edit" name="mno"
+								style="font-size: 14px;">
+							<span id="mobile-edit-error" style="color: #BA0933; font-size: 13px;"></span>
+						</div>
+						<div class="form-group col-md-6">
+							<label class="font-weight-bold">Pincode*</label>
+							<input type="text" class="form-control rounded" id="pincode-edit" name="pincode"
+								style="font-size: 14px;">
+							<span id="pincode-edit-error" style="color: #BA0933; font-size: 13px;"></span>
+						</div>
+					</div>
+				</form>
+
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-black" data-dismiss="modal">Close</button>
+				<button type="button" id="edit-submit-button" class="btn btn-primary">Save Changes</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!------ Edit Address Modal end------>
+
+<script src='https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/js/bootstrap.bundle.min.js'></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+
+<script>
+
+	//Add Address
+	document.getElementById('add-submit-button').addEventListener('click', function () {
+
+		if (validateForm('add')) {
+
+			console.log("helo");
+			submitAddForm(); 
+		} else {
+			console.log("Form validation failed3");
+		}
+	});
+
+
+	function submitAddForm() {
+	
+		const formData = new FormData(document.getElementById('addAddressForm'));
+		const formJson = JSON.stringify(Object.fromEntries(formData));
+
+		console.log(formData)
+
+		fetch("/address/add-address", {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: formJson
+		})
+			.then(response => {
+				if (response.ok) {
+					console.log('Form data submitted successfully');
+					Swal.fire({
+						icon: 'success',
+						title: 'Success',
+						text: 'Address added successfully',
+						showConfirmButton: false,
+						timer: 2000 
+					}).then(() => {
+						
+						window.location.reload();
+					});
+				} else {
+					
+					console.error('Form submission failed');
+					Swal.fire({
+						icon: 'error',
+						title: 'Error',
+						text: 'Something went wrong. Please try again later1.',
+						showConfirmButton: true
+					});
+				}
+			})
+			.catch(error => {
+				// Handle network errors
+				Swal.fire({
+					icon: 'error',
+					title: 'Error',
+					text: 'Network error occurred. Please try again later2.',
+					showConfirmButton: true
+				});
+			});
+	};
+
+	//remove address
+	async function removeAddress(index) {
+		try {
+			const confirmed = await Swal.fire({
+				title: 'Are you sure?',
+				text: "You won't be able to revert this!",
+				icon: 'warning',
+				showCancelButton: true,
+				confirmButtonColor: '#3085d6',
+				cancelButtonColor: '#d33',
+				confirmButtonText: 'Yes, remove it!'
+			});
+
+			if (confirmed.isConfirmed) {
+				await fetch(`/address/remove-address?index=${index}`, {
+					method: 'POST'
+				});
+				location.reload();
+			}
+		} catch (error) {
+			console.error('Error blocking user:', error);
+		}
+	}
+
+	//Edit address
+	var index;
+	$('#editAddressModal').on('show.bs.modal', function (event) {
+
+		var button = $(event.relatedTarget); // Button that triggered the modal
+		var editindex = button.data('address-index');
+		index = editindex; // Extract info from data-* attributes
+		var name = button.data('address-name');
+		var street = button.data('address-street');
+		var place = button.data('address-place');
+		var city = button.data('address-city');
+		var state = button.data('address-state');
+		var mobile = button.data('address-mobile');
+		var pincode = button.data('address-pincode');
+
+		console.log("index:", index)
+		// Update the modal's inputs with the extracted info
+		var modal = $(this);
+		modal.find('.modal-body #name-edit').val(name);
+		modal.find('.modal-body #street_address-edit').val(street);
+		modal.find('.modal-body #place-edit').val(place);
+		modal.find('.modal-body #city-edit').val(city);
+		modal.find('.modal-body #state-edit').val(state);
+		modal.find('.modal-body #mobile-edit').val(mobile);
+		modal.find('.modal-body #pincode-edit').val(pincode);
+
+		document.getElementById("name-edit-error").textContent = "";
+		document.getElementById("street-address-edit-error").textContent = "";
+		document.getElementById("city-edit-error").textContent = "";
+		document.getElementById("state-edit-error").textContent = "";
+		document.getElementById("mobile-edit-error").textContent = "";
+		document.getElementById("pincode-edit-error").textContent = "";
+
+	});
+
+	document.getElementById('edit-submit-button').addEventListener('click', function () {
+		if (validateForm('edit')) {
+			console.log("working...");
+			// submitForm('edit');
+			submitEditForm();
+		} else {
+			console.log("Form validation failed for edit modal");
+		}
+	});
+
+	function submitEditForm() {
+
+		var formData = new FormData(document.getElementById('editAddressForm'));
+		var formJson = Object.fromEntries(formData);
+		console.log("index2:", index);
+
+		// Append the index to the form data object
+		formJson.index = index;
+
+		// Stringify the form data object
+		var jsonData = JSON.stringify(formJson);
+
+		// Send a POST request with the form data and index
+		fetch("/address/edit-address", {
+			method: 'PATCH',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: jsonData
+		}).then(response => {
+			if (response.ok) {
+				// Handle successful response
+				console.log('Form data submitted successfully');
+				// Reload the page or perform any other actions as needed
+				window.location.reload();
+			} else {
+				// Handle error response
+				console.error('Form submission failed');
+				// Show error message or perform any other actions as needed
+			}
+		}).catch(error => {
+			// Handle network errors
+			console.error('Network error occurred:', error);
+			// Show error message or perform any other actions as needed
+		});
+
+	};
+
+	//form validation
+	function validateForm(modalType) {
+		var name = document.getElementById(modalType === 'add' ? "name" : "name-edit").value.trim();
+		var address = document.getElementById(modalType === 'add' ? "street_address" : "street_address-edit").value.trim();
+		var place = document.getElementById(modalType === 'add' ? "place" : "place-edit").value.trim();
+		var city = document.getElementById(modalType === 'add' ? "city" : "city-edit").value.trim();
+		var state = document.getElementById(modalType === 'add' ? "state" : "state-edit").value.trim();
+		var mobile = document.getElementById(modalType === 'add' ? "mobile" : "mobile-edit").value.trim();
+		var pincode = document.getElementById(modalType === 'add' ? "pincode" : "pincode-edit").value.trim();
+
+		var nameRegex = /^[a-zA-Z\s]*$/;
+		var pincodeRegex = /^[1-9][0-9]{5}$/;
+		var stateRegex = /^[a-zA-Z\s]*$/;
+
+		var isValid = true;
+
+		// Validate Name
+		if (name === "") {
+			document.getElementById(modalType === 'add' ? "name-error" : "name-edit-error").textContent = "Name is required.";
+			isValid = false;
+		} else if (!nameRegex.test(name)) {
+			document.getElementById(modalType === 'add' ? "name-error" : "name-edit-error").textContent = "Name should not contain special characters.";
+			isValid = false;
+		} else {
+			document.getElementById(modalType === 'add' ? "name-error" : "name-edit-error").textContent = "";
+		}
+
+		// Validate Address
+		if (address === "") {
+			document.getElementById(modalType === 'add' ? "street-address-error" : "street-address-edit-error").textContent = "Street Address is required.";
+			isValid = false;
+		} else {
+			document.getElementById(modalType === 'add' ? "street-address-error" : "street-address-edit-error").textContent = "";
+		}
+
+		// Validate City
+		if (city === "") {
+			document.getElementById(modalType === 'add' ? "city-error" : "city-edit-error").textContent = "City is required.";
+			isValid = false;
+		} else {
+			document.getElementById(modalType === 'add' ? "city-error" : "city-edit-error").textContent = "";
+		}
+
+		// Validate State
+		if (state === "") {
+			document.getElementById(modalType === 'add' ? "state-error" : "state-edit-error").textContent = "State is required.";
+			isValid = false;
+		} else if (!stateRegex.test(state)) {
+			document.getElementById(modalType === 'add' ? "state-error" : "state-edit-error").textContent = "State should contain only alphabets.";
+			isValid = false;
+		} else {
+			document.getElementById(modalType === 'add' ? "state-error" : "state-edit-error").textContent = "";
+		}
+
+		// Validate Mobile
+		if (mobile === "") {
+			document.getElementById(modalType === 'add' ? "mobile-error" : "mobile-edit-error").textContent = "Mobile number is required.";
+			isValid = false;
+		} else if (mobile.charAt(0) <= '5') {
+			document.getElementById(modalType === 'add' ? "mobile-error" : "mobile-edit-error").textContent = "Mobile number should start with a number greater than 5.";
+			isValid = false;
+		} else if (/^(\d)\1+$/.test(mobile)) {
+			document.getElementById(modalType === 'add' ? "mobile-error" : "mobile-edit-error").textContent = "Mobile number should not contain all same digits.";
+			isValid = false;
+		} else if (mobile.match(/0/g) !== null && mobile.match(/0/g).length > 5) {
+			document.getElementById(modalType === 'add' ? "mobile-error" : "mobile-edit-error").textContent = "Mobile number should not contain more than 5 zeros.";
+			isValid = false;
+		} else if (!/^\d{10}$/.test(mobile)) {
+			document.getElementById(modalType === 'add' ? "mobile-error" : "mobile-edit-error").textContent = "Mobile number should contain exactly 10 digits.";
+			isValid = false;
+		} else {
+			document.getElementById(modalType === 'add' ? "mobile-error" : "mobile-edit-error").textContent = "";
+		}
+
+		// Validate Pincode
+		if (pincode === "") {
+			document.getElementById(modalType === 'add' ? "pincode-error" : "pincode-edit-error").textContent = "Pincode is required.";
+			isValid = false;
+		} else if (!/^[0-9]\d{5}$/.test(pincode)) {
+			document.getElementById(modalType === 'add' ? "pincode-error" : "pincode-edit-error").textContent = "Pincode should be a 6-digit number.";
+			isValid = false;
+		} else if (pincode.charAt(0) === '0') {
+			document.getElementById(modalType === 'add' ? "pincode-error" : "pincode-edit-error").textContent = "Pincode should not start with zero.";
+			isValid = false;
+		} else {
+			document.getElementById(modalType === 'add' ? "pincode-error" : "pincode-edit-error").textContent = "";
+		}
+
+		return isValid;
+	};
+
+</script>

@@ -1,0 +1,181 @@
+<%- include("../form_layouts/header.ejs") %>
+
+	<section class="ftco-section">
+		<div class="container">
+			<div class="row justify-content-center">
+				<div class="col-md-12 col-lg-10">
+					<div class="wrap d-md-flex">
+						<div class="img"
+							style="background-image: url(assets/images/air-jordan-1-low-se-shoes-ZbxSRp.jpeg);">
+						</div>
+						<div class="login-wrap p-3 p-md-5">
+							<div class="d-flex">
+								<div class="w-100">
+									<h3 class="mb-4 text-center font-weight-bold">Sign In</h3>
+								</div>
+							</div>
+
+
+							<form id="login-form" class="signin-form">
+								<div class="form-group mb-3">
+									<label class="label m-0 " for="name">Email</label>
+									<input type="text" id="email" name="email" class="form-control" placeholder="Email">
+									<span id="email-error" style="color:  #BA0933; font-size: 13px;"></span>
+								</div>
+								<div class="form-group mb-3">
+									<label class="label m-0 " for="password">Password</label>
+									<input type="password" id="password" name="password" class="form-control"
+										placeholder="Password">
+									<span id="password-error" style="color:  #BA0933; font-size: 13px;"></span>
+								</div>
+								<div>
+									<span id="message" style="color:  #BA0933; font-size: 13px;"></span>
+								</div>
+								<div class="form-group">
+									<button type="button"
+										class="form-control submit-btn btn btn-primary rounded px-3">Sign
+										In</button>
+								</div>
+
+							</form>
+
+							<div class="d-flex justify-content-end ">
+								<a href="/reset-password-link" style="color: grey;">Forgot Password ?</a>
+							</div>
+							<div class="d-flex justify-content-center mt-3">
+								<p class="text-center">Don't have an account ?<a href="/register"> Sign
+										Up</a>
+								</p>
+							</div>
+
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+	<script>
+
+		document.addEventListener('DOMContentLoaded', function () {
+			const signInBtn = document.querySelector('.submit-btn');
+
+			const urlParams = new URLSearchParams(window.location.search);
+			const isBlocked = urlParams.get('blocked') === 'true';
+
+			if (isBlocked) {
+				// Display SweetAlert if the user is blocked
+				const Toast = Swal.mixin({
+					toast: true,
+					position: "top",
+					showConfirmButton: false,
+					timer: 2000,
+					timerProgressBar: true,
+					didOpen: (toast) => {
+						toast.addEventListener('mouseenter', Swal.stopTimer);
+						toast.addEventListener('mouseleave', Swal.resumeTimer);
+					}
+				});
+
+				Toast.fire({
+					icon: "warning",
+					title: "You have been blocked"
+				});
+			}
+
+			signInBtn.addEventListener('click', function () {
+				if (validateForm()) {
+					const email = document.getElementById('email').value;
+					const password = document.getElementById('password').value;
+
+					fetch('/login', {
+						method: 'POST',
+						headers: {
+							'Content-Type': 'application/json'
+						},
+						body: JSON.stringify({ email: email, password: password })
+					})
+						.then(response => {
+							if (response.ok) {
+
+								window.location.href = '/';
+							} else {
+								// Handle login failure
+								return response.json();
+							}
+						})
+						.then(data => {
+							if (data && data.message === 'You have been blocked') {
+
+								const Toast = Swal.mixin({
+									toast: true,
+									position: "top",
+									showConfirmButton: false,
+									timer: 2000,
+									timerProgressBar: true,
+									didOpen: (toast) => {
+										toast.addEventListener('mouseenter', Swal.stopTimer);
+										toast.addEventListener('mouseleave', Swal.resumeTimer);
+									}
+								});
+
+								Toast.fire({
+									icon: "warning",
+									title: "You have been blocked"
+								});
+							} else {
+								// Update the message span with the received message
+								document.getElementById('message').textContent = data && data.message ? data.message : '';
+								document.getElementById('password').value = '';
+							}
+						})
+						.catch(error => {
+							console.error('Error:', error);
+							alert('Failed to login. Please try again.');
+						});
+				}
+			});
+		});
+
+		function validateForm() {
+
+			var email = document.getElementById("email").value.trim();
+			var password = document.getElementById("password").value.trim();
+
+			var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+			var passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+
+			var isValid = true;
+
+			if (email === "") {
+				document.getElementById("email-error").textContent = "Email is required.";
+				document.getElementById('password').value = '';
+				isValid = false;
+			} else if (!emailRegex.test(email)) {
+				document.getElementById("email-error").textContent = "Invalid email address.";
+				isValid = false;
+			} else if (!email.endsWith(".com")) {
+				document.getElementById("email-error").textContent = "Invalid email address.";
+				isValid = false;
+			} else {
+				document.getElementById("email-error").textContent = "";
+			}
+			if (password === "") {
+				document.getElementById("password-error").textContent = "Password is required.";
+				document.getElementById('message').textContent = '';
+				isValid = false;
+			} else if (!passwordRegex.test(password)) {
+				document.getElementById("password-error").textContent = "Password must be at least 8 characters and contain at least one uppercase letter, one lowercase letter, one number, and one special character.";
+				isValid = false;
+			} else {
+				document.getElementById("password-error").textContent = "";
+			}
+
+			return isValid;
+		}
+
+	</script>
+
+	<%- include("../form_layouts/footer.ejs") %>

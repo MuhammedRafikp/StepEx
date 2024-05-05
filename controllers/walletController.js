@@ -1,0 +1,195 @@
+import User from "../models/userModel.js";
+import Cart from "../models/cartModel.js";
+import Wallet from "../models/walletModel.js";
+import Razorpay from "razorpay";
+import dotenv from 'dotenv';
+
+dotenv.config();
+
+const { RAZORPAY_ID_KEY, RAZORPAY_SECRET_KEY } = process.env;
+
+const razorpay = new Razorpay({
+    key_id: RAZORPAY_ID_KEY,
+    key_secret: RAZORPAY_SECRET_KEY
+});
+
+const loadWallet = async (req, res) => {
+    try {
+
+        const userId = req.session._id;
+        const userData = await User.findOne({ _id: userId });
+        const cart = await Cart.findOne({ user_id: userId }).populate('items.products');
+        const cartItemCount = cart ? cart.items.length : 0;
+        const walletData = await Wallet.findOne({ user_id: userId });
+        res.render("wallet", { user: userData, cartCount: cartItemCount, wallet: walletData });
+
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).json({ error: 'Internal server error.' });
+
+    }
+}
+
+
+const loadAddMoney = async (req, res) => {
+    try {
+        const userId = req.session._id;
+        const userData = await User.findOne({ _id: userId });
+        const cart = await Cart.findOne({ user_id: userId }).populate('items.products');
+        const cartItemCount = cart ? cart.items.length : 0;
+        const walletData = await Wallet.findOne({ user_id: userId });
+        res.render("wallet-add-money", { user: userData, cartCount: cartItemCount, wallet: walletData, razorpaykey: RAZORPAY_ID_KEY });
+
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).json({ error: 'Internal server error.' });
+    }
+}
+
+
+const generatereceiptID = () => {
+    const min = 10000000;
+    const max = 99999999;
+    return Math.floor(Math.random() * (max - min + 1) + min);
+}
+
+const createRazorPayforAddMoney = async (req, res) => {
+    try {
+        console.log(razorpay.key_id, razorpay.key_secret);
+        const { amount } = req.body;
+        console.log(amount)
+        const receiptID = generatereceiptID();
+        const order = await razorpay.orders.create({
+            amount: amount * 100,
+            currency: 'INR',
+            receipt: `${receiptID}`,
+            payment_capture: 1
+        });
+
+        res.status(200).json({ success: true, order });
+    } catch (error) {
+        console.error(error, "error");
+        res.status(500).json({ success: false, message: 'Failed to create Razorpay order' });
+    }
+};
+
+const addMoney = async (req, res) => {
+    try {
+        const { amount } = req.body;
+        const userId = req.session._id;
+        let wallet = await Wallet.findOne({ user_id: userId });
+        console.log(userId)
+        if (!wallet) {
+
+            wallet = new Wallet({
+                user_id: userId,
+                balance: 0,
+                history: []
+            });
+        }
+
+        const previousBalance = wallet.balance;
+        const updatedBalance = previousBalance + amount;
+        wallet.balance = updatedBalance;
+
+        const transaction = {
+            amount: parseFloat(amount),
+            transaction_type: 'credit',
+            previous_balance: previousBalance
+        };
+
+        wallet.history.push(transaction);
+
+        await wallet.save();
+        res.status(200).json({ success: true });
+
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).json({ error: 'Internal server error.' });
+    }
+}
+
+
+const loadWithdrawMoney = async (req, res) => {
+    try {
+        const userId = req.session._id;
+        const userData = await User.findOne({ _id: userId });
+        const cart = await Cart.findOne({ user_id: userId }).populate('items.products');
+        const cartItemCount = cart ? cart.items.length : 0;
+        const walletData = await Wallet.findOne({ user_id: userId });
+        res.render("wallet-withdraw-money", { user: userData, cartCount: cartItemCount, wallet: walletData });
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).json({ error: 'Internal server error.' });
+    }
+}
+
+
+const WithdrawMoney = async (req, res) => {
+    try {
+        const userId = req.session._id;
+
+        const { amount } = req.body;
+
+        if (!amount || amount <= 0) {
+            return res.status(400).json({ message: 'Invalid amount.' });
+        }
+
+        const wallet = await Wallet.findOne({ user_id: userId });
+
+        if (!wallet) {
+            return res.status(404).json({ message: 'Wallet not found for this user.' });
+        }
+
+        if (wallet.balance < amount) {
+            return res.status(400).json({ message: 'Insufficient balance.' });
+        }
+
+        const previousBalance = wallet.balance;
+        const updatedBalance = previousBalance - amount;
+        wallet.balance = updatedBalance;
+
+        const transaction = {
+            amount: parseFloat(amount),
+            transaction_type: 'debit',
+            previous_balance: previousBalance
+        };
+
+        wallet.history.push(transaction);
+
+        await wallet.save();
+        return res.status(200).json({ message: 'Withdrawal successful.' });
+
+    } catch (error) {
+        console.error(error.message);
+        return res.status(500).json({ error: 'Internal server error.' });
+    }
+};
+
+
+const loadWalletHistory = async (req, res) => {
+    try {
+        const userId = req.session._id;
+        const userData = await User.findOne({ _id: userId });
+        const cart = await Cart.findOne({ user_id: userId }).populate('items.products');
+        const cartItemCount = cart ? cart.items.length : 0;
+        const walletData = await Wallet.findOne({ user_id: userId });
+
+        res.render("wallet-history", { user: userData, cartCount: cartItemCount, wallet: walletData });
+
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).json({ error: 'Internal server error.' });
+    }
+}
+
+
+export {
+    loadWallet,
+    loadAddMoney,
+    createRazorPayforAddMoney,
+    addMoney,
+    loadWithdrawMoney,
+    WithdrawMoney,
+    loadWalletHistory
+}

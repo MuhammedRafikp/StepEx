@@ -1,0 +1,170 @@
+<%- include('../admin_layouts/header.ejs') %>
+
+    <div class="container-scroller">
+        <%- include('navbar.ejs') %>
+            <div class="container-fluid page-body-wrapper">
+                <%- include('sidebar.ejs') %>
+                    <div class="main-panel">
+                        <div class="content-wrapper">
+                            <div class="col-lg-12 grid-margin stretch-card">
+                                <div class="card">
+                                    <div class="card-body">
+
+                                        <h4>SALES REPORT</h4>
+                                        <hr>
+                                        <br>
+                                        <div class="d-flex justify-content-end ">
+                                            <p> Report type :</p>
+                                            <select name="reportType" id="reportType"
+                                                class="form-control w-auto h-75 mx-2">
+                                                <option>All</option>
+                                                <option>Today</option>
+                                                <option>Weekly</option>
+                                                <option>Monthly</option>
+                                                <option>Yearly</option>
+                                                <option>Custom</option>
+                                            </select>
+                                            <div class="date-fields d-none  ">
+                                                <div class="form-group mx-1 ">
+                                                    <label for="startDate">From:</label>
+                                                    <input type="date" id="startDate" name="startDate"
+                                                        class="form-control mx-1 h-50">
+                                                </div>
+                                                <div class="form-group mx-1 ">
+                                                    <label for="endDate">To:</label>
+                                                    <input type="date" id="endDate" name="endDate"
+                                                        class="form-control mx-1 h-50">
+                                                </div>
+                                            </div>
+
+                                            <button type="button" class="btn btn-success btn-fw mx-2 px-3 py-2"
+                                                onclick="generateReport()">Generate</button>
+
+                                        </div>
+                                        <table class="table table-striped mt-5">
+                                            <thead class="text-center bg-secondary">
+                                                <tr>
+                                                    <th class="font-weight-bold"> No. </th>
+                                                    <th class="font-weight-bold">Order ID </th>
+                                                    <th class="font-weight-bold"> Billing name </th>
+                                                    <th class="font-weight-bold"> pay method </th>
+                                                    <th class="font-weight-bold"> Date </th>
+                                                    <th class="font-weight-bold"> Product</th>
+                                                    <th class="font-weight-bold"> Price </th>
+                                                    <th class="font-weight-bold"> Qty</th>
+                                                    
+                                                    <th class="font-weight-bold"> Total</th>
+                                                </tr>
+                                            </thead>
+
+                                         
+                                                <% if (sales && sales.length> 0) { %>
+                                                    <% sales.forEach((sale)=> { %>
+                                                        <% sale.items.forEach((item,index)=> { %>
+                                                            
+                                                        <tbody class="text-center">
+                                                            <tr>
+                                                                <td>
+                                                                    <%= index+1 %>
+                                                                </td>
+
+                                                                <td>
+                                                                    <%= sale.orderId %>
+                                                                </td>
+                                                               
+                                                                <td>sale.user.name</td>
+                                                                <td>
+                                                                    <%= sale.payment_method %>
+                                                                </td>
+                                                                <td>
+                                                                    <%= sale.date.toLocaleDateString() %>
+                                                                </td>
+                                                               
+                                                                    <td><%= item.name %></td>
+                                                                    <td><%= item.price %></td>
+                                                                    <td><%= item.quantity %></td>
+                                                                   
+                                                                    <td>₹<%=item.quantity*item.price %></td>
+
+
+                                                                   
+                                                            </tr>
+                                                        </tbody>
+                                                        
+                                                        <% }); %>
+                                                        <% }); %>
+
+                                                            <% } else { %>
+
+                                                                <tbody class="text-center">
+                                                                    <tr>
+                                                                        <td colspan="9">No sales found !</td>
+                                                                    </tr>
+                                                                </tbody>
+
+                                                                <% } %>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const reportTypeSelect = document.getElementById('reportType');
+            const dateFields = document.querySelector('.date-fields');
+
+            // Event listener for select element
+            reportTypeSelect.addEventListener('change', function () {
+                if (this.value === 'Custom') {
+                    // Show the date fields
+                    dateFields.classList.remove('d-none');
+                    dateFields.classList.add('d-flex');
+
+                } else {
+                    dateFields.classList.remove('d-flex');
+                    dateFields.classList.add('d-none');
+                }
+            });
+        });
+
+
+        function generateReport() {
+            const reportType = document.getElementById('reportType').value;
+            let queryParams = '';
+
+            if (reportType === 'Custom') {
+                const startDate = document.getElementById('startDate').value;
+                const endDate = document.getElementById('endDate').value;
+                queryParams = `?reportType=${reportType}&startDate=${startDate}&endDate=${endDate}`;
+            } else {
+                queryParams = `?reportType=${reportType}`;
+            }
+
+            fetch(`/admin/sales${queryParams}`, {
+                method: "GET",
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // Handle the response data as needed, such as updating the table with sales data
+                })
+                .catch(error => {
+                    console.error('There was a problem with the fetch operation:', error);
+                });
+        }
+
+
+    </script>
+
+    <%- include('../admin_layouts/footer.ejs') %>

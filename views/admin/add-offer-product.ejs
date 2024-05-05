@@ -1,0 +1,227 @@
+<%- include('../admin_layouts/header.ejs') %>
+
+    <style>
+        .no-spinners::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+    </style>
+
+    <div class="container-scroller">
+
+        <%-include('navbar.ejs')%>
+
+            <div class="container-fluid page-body-wrapper">
+
+                <%-include('sidebar.ejs')%>
+
+                    <div class="main-panel">
+                        <div class="content-wrapper">
+                            <div class="col-md-9 grid-margin stretch-card">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h4 class="card-title">ADD PRODUCT OFFER</h4>
+                                        <hr><br>
+
+                                        <div class="form-group">
+                                            <label for="exampleInputName1">Product</label>
+                                            <select class="form-control" name="product">
+                                                <option value="" disabled selected>Select a product
+                                                </option>
+                                                <%products.forEach((product)=>{%>
+
+                                                    <option value="<%= product._id %>" price="<%= product.price %>">
+                                                        <%= product.name %> (₹<%= product.price %>)
+                                                    </option>
+
+                                                    <%}) %>
+                                            </select>
+
+                                            <span id="product-error" style="color:  #BA0933; font-size: 13px;"></span>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group row">
+                                                    <div class="col-sm-9">
+                                                        <label>Offer (%)</label>
+                                                        <input type="number" id="offer"
+                                                            class="form-control no-spinners" />
+                                                        <span id="offer-error"
+                                                            style="color:  #BA0933; font-size: 13px;"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group row">
+
+                                                    <div class="col-sm-9">
+                                                        <label>Offer price</label>
+                                                        <input type="number" id="offer-price"
+                                                            class="form-control no-spinners" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Validity</label>
+                                            <input type="date" id="validity" class="form-control">
+                                            <span id="validity-error" style="color:  #BA0933; font-size: 13px;"></span>
+                                        </div>
+                                        <button type="button" id="add-btn"
+                                            class="btn btn-gradient-primary mr-2 px-4 py-3">Add</button>
+                                        <a href="/admin/offers-product" class="btn btn-secondary px-4 py-3">Cancel</a>
+
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+    </div>
+
+    <script>
+
+        document.getElementById('offer').addEventListener('input', function () {
+            const offerPercentage = parseFloat(this.value);
+            const productPrice = parseFloat(document.querySelector("select[name='product'] option:checked").getAttribute('price'));
+            const offerPrice = (productPrice * offerPercentage) / 100;
+            document.getElementById('offer-price').value = offerPrice.toFixed(2); // Set offer price with two decimal places
+        });
+        document.getElementById('offer-price').addEventListener('input', function () {
+            const offerPrice = parseFloat(this.value);
+            const productPrice = parseFloat(document.querySelector("select[name='product'] option:checked").getAttribute('price'));
+            const offerPercentage = (offerPrice / productPrice) * 100;
+            document.getElementById('offer').value = offerPercentage.toFixed(2); // Set offer percentage with two decimal places
+        });
+
+        function validateForm() {
+
+            const product = document.querySelector("select[name='product']").value.trim();
+            const offer = document.getElementById("offer").value.trim();
+            const validity = document.getElementById("validity").value.trim();
+
+            var isValid = true;
+
+            if (product === "") {
+                document.getElementById("product-error").textContent = "Product is required.";
+                isValid = false;
+            } else {
+                document.getElementById("product-error").textContent = "";
+            }
+
+            if (offer === "") {
+                document.getElementById("offer-error").textContent = "Offer % is required.";
+                isValid = false;
+            } else if (parseFloat(offer) <= 0 || parseFloat(offer) > 80) {
+                document.getElementById("offer-error").textContent = "Offer should be between 1% and 80%.";
+                isValid = false;
+            } else {
+                document.getElementById("offer-error").textContent = "";
+            }
+
+
+            if (validity === "") {
+                document.getElementById("validity-error").textContent = "Validity date is required.";
+                isValid = false;
+            } else {
+                var today = new Date();
+                var validityDate = new Date(validity);
+
+                // Set both dates to the same time zone
+                today.setHours(0, 0, 0, 0);
+                validityDate.setHours(0, 0, 0, 0);
+
+                if (validityDate < today) {
+                    document.getElementById("validity-error").textContent = "Validity date should be today or later.";
+                    isValid = false;
+                } else {
+                    document.getElementById("validity-error").textContent = "";
+                }
+            }
+
+            return isValid;
+        }
+
+        document.getElementById('add-btn').addEventListener('click', function () {
+
+            if (validateForm()) {
+                console.log("entered");
+                const productId = document.querySelector("select[name='product']").value;
+                const offer = document.getElementById("offer").value;
+                const offerPrice = document.getElementById("offer-price").value;
+                const validity = document.getElementById("validity").value;
+
+                const data = { productId, offer,offerPrice, validity };
+                console.log(data);
+                fetch("/admin/offers-product/add-offer", {
+                    method: "POST",
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+
+                            const Toast = Swal.mixin({
+                                toast: true,
+                                position: "top",
+                                showConfirmButton: false,
+                                timer: 2000,
+                                timerProgressBar: true,
+                                didOpen: (toast) => {
+                                    toast.addEventListener('mouseenter', Swal.stopTimer);
+                                    toast.addEventListener('mouseleave', Swal.resumeTimer);
+                                }
+                            });
+
+                            Toast.fire({
+                                icon: "success",
+                                width: "325",
+                                title: data.message
+
+                            }).then(() => {
+                                window.location.href = "/admin/offers-product";
+                            });
+                        } else {
+                            // Category offer already exists
+
+                            const Toast = Swal.mixin({
+                                toast: true,
+                                position: "top",
+                                showConfirmButton: false,
+                                timer: 2000,
+                                timerProgressBar: true,
+                                didOpen: (toast) => {
+                                    toast.addEventListener('mouseenter', Swal.stopTimer);
+                                    toast.addEventListener('mouseleave', Swal.resumeTimer);
+                                }
+                            });
+
+                            Toast.fire({
+                                icon: "warning",
+                                width: "425",
+                                title: data.message
+                            });
+
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Error:", error);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: error.message || 'Something went wrong!'
+                        });
+                    });
+            }
+        });
+
+    </script>
+
+    </script>
+
+    <%- include('../admin_layouts/footer.ejs') %>

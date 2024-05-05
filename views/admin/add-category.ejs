@@ -1,0 +1,98 @@
+<%- include('../admin_layouts/header.ejs') %>
+
+    <div class="container-scroller">
+
+        <%-include('navbar.ejs')%>
+
+        <div class="container-fluid page-body-wrapper">
+            
+            <%-include('sidebar.ejs')%>
+
+            <div class="main-panel">
+                <div class="content-wrapper">
+                    <div class="col-9 grid-margin stretch-card">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="card-title">ADD NEW CATEGORY</h4>
+                                <hr><br>
+                                <form action="" method="post" enctype="multipart/form-data" class="forms-sample"
+                                    onsubmit="return validateForm()" id="form">
+                                    <div class="form-group">
+                                        <label for="exampleInputName1">Name</label>
+                                        <input type="text" id="name" name="name" class="form-control" placeholder="Name"
+                                            value="<%= typeof name !== 'undefined' ? name : '' %>">
+                                        <span id="name-error" style="color: red; font-size: 14px;"></span>
+
+                                        <% if(typeof message!=="undefined" ){ %>
+                                            <p style="color: rgb(255, 0, 0); font-size: 13px;">
+                                                <%= message %>
+                                            </p>
+                                            <% } %>
+
+                                    </div>
+                                    <div class="form-group">
+                                        <label>File upload</label>
+                                        <div class="input-group col-xs-9">
+                                            <input type="file" id="image" name="image" accept="image/*"
+                                                placeholder="Upload Image" class="form-control file-upload-info">
+                                            <div class="input-group-append">
+                                                <button class="file-upload-browse btn btn-gradient-primary px-3 py-2"
+                                                    type="button" id="uploadBtn">Upload</button>
+                                            </div>
+                                        </div>
+                                        <span id="image-error" style="color: red; font-size: 14px;"></span>
+                                    </div>
+                                    <button type="submit"
+                                        class="btn btn-gradient-primary mr-2 px-4 py-3">Submit</button>
+                                    <a href="/admin/categories" class="btn btn-secondary px-4 py-3">Cancel</a>
+                                </form>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+
+        document.getElementById('uploadBtn').addEventListener('click', function () {
+            document.getElementById('image').click();
+        });
+
+    </script>
+
+    <script>
+        
+        function validateForm() {
+            var name = document.getElementById("name").value.trim();
+            var image = document.getElementById("image").value.trim();
+            var alphabetRegex = /^[a-zA-Z]+$/;
+
+            var isValid = true;
+
+            if (name === "") {
+                document.getElementById("name-error").textContent = "Name is required.";
+                isValid = false;
+            } else if (!alphabetRegex.test(name)) {
+                document.getElementById("name-error").textContent = "Name must contain only alphabets.";
+                isValid = false;
+            } else {
+                document.getElementById("name-error").textContent = "";
+            }
+
+            if (image === "") {
+                document.getElementById("image-error").textContent = "Image is required.";
+                isValid = false;
+            } else {
+                document.getElementById("image-error").textContent = "";
+            }
+
+            return isValid;
+        }
+
+    </script>
+
+
+    <%- include('../admin_layouts/footer.ejs') %>

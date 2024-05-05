@@ -1,0 +1,295 @@
+<%- include('../admin_layouts/header.ejs') %>
+
+    <div class="container-scroller">
+
+        <%-include('navbar.ejs')%>
+
+            <div class="container-fluid page-body-wrapper">
+
+                <%-include('sidebar.ejs')%>
+
+                    <div class="main-panel">
+                        <div class="content-wrapper">
+                            <div class="col-md-9 grid-margin stretch-card">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between ">
+                                            <h4 class="card-title">EDIT COUPON</h4>
+                                            <% if(coupon.is_active){%>
+                                            
+                                                    <button class="btn btn-danger px-3 py-2"
+                                                    onclick="deactivateCoupon('<%= coupon._id %>')">Deactivate</button>
+                                                <%}else{%>
+                                                    <button class="btn btn-success px-3 py-2"
+                                                    onclick="activateCoupon('<%= coupon._id %>')">Activate</button>
+
+                                                    <%} %>
+                                        </div>
+                                        <hr><br>
+
+                                        <div class="form-group">
+                                            <input type="hidden" id="coupon-id" value="<%= coupon._id %>">
+                                            <label for="exampleInputName1">Coupon code</label>
+                                            <input type="text" id="coupon-code" class="form-control"
+                                                value="<%= coupon.coupon_code%>">
+                                            <span id="coupon-code-error"
+                                                style="color:  #BA0933; font-size: 13px;"></span>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group row">
+                                                    <div class="col-sm-9">
+                                                        <label>Min price</label>
+
+                                                        <input type="text" id="min-price" class="form-control"
+                                                            value="<%=coupon.min_price%>">
+                                                        <span id="min-price-error"
+                                                            style="color:  #BA0933; font-size: 13px;"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group row">
+
+                                                    <div class="col-sm-9">
+                                                        <label>Discount ( % )</label>
+                                                        <input id="discount" class="form-control"
+                                                            value="<%=coupon.discount%>">
+                                                        <span id="discount-error"
+                                                            style="color:  #BA0933; font-size: 13px;"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Validity</label>
+                                            <input type="date" id="validity" class="form-control">
+                                            <span id="validity-error" style="color:  #BA0933; font-size: 13px;"></span>
+                                        </div>
+                                        <button type="button" id="update-btn"
+                                            class="btn btn-gradient-primary mr-2 px-4 py-3">Update</button>
+                                        <a href="/admin/offers-product" class="btn btn-secondary px-4 py-3">Cancel</a>
+
+
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+    </div>
+
+    <script>
+
+        const validityDate = new Date('<%= coupon.validity.toISOString() %>');
+        const formattedValidity = validityDate.toISOString().split('T')[0]; // Extract YYYY-MM-DD
+        document.getElementById('validity').value = formattedValidity;
+
+
+        function validateForm() {
+
+            const couponCode = document.getElementById("coupon-code").value;
+            const minPrice = parseFloat(document.getElementById("min-price").value);
+            const discount = parseFloat(document.getElementById("discount").value);
+            const validity = document.getElementById("validity").value;
+
+            let isValid = true;
+
+            if (couponCode === "") {
+                document.getElementById("coupon-code-error").textContent = "Coupon code is required.";
+                isValid = false;
+            } else if (!/^STPX-2024-/.test(couponCode)) {
+                document.getElementById("coupon-code-error").textContent = "Coupon code must start with 'STPX-2024-'.";
+                isValid = false;
+            } else if (!/\d{5}$/.test(couponCode)) {
+                document.getElementById("coupon-code-error").textContent = "Coupon code must be followed by 5 digits.";
+                isValid = false;
+            } else {
+                document.getElementById("coupon-code-error").textContent = "";
+            }
+
+            if (isNaN(minPrice)) {
+                document.getElementById("min-price-error").textContent = "Min price is required.";
+                isValid = false;
+            } else if (minPrice < 4000) {
+                document.getElementById("min-price-error").textContent = "Minimum amount should be 4000.";
+                isValid = false;
+            } else {
+                document.getElementById("min-price-error").textContent = "";
+            }
+
+            if (isNaN(discount)) {
+                document.getElementById("discount-error").textContent = "Discount is required.";
+                isValid = false;
+            } else if (discount < 1 || discount > 50) {
+                document.getElementById("discount-error").textContent = "Discount should be between 1% and 50%.";
+                isValid = false;
+            } else {
+                document.getElementById("discount-error").textContent = "";
+            }
+
+            if (validity === "") {
+                document.getElementById("validity-error").textContent = "Validity date is required.";
+                isValid = false;
+            } else {
+                const today = new Date();
+                const validityDate = new Date(validity);
+
+                // Set both dates to the same time zone
+                today.setHours(0, 0, 0, 0);
+                validityDate.setHours(0, 0, 0, 0);
+
+                if (validityDate < today) {
+                    document.getElementById("validity-error").textContent = "Validity date should be today or later.";
+                    isValid = false;
+                } else {
+                    document.getElementById("validity-error").textContent = "";
+                }
+            }
+
+            return isValid;
+        }
+
+        document.getElementById('update-btn').addEventListener('click', function () {
+            console.log("entered");
+            if (validateForm()) {
+
+                const couponId = document.getElementById("coupon-id").value;
+                const couponCode = document.getElementById("coupon-code").value;
+                const minPrice = parseFloat(document.getElementById("min-price").value);
+                const discount = parseFloat(document.getElementById("discount").value);
+                const validity = document.getElementById("validity").value;
+
+                const data = { couponId, couponCode, minPrice, discount, validity };
+                console.log(data)
+                fetch("/admin/coupons/edit-coupon", {
+                    method: "POST",
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+
+                            const Toast = Swal.mixin({
+                                toast: true,
+                                position: "top",
+                                showConfirmButton: false,
+                                timer: 2000,
+                                timerProgressBar: true,
+                                didOpen: (toast) => {
+                                    toast.addEventListener('mouseenter', Swal.stopTimer);
+                                    toast.addEventListener('mouseleave', Swal.resumeTimer);
+                                }
+                            });
+
+                            Toast.fire({
+                                icon: "success",
+                                width: "350",
+                                title: data.message
+
+                            }).then(() => {
+                                window.location.href = "/admin/coupons";
+                            });
+                        } else {
+
+                            const Toast = Swal.mixin({
+                                toast: true,
+                                position: "top",
+                                showConfirmButton: false,
+                                timer: 2000,
+                                timerProgressBar: true,
+                                didOpen: (toast) => {
+                                    toast.addEventListener('mouseenter', Swal.stopTimer);
+                                    toast.addEventListener('mouseleave', Swal.resumeTimer);
+                                }
+                            });
+
+                            Toast.fire({
+                                icon: "warning",
+                                width: "425",
+                                title: data.message
+                            });
+
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Error:", error);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: error.message || 'Something went wrong!'
+                        });
+                    });
+            }
+        });
+
+        //Activate coupon
+        function activateCoupon(couponId) {
+            console.log(couponId)
+            Swal.fire({
+                title: 'Are you sure?',
+                width: "450",
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, activate!',
+                reverseButtons: true,
+            }).then((confirmation) => {
+                if (confirmation.isConfirmed) {
+                    fetch(`/admin/coupons/activate-coupon?id=${couponId}`, {
+                        method: 'PATCH',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    }).then(response => {
+                        if (response.ok) {
+                            window.location.reload();
+                        } else {
+                            console.error('Failed to activate offer');
+                        }
+                    }).catch(error => {
+                        console.error(error.message);
+                    });
+                }
+            });
+        }
+
+        //Deactivate coupon
+        function deactivateCoupon(couponId) {
+            console.log(couponId)
+            Swal.fire({
+                title: 'Are you sure?',
+                width: "450",
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Yes, deactivate!',
+                reverseButtons: true,
+            }).then((confirmation) => {
+                if (confirmation.isConfirmed) {
+                    fetch(`/admin/coupons/deactivate-coupon?id=${couponId}`, {
+                        method: 'PATCH',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    }).then(response => {
+                        if (response.ok) {
+                            window.location.reload();
+                        } else {
+                            console.error('Failed to activate offer');
+                        }
+                    }).catch(error => {
+                        console.error(error.message);
+                    });
+                }
+            });
+        }
+
+    </script>
+
+    <%- include('../admin_layouts/footer.ejs') %>

@@ -1,0 +1,598 @@
+<%- include("../layouts/header.ejs") %>
+
+	<style>
+		.product-images {
+			position: relative;
+			width: 100%;
+			text-align: center;
+		}
+
+		.main-image {
+			max-width: 100%;
+			height: auto;
+			margin-bottom: 10px;
+		}
+
+		.sub-images {
+			position: absolute;
+			bottom: -125px;
+			left: 50%;
+			transform: translateX(-50%);
+			display: flex;
+			justify-content: center;
+			background-color: rgba(255, 255, 255, 0);
+			padding: 5px;
+		}
+
+		.sub-images img {
+			width: 100px;
+			height: 115px;
+			margin: 0 5px;
+			border: 0.5px solid rgb(219, 219, 219);
+			border-radius: 5px;
+		}
+
+		.hero-wrap {
+			margin-top: 100px;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+
+		}
+
+		.shop-heading {
+			text-align: left;
+		}
+
+		.breadcrumbs {
+			text-align: right;
+		}
+	</style>
+
+
+	<div style="background-color: #f0f0f0; height: 60px;" class="hero-wrap">
+		<div class="container">
+			<div class="row no-gutters slider-text align-items-start">
+				<div class="col-md-6 ftco-animate shop-heading">
+					<h6 style="color: #000;">
+						<%= product.name %>
+					</h6>
+				</div>
+				<div class="col-md-6 ftco-animate breadcrumbs">
+					<div class="breadcrumbs">
+						<span class="mr-2">
+							<a href="/"><span class="icon-home"></span>Home ></a>
+							<a href="/orders">Shop></a>
+							<span style="color: #979797;">Product details</span></span>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<section class="ftco-section">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-6 mb-5 product-images">
+					<div class="main-image-container">
+						<a class=" prod-img-bg imageZoom">
+							<img id="mainImage" src="\uploads\productImages\<%= product.images[0] %>" alt=""
+								class="main-image" data-zoom-image="\uploads\productImages\<%= product.images[0] %>">
+						</a>
+					</div>
+
+					<div class="sub-images">
+						<% product.images.forEach((image)=> { %>
+							<a>
+								<img src="\uploads\productImages\<%= image %>" alt="">
+								<% }); %>
+					</div>
+				</div>
+
+
+
+				<div class="col-lg-6 product-details pl-md-5 ftco-animate">
+					<h5 style="font-weight: bolder;">
+						<%= product.name %>
+					</h5>
+					<div class="rating d-flex">
+						<p class="text-left mr-4">
+							<a href="#" class="mr-2">4.0</a>
+							<a href="#"><span class="ion-ios-star"></span></a>
+							<a href="#"><span class="ion-ios-star"></span></a>
+							<a href="#"><span class="ion-ios-star"></span></a>
+							<a href="#"><span class="ion-ios-star "></span></a>
+							<a href="#"><span class="ion-ios-star-outline"></span></a>
+						</p>
+						<p class="text-left mr-4">
+							<span style="color: #949494;">35 ratings</span>
+						</p>
+
+					</div>
+					<div class="d-flex ">
+						<s class="text-secondary "><span>₹ <%= product.price %></span></s>
+						<p class="mx-2" style="color: #000; font-size: 16px; font-weight: 600;"><span>₹ <%= product.offer_price %></span></p>
+						<p class="mx-2" style="color: #000; font-size: 16px; font-weight: bold;"><span><%= ((product.price-product.offer_price)/product.price)*100 %>% off</span></p>
+					</div>
+					<p class="badge badge-success"><span>save ₹ <%=
+						product.price-product.offer_price %></span></p>
+					<p style="color: #292929;">
+						<%= product.description %>
+					</p>
+					<p style="color: #949494;font-size: 13px;"><span style="font-weight: bold;">BRAND : </span>
+						<%= product.brand %>
+					</p>
+					<p style="color: #949494; font-size: 13px;"><span style="font-weight: bold;">CATEGORY :</span>
+						<%= product.category.name %>
+					</p>
+					<p style="color: #949494;font-size: 13px;"><span style="font-weight: bold;">SIZE : </span>
+						Free size
+					</p>
+
+					<div class="row mt-4">
+						<!-- <div>
+							<span class="col-md-6" style="color: #292929; font-weight: bold;">Quantity :</span>
+						</div> -->
+
+						<!-- <div class="input-group col-md-6 d-flex mb-3">
+							<span class="input-group-btn mr-2">
+								<button type="button" class="quantity-left-minus btn" data-type="minus" data-field="">
+									<i class="ion-ios-remove"></i>
+								</button>
+							</span>
+
+							<input type="text" id="quantity" name="quantity" class="quantity form-control input-number"
+								value="1" min="1" max="10">
+							<span class="input-group-btn ml-2">
+								<button type="button" class="quantity-right-plus btn" data-type="plus" data-field="">
+									<i class="ion-ios-add"></i>
+								</button>
+							</span>
+
+						</div> -->
+
+						<div class="w-100"></div>
+						<div class="col-md-12">
+							<% if(product.quantity> 0) { %>
+								<p style="color: #375f2a; font-weight: bold;">
+									In stock ,<span>
+										<%= product.quantity %> pieces available
+									</span>
+								</p>
+								<% } else { %>
+									<p style="color: #BA0933; font-weight: bold; ">
+										Currently unavailable.
+									</p>
+									<% } %>
+						</div>
+
+					</div>
+					<p>
+
+						<% if(user) {%>
+
+							<a href="#" class="add-to-cart btn btn-primary py-3 px-5 mr-2" style="font-size: 13px;"
+								data-product-id="<%= product._id %>"><span class="icon-shopping_cart mx-1"></span>Add to
+								Cart</a>
+							<a href="#" class="add-to-wishlist btn btn-black py-3 px-5" style="font-size: 13px;"
+								data-product-id="<%= product._id %>"><span class="icon-heart mx-1"></span>Add to
+								Wishlist</a>
+
+							<% } else{%>
+
+								<a href="/login" class=" btn btn-primary py-3 px-5 mr-2" style="font-size: 13px;"><span
+										class="icon-shopping_cart mx-1 "></span>Add to
+									Cart</a>
+								<a href="/login" class="btn btn-black  py-3 px-5" style="font-size: 13px;"><span
+										class="icon-heart mx-1"></span>Add to
+									Wishlist</a>
+
+								<% }%>
+
+					</p>
+				</div>
+			</div>
+
+			<br><br><br>
+			<div class="row mt-5 d-flex justify-content-center align-items-center ">
+				<div class="col-md-12 nav-link-wrap">
+					<div class="nav nav-pills d-flex text-center" id="v-pills-tab" role="tablist"
+						aria-orientation="vertical">
+
+
+						<a class="nav-link ftco-animate mr-lg-1" id="v-pills-2-tab" data-toggle="pill" href="#v-pills-2"
+							role="tab" aria-controls="v-pills-2" aria-selected="false">Manufacturer</a>
+
+						<a class="nav-link ftco-animate" id="v-pills-3-tab" data-toggle="pill" href="#v-pills-3"
+							role="tab" aria-controls="v-pills-3" aria-selected="false">Reviews</a>
+
+					</div>
+				</div>
+
+				<div class="col-md-12 tab-wrap  ">
+
+					<div class="tab-content bg-light" id="v-pills-tabContent">
+
+						<div class="tab-pane fade" id="v-pills-2" role="tabpanel" aria-labelledby="v-pills-day-2-tab">
+							<div class="p-4">
+								<h3 class="mb-4">Manufactured By Nike</h3>
+								<p>
+									Nike is a leading brand in athletic footwear, known for its innovative technology,
+									performance-driven designs, and iconic styles. With a focus on both sports
+									performance and fashion, Nike offers a wide range of shoes tailored to athletes and
+									lifestyle enthusiasts alike. Collaborations with athletes and designers, along with
+									a commitment to social and environmental responsibility, further enhance Nike's
+									reputation as a global leader in the footwear industry.</p>
+							</div>
+						</div>
+						<div class="tab-pane fade" id="v-pills-3" role="tabpanel" aria-labelledby="v-pills-day-3-tab">
+							<div class="row p-4">
+								<div class="col-md-7">
+									<h3 class="mb-4">23 Reviews</h3>
+									<div class="review">
+										<div class="user-img"
+											style="background-image: url(/assets/images/person_1.jpg)"></div>
+										<div class="desc">
+											<h4>
+												<span class="text-left">Jacob Webb</span>
+												<span class="text-right">14 March 2018</span>
+											</h4>
+											<p class="star">
+												<span>
+													<i class="ion-ios-star"></i>
+													<i class="ion-ios-star"></i>
+													<i class="ion-ios-star"></i>
+													<i class="ion-ios-star"></i>
+													<i class="ion-ios-star-outline"></i>
+												</span>
+												<span class="text-right"><a href="#" class="reply"><i
+															class="icon-reply"></i></a></span>
+											</p>
+											<p>When she reached the first hills of the Italic Mountains, she had a
+												last
+												view back on the skyline of her hometown Bookmarksgrov</p>
+										</div>
+									</div>
+
+
+
+									<div class="review">
+										<div class="user-img"
+											style="background-image: url(/assets/images/person_3.jpg)"></div>
+										<div class="desc">
+											<h4>
+												<span class="text-left">Jacob Webb</span>
+												<span class="text-right">14 March 2018</span>
+											</h4>
+											<p class="star">
+												<span>
+													<i class="ion-ios-star-outline"></i>
+													<i class="ion-ios-star-outline"></i>
+													<i class="ion-ios-star-outline"></i>
+													<i class="ion-ios-star-outline"></i>
+													<i class="ion-ios-star-outline"></i>
+												</span>
+												<span class="text-right"><a href="#" class="reply"><i
+															class="icon-reply"></i></a></span>
+											</p>
+											<p>When she reached the first hills of the Italic Mountains, she had a
+												last
+												view back on the skyline of her hometown Bookmarksgrov</p>
+										</div>
+									</div>
+
+								</div>
+								<div class="col-md-4">
+									<div class="rating-wrap">
+										<h3 class="mb-4">Give a Review</h3>
+										<p class="star">
+											<span>
+												<i class="ion-ios-star-outline"></i>
+												<i class="ion-ios-star-outline"></i>
+												<i class="ion-ios-star-outline"></i>
+												<i class="ion-ios-star-outline"></i>
+												<i class="ion-ios-star-outline"></i>
+												(98%)
+											</span>
+											<span>20 Reviews</span>
+										</p>
+										<p class="star">
+											<span>
+												<i class="ion-ios-star-outline"></i>
+												<i class="ion-ios-star-outline"></i>
+												<i class="ion-ios-star-outline"></i>
+												<i class="ion-ios-star-outline"></i>
+												<i class="ion-ios-star-outline"></i>
+												(85%)
+											</span>
+											<span>10 Reviews</span>
+										</p>
+										<p class="star">
+											<span>
+												<i class="ion-ios-star-outline"></i>
+												<i class="ion-ios-star-outline"></i>
+												<i class="ion-ios-star-outline"></i>
+												<i class="ion-ios-star-outline"></i>
+												<i class="ion-ios-star-outline"></i>
+												(98%)
+											</span>
+											<span>5 Reviews</span>
+										</p>
+										<p class="star">
+											<span>
+												<i class="ion-ios-star-outline"></i>
+												<i class="ion-ios-star-outline"></i>
+												<i class="ion-ios-star-outline"></i>
+												<i class="ion-ios-star-outline"></i>
+												<i class="ion-ios-star-outline"></i>
+												(98%)
+											</span>
+											<span>0 Reviews</span>
+										</p>
+										<p class="star">
+											<span>
+												<i class="ion-ios-star-outline"></i>
+												<i class="ion-ios-star-outline"></i>
+												<i class="ion-ios-star-outline"></i>
+												<i class="ion-ios-star-outline"></i>
+												<i class="ion-ios-star-outline"></i>
+												(98%)
+											</span>
+											<span>0 Reviews</span>
+										</p>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/elevatezoom/3.0.8/jquery.elevatezoom.min.js"></script>
+
+	<script>
+
+		function showOutOfStockAlert() {
+			console.log("out of stock");
+
+			const Toast = Swal.mixin({
+				toast: true,
+				position: "top",
+				showConfirmButton: false,
+				timer: 2000,
+				timerProgressBar: true,
+				didOpen: (toast) => {
+					toast.addEventListener('mouseenter', Swal.stopTimer);
+					toast.addEventListener('mouseleave', Swal.resumeTimer);
+				}
+			});
+
+			Toast.fire({
+				icon: "warning",
+				width: "250",
+				title: 'Out of Stock'
+			});
+		}
+
+		//Add to cart
+		const addToCartButtons = document.querySelectorAll('.add-to-cart');
+		var isOutOfStock = "<%= product.quantity %>" <= 0;
+
+		addToCartButtons.forEach(button => {
+			button.addEventListener('click', async (event) => {
+				event.preventDefault();
+
+				if (isOutOfStock) {
+					showOutOfStockAlert();
+				} else {
+
+					const productId = event.currentTarget.dataset.productId;
+
+					const response = await addToCart(productId);
+
+					if (response.success) {
+
+						console.log('Product added to cart:', response.data);
+
+						const Toast = Swal.mixin({
+							toast: true,
+							position: "top",
+							showConfirmButton: false,
+							timer: 2000,
+							timerProgressBar: true,
+							didOpen: (toast) => {
+								toast.addEventListener('mouseenter', Swal.stopTimer);
+								toast.addEventListener('mouseleave', Swal.resumeTimer);
+							}
+						});
+
+						Toast.fire({
+							icon: "success",
+							width: "450",
+							title: "This product has been added to your cart"
+						}).then(() => {
+							window.location.href = "/cart";
+						});
+
+						if (response.message === 'Product already in cart') {
+
+							const Toast = Swal.mixin({
+								toast: true,
+								position: "top",
+								showConfirmButton: false,
+								timer: 2000,
+								timerProgressBar: true,
+								didOpen: (toast) => {
+									toast.addEventListener('mouseenter', Swal.stopTimer);
+									toast.addEventListener('mouseleave', Swal.resumeTimer);
+								}
+							});
+
+							Toast.fire({
+								icon: "warning",
+								width: "400",
+								title: "This product is already in your cart"
+							});
+
+						} else {
+							console.error('Error adding to cart:', response.error);
+
+						}
+					}
+				}
+			});
+		});
+
+		async function addToCart(productId) {
+			const response = await fetch('/add-to-cart', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({ productId })
+			});
+			return await response.json();
+		}
+
+
+		//Add to wishlist
+		const addToWishlistButtons = document.querySelectorAll('.add-to-wishlist');
+
+		addToWishlistButtons.forEach(button => {
+			button.addEventListener('click', async (event) => {
+				event.preventDefault();
+
+				const productId = event.currentTarget.dataset.productId;
+
+				try {
+					const response = await addToWishlist(productId);
+
+					if (response.success) {
+
+						const Toast = Swal.mixin({
+							toast: true,
+							position: "top",
+							showConfirmButton: false,
+							timer: 2000,
+							timerProgressBar: true,
+							didOpen: (toast) => {
+								toast.addEventListener('mouseenter', Swal.stopTimer);
+								toast.addEventListener('mouseleave', Swal.resumeTimer);
+							}
+						});
+
+						Toast.fire({
+							icon: "success",
+							width: "430",
+							title: 'Product added to Wishlist successfully'
+						});
+
+					} else {
+						if (response.message === 'Product already in wishlist') {
+
+							const Toast = Swal.mixin({
+								toast: true,
+								position: "top",
+								showConfirmButton: false,
+								timer: 2000,
+								timerProgressBar: true,
+								didOpen: (toast) => {
+									toast.addEventListener('mouseenter', Swal.stopTimer);
+									toast.addEventListener('mouseleave', Swal.resumeTimer);
+								}
+							});
+
+							Toast.fire({
+								icon: "warning",
+								width: "430",
+								title: 'This Product is already in your wishlist'
+							});
+
+						} else {
+							console.error('Error adding to wishlist:', response.error);
+						}
+					}
+				} catch (error) {
+					console.error('Error adding to wishlist:', error);
+				}
+			});
+		});
+
+		async function addToWishlist(productId) {
+			console.log("hello");
+			const response = await fetch('/add-to-wishlist', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({ productId })
+			});
+			console.log(productId);
+			return await response.json();
+		}
+
+
+		//change main-img
+		function changeMainImage(imageUrl) {
+			console.log('Changing main image to:', imageUrl);
+			document.getElementById('mainImage').src = imageUrl;
+		}
+
+		var subImages = document.querySelectorAll('.sub-images img');
+		subImages.forEach(function (subImage) {
+			subImage.addEventListener('click', function () {
+				var imageUrl = subImage.getAttribute('src');
+				changeMainImage(imageUrl);
+			});
+		});
+
+
+		//image-zoom
+		document.addEventListener('DOMContentLoaded', function () {
+
+			function zoomIn(event, zoomFactor) {
+				const image = event.target;
+				image.style.transform = `scale(${zoomFactor})`;
+			}
+
+			function resetZoom(event) {
+				const image = event.target;
+				image.style.transform = 'scale(1)';
+			}
+
+			const productImages = document.querySelectorAll('.imageZoom img');
+
+			productImages.forEach(img => {
+				img.addEventListener('mouseover', function () {
+					img.style.transform = 'scale(5.0)';
+					img.style.transition = 'transform 0.3s ease';
+				});
+
+				img.addEventListener('mousemove', function (e) {
+					const boundingBox = img.getBoundingClientRect();
+					const offsetX = (e.clientX - boundingBox.left) / boundingBox.width;
+					const offsetY = (e.clientY - boundingBox.top) / boundingBox.height;
+
+					img.style.transformOrigin = `${offsetX * 70}% ${offsetY * 70}%`;
+				});
+
+				img.addEventListener('mouseleave', function () {
+					img.style.transform = 'scale(1)';
+				});
+
+				img.addEventListener('mousemove', function (e) {
+					zoomIn(e, 1.4);
+				});
+
+				img.addEventListener('mouseout', resetZoom);
+			});
+		});
+
+	</script>
+
+	<%- include("../layouts/footer.ejs") %>

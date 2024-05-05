@@ -1,0 +1,124 @@
+<%- include('../admin_layouts/header.ejs') %>
+
+  <div class="container-scroller">
+
+    <%-include('navbar.ejs')%>
+
+      <div class="container-fluid page-body-wrapper">
+
+        <%-include('sidebar.ejs')%>
+
+          <div class="main-panel">
+            <div class="content-wrapper">
+              <div class="col-lg-12 grid-margin stretch-card">
+                <div class="card">
+                  <div class="card-body">
+
+                    <div class="d-flex justify-content-between ">
+                      <h4>COUPONS</h4>
+                      <a href="/admin/coupons/add-coupon">
+                        <button type="button" class="btn btn-success btn-fw mx-2 px-3 py-2 "> Add Coupon </button></a>
+                    </div>
+                    <br>
+                    <hr>
+                    <table class="table table-striped mt-5">
+                      <thead class="text-center bg-secondary">
+                        <tr >
+                          <th class="font-weight-bold"> No. </th>
+                          <th class="font-weight-bold"> Coupon code </th>
+                          <th class="font-weight-bold"> Min price </th>
+                          <th class="font-weight-bold"> Discount (%)</th>
+                          <th class="font-weight-bold"> Expiry date </th>
+                          <th class="font-weight-bold"> Status </th>
+                          <th class="font-weight-bold"> Action </th>
+
+                        </tr>
+                      </thead>
+                      <% if (coupons.length> 0) { %>
+                        <% coupons.forEach((coupon,index)=>{%>
+                          <tbody class="text-center">
+                            <tr class="<%=(index+1) %2==0? 'bg-light' :'' %> ">
+                              <td>
+                                <%= index+1 %>.
+                              </td>
+                              <td>
+                                <%= coupon.coupon_code %>
+                              </td>
+                              <td>
+                                <%= coupon.min_price %>
+                              </td>
+                              <td>
+                                <%= coupon.discount %>
+                              </td>
+                              <td>
+                                <%= coupon.validity.toLocaleDateString() %>
+                              </td>
+                              <% if(coupon.is_active){%>
+                                <td class="badge badge-success p-0 mt-4"> Active </td>
+                                <%}else{%>
+                                  <td class="badge badge-danger p-0 mt-4"> Deactive </td>
+                                  <%} %>
+                                    <td>
+                                      <a href="/admin/coupons/edit-coupon?id=<%= coupon._id %>"
+                                        class="btn btn-info px-3 py-2"><span>Edit</span></a>
+                                      <button class="btn btn-danger px-3 py-2 " onclick="deleteCoupon('<%= coupon._id %>')">Delete</button>
+
+                                    </td>
+                            </tr>
+                            <%}) %>
+                          </tbody>
+
+
+                          <% } else { %>
+                            <tbody class="text-center">
+                              <tr>
+                                <td>No coupons found!</td>
+                              </tr>
+                            </tbody>
+                            <% } %>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+      </div>
+  </div>
+
+  </html>
+
+  <script>
+
+    function deleteCoupon(couponId) {
+      console.log(couponId)
+      Swal.fire({
+        title: 'Are you sure?',
+        width: "450",
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, remove!',
+        reverseButtons: true,
+      }).then((confirmation) => {
+        if (confirmation.isConfirmed) {
+          fetch(`/admin/coupons/delete-coupon?id=${couponId}`, {
+            method: 'DELETE',
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          }).then(response => {
+            if (response.ok) {
+              window.location.reload();
+            } else {
+              console.error('Failed to delete offer');
+            }
+          }).catch(error => {
+            console.error(error.message);
+          });
+        }
+      });
+    }
+
+  </script>
+
+  <%- include('../admin_layouts/footer.ejs') %>

@@ -1,0 +1,351 @@
+<%- include('../admin_layouts/header.ejs') %>
+
+    <div class="container-scroller">
+
+        <%-include('navbar.ejs')%>
+
+            <div class="container-fluid page-body-wrapper">
+
+                <%-include('sidebar.ejs')%>
+
+                    <div class="main-panel">
+                        <div class="content-wrapper">
+                            <div class="col-12">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h4 class="card-title">ADD NEW PRODUCT</h4>
+                                        <hr><br>
+                                        <form class="form-sample" enctype="multipart/form-data"
+                                            action="/admin/products/add-product" method="POST"
+                                            onsubmit="return validateForm()">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="form-group row">
+                                                        <label class="col-sm-3 col-form-label">Name</label>
+                                                        <div class="col-sm-9">
+                                                            <input type="text" id="name" name="name"
+                                                                class="form-control" />
+                                                            <span id="name-error"
+                                                                style="color: red; font-size: 14px;"></span>
+
+                                                            <% if(typeof message!=="undefined" ){ %>
+                                                                <p style="color: rgb(255, 0, 0); font-size: 13px;">
+                                                                    <%= message %>
+                                                                </p>
+                                                                <% } %>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group row">
+                                                        <label class="col-sm-3 col-form-label">Price</label>
+                                                        <div class="col-sm-9">
+                                                            <input type="text" id="price" name="price"
+                                                                class="form-control" />
+                                                            <span id="price-error"
+                                                                style="color: red; font-size: 14px;"></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="form-group row">
+                                                        <label class="col-sm-3 col-form-label">Category</label>
+                                                        <div class="col-sm-9">
+
+                                                            <select class="form-control" name="category">
+                                                                <option value="" disabled selected>Select a category
+                                                                </option>
+                                                                <% categories.forEach((category)=> { %>
+
+                                                                    <option>
+                                                                        <%= category.name %>
+                                                                    </option>
+                                                                    <% }) %>
+                                                            </select>
+                                                            <span id="category-error"
+                                                                style="color: red; font-size: 14px;"></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group row">
+                                                        <label class="col-sm-3 col-form-label">Gender</label>
+                                                        <div class="col-sm-9">
+                                                            <select class="form-control" name="gender">
+                                                                <option value="" disabled selected>Select a gender
+                                                                </option>
+                                                                <% genders.forEach((gender)=> { %>
+
+                                                                    <option>
+                                                                        <%= gender %>
+                                                                    </option>
+                                                                    <% }) %>
+                                                            </select>
+                                                            <span id="gender-error"
+                                                                style="color: red; font-size: 14px;"></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="form-group row">
+                                                        <label class="col-sm-3 col-form-label">Brand</label>
+                                                        <div class="col-sm-9">
+                                                            <input type="text" id="brand" name="brand"
+                                                                class="form-control" />
+                                                            <span id="brand-error"
+                                                                style="color: red; font-size: 14px;"></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group row">
+                                                        <label class="col-sm-3 col-form-label">Quantity</label>
+                                                        <div class="col-sm-9">
+                                                            <input type="number" min="0" max="100" id="quantity"
+                                                                name="quantity" class="form-control" />
+                                                            <span id="quantity-error"
+                                                                style="color: red; font-size: 14px;"></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>File upload</label>
+                                                <input type="file" id="image" name="images" class="file-upload-default"
+                                                    accept="image/*" multiple>
+
+                                                <div class="input-group col-xs-9">
+                                                    <input type="text" class="form-control file-upload-info" disabled
+                                                        placeholder="Upload Image">
+                                                    <span class="input-group-append">
+                                                        <button id="upload-button"
+                                                            class="file-upload-browse btn btn-gradient-primary"
+                                                            type="button">Upload</button>
+                                                    </span>
+                                                </div>
+                                                <span id="image-error" style="color: red; font-size: 14px;"></span>
+                                            </div>
+                                            <br>
+                                            <div id="preview-container"></div>
+                                            <div class="form-group">
+                                                <label for="description">Description</label>
+                                                <textarea class="form-control" id="description" name="description"
+                                                    rows="4"></textarea>
+                                                <span id="description-error"
+                                                    style="color: red; font-size: 14px;"></span>
+                                            </div>
+                                            <button id="submit-button" type="submit"
+                                                class="btn btn-gradient-primary mr-2">Add</button>
+                                            <a href="/admin/products"><button type="button"
+                                                    class="btn btn-secondary ">Cancel</button></a>
+                                        </form>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert@2.1.2/dist/sweetalert.min.js"></script>
+
+    <script>
+        document.getElementById('upload-button').addEventListener('click', function () {
+            document.getElementById('image').click();
+        });
+
+        document.getElementById('image').addEventListener('change', function (event) {
+            const previewContainer = document.getElementById('preview-container');
+            previewContainer.innerHTML = ''; // Clear previous previews
+
+            const files = event.target.files;
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                const reader = new FileReader();
+
+                reader.onload = function (e) {
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.style.width = '150px';
+                    img.style.height = '192px';
+                    img.style.marginRight = '10px'; // Add margin for spacing between images
+                    previewContainer.appendChild(img);
+                };
+
+                reader.readAsDataURL(file);
+            }
+        });
+    </script>
+
+
+    <script>
+
+        function handleResponse(response) {
+            if (response.success) {
+                console.log("no problem");
+
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: "top",
+                    showConfirmButton: false,
+                    timer: 2000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer);
+                        toast.addEventListener('mouseleave', Swal.resumeTimer);
+                    }
+                });
+
+                Toast.fire({
+                    icon: "success",
+                    title: "Product added successfully!",
+                })
+
+                    .then(() => {
+                        window.location.href = "/admin/products";
+                    });
+            } else {
+                console.log("same name");
+                swal("Error!", "Failed to add product. Please try again later.", "error");
+            }
+        }
+
+        document.getElementById("submit-button").addEventListener("click", async function (event) {
+            event.preventDefault();
+
+            if (validateForm()) {
+
+                const formData = new FormData(document.querySelector("form"));
+                const nameInput = formData.get('name');
+                if (nameInput) {
+                    formData.set('name', nameInput.trim());
+                }
+                const response = await fetch("/admin/products/add-product", {
+                    method: "POST",
+                    body: formData
+                });
+
+                const responseData = await response.json();
+
+                if (responseData.success) {
+                    handleResponse(responseData);
+                } else {
+                    console.log("same name")
+
+                    swal("Error!", responseData.message, "error");
+                }
+            }
+        });
+
+
+
+        function validateForm() {
+            var name = document.getElementById("name").value.trim();
+            var price = document.getElementById("price").value.trim();
+            var category = document.querySelector("select[name='category']").value.trim();
+            var gender = document.querySelector("select[name='gender']").value.trim();
+            var brand = document.getElementById("brand").value.trim();
+            var quantity = document.getElementById("quantity").value.trim();
+            var description = document.getElementById("description").value.trim();
+            var image = document.getElementById("image");
+            var alphanumericRegex = /^[a-zA-Z0-9\s]+$/;
+            var numericRegex = /^\d+$/;
+
+            var isValid = true;
+
+
+            if (name === "") {
+                document.getElementById("name-error").textContent = "Name is required.";
+                isValid = false;
+            } else if (!alphanumericRegex.test(name)) {
+                document.getElementById("name-error").textContent = "Name should not contain any special characters.";
+                isValid = false;
+            } else {
+                document.getElementById("name-error").textContent = "";
+            }
+
+
+            if (price === "") {
+                document.getElementById("price-error").textContent = "Price is required.";
+                isValid = false;
+            } else if (isNaN(parseFloat(price))) {
+                document.getElementById("price-error").textContent = "Price must be a valid number.";
+                isValid = false;
+            } else if (parseFloat(price) <= 0) {
+                document.getElementById("price-error").textContent = "Price must be greater than 0.";
+                isValid = false;
+            } else {
+                document.getElementById("price-error").textContent = "";
+            }
+
+
+            if (category === "") {
+                document.getElementById("category-error").textContent = "Category is required.";
+                isValid = false;
+            } else {
+                document.getElementById("category-error").textContent = "";
+            }
+
+
+            if (gender === "") {
+                document.getElementById("gender-error").textContent = "Gender is required.";
+                isValid = false;
+            } else {
+                document.getElementById("gender-error").textContent = "";
+            }
+
+
+            if (brand === "") {
+                document.getElementById("brand-error").textContent = "Brand is required.";
+                isValid = false;
+            } else {
+                document.getElementById("brand-error").textContent = "";
+            }
+
+
+            if (quantity === "") {
+                document.getElementById("quantity-error").textContent = "Quantity is required.";
+                isValid = false;
+            } else if (!numericRegex.test(quantity)) {
+                document.getElementById("quantity-error").textContent = "Quantity must be a positive number.";
+                isValid = false;
+            } else if (parseInt(quantity) < 0 || parseInt(quantity) > 100) {
+                document.getElementById("quantity-error").textContent = "Quantity must be between 0 and 100.";
+                isValid = false;
+            } else {
+                document.getElementById("quantity-error").textContent = "";
+            }
+
+
+            if (description === "") {
+                document.getElementById("description-error").textContent = "Description is required.";
+                isValid = false;
+            } else {
+                document.getElementById("description-error").textContent = "";
+            }
+
+
+            if (image.files.length === 0) {
+                document.getElementById("image-error").textContent = "Image is required.";
+                isValid = false;
+            } else if (image.files.length > 5) {
+                document.getElementById("image-error").textContent = "Maximum 5 images allowed.";
+                isValid = false;
+            } else {
+                document.getElementById("image-error").textContent = "";
+            }
+
+            return isValid;
+        }
+        
+    </script>
+
+
+    <%- include('../admin_layouts/footer.ejs') %>

@@ -1,0 +1,337 @@
+<%- include("../layouts/header.ejs") %>
+
+
+    <style>
+        .hero-wrap {
+            margin-top: 110px;
+            display: flex;
+            align-items: center;
+
+        }
+
+        .shop-heading {
+            text-align: left;
+        }
+
+        .breadcrumbs {
+            text-align: right;
+        }
+
+        .card {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+            word-wrap: break-word;
+            background-color: #ffffff;
+            /* background-color: #f8f9fa; */
+            background-clip: border-box;
+            border: 1 solid;
+            border-radius: .25rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 6px 0 rgb(218 218 253 / 50%), 0 2px 6px 0 rgb(206 206 238 / 50%);
+        }
+
+        .me-2 {
+            margin-right: .5rem !important;
+        }
+
+        /* Hide number input spinners */
+        .no-spinners::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+    </style>
+
+    <!---- breadcrumbs---->
+    <div style="background-color: #f0f0f0; height: 60px;" class="hero-wrap">
+        <div class="container">
+            <div class="row no-gutters slider-text align-items-start">
+
+                <div class="col-md-6 ftco-animate shop-heading">
+                    <h6 style=" color: #000;">ADD MONEY</h6>
+                </div>
+
+                <div class="col-md-6 ftco-animate breadcrumbs">
+                    <div class="breadcrumbs">
+                        <span class="mr-2">
+                            <a href="/"><span class="icon-home2"></span>Home ></a>
+                            <a href="/wallet">Wallet ></a>
+                            <span style="color: #979797;">Add money</span></span>
+
+                        </span>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!---- profile sidebar---->
+    <section class="ftco-section ">
+        <div class="container d-grid justify-content-between " style="margin-top:-50px;">
+            <div class="row">
+                <div class="container">
+                    <div class="main-body">
+                        <div class="row">
+
+                            <div class="col-lg-4 ftco-animate">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="d-flex flex-column align-items-center text-center">
+                                            <img src="https://bootdey.com/img/Content/avatar/avatar6.png" alt="Admin"
+                                                class="rounded-circle p-1 bg-secondary " width="50">
+                                            <div class="mt-3">
+                                                <h6>
+
+                                                </h6>
+                                            </div>
+                                        </div>
+
+                                        <ul class="list-group list-group-flush ">
+                                            <li
+                                                class="list-group-item  d-flex justify-content-between align-items-center flex-wrap border-0 ">
+                                                <a href="/profile" class=" btn btn-primary py-2 px-4 w-100 "
+                                                    style="font-size: 14px; font-weight: bold; "><span
+                                                        class="icon-person"></span>Account deatails</a>
+                                            </li>
+                                            <li
+                                                class="list-group-item d-flex justify-content-between align-items-center flex-wrap border-0">
+                                                <a href="/orders" class=" btn btn-primary py-2 px-4 mr-2 w-100 "
+                                                    style="font-size: 14px; font-weight: bold;"><span
+                                                        class="icon-shopping_cart mx-1"></span><span>Orders</span></a>
+                                            </li>
+                                            <li
+                                                class="list-group-item d-flex justify-content-between align-items-center flex-wrap  border-0">
+                                                <a href="/address" class=" btn btn-primary   py-2 px-4 mr-2  w-100 "
+                                                    style="font-size: 14px; font-weight: bold;"><span
+                                                        class="icon-home mx-1"></span><span>Addresses</span> </a>
+                                            </li>
+                                            <li
+                                                class="list-group-item d-flex justify-content-between align-items-center flex-wrap  border-0">
+                                                <a href="/wallet" class=" btn btn-primary py-2 px-4 mr-2 w-100 active"
+                                                    style="font-size: 14px; font-weight: bold;"><span
+                                                        class="icon-account_balance_wallet mx-1"></span>Wallet</a>
+                                            </li>
+                                            <li
+                                                class="list-group-item d-flex justify-content-between align-items-center flex-wrap  border-0">
+                                                <a href="/coupons" class=" btn btn-primary py-2 px-4 mr-2 w-100"
+                                                    style="font-size: 14px; font-weight: bold;"><span
+                                                        class="icon-tags mx-1"></span>Coupons</a>
+                                            </li>
+                                            <li
+                                                class="list-group-item d-flex justify-content-between align-items-center flex-wrap  border-0">
+                                                <a href="/logout" class=" btn btn-primary py-2 px-4 mr-2 w-100"
+                                                    style="font-size: 14px; font-weight: bold;"><span
+                                                        class="icon-exit_to_app mx-1"></span>Logout</a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-8 ftco-animate">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between mb-0 ">
+                                            <div>
+                                                <h6 style="font-weight: bold; color: #000;">Add Money</h6>
+
+                                            </div>
+                                            <div class="d-flex">
+                                                <p style="font-weight: bold; color: #000;">
+                                                    <span class="icon-account_balance_wallet mx-1">Wallet
+                                                        Balance:</span>
+                                                </p>
+                                                <% if(wallet){%>
+                                                <p style="color: #000; font-weight: 600;">₹<%=wallet.balance%>
+                                                </p>
+                                                <%}%>
+                                            </div>
+                                        </div>
+                                        <hr>
+
+
+                                        <div class="col-8">
+                                            <div class="row">
+                                                <div class="col-lg-12 d-flex ">
+                                                    <input id="amount" type="number"
+                                                        class="form-control w-50 rounded no-spinners"
+                                                        placeholder="Enter amount" style=" height:40px !important;">
+
+                                                    <div class="mx-2 ">
+                                                        <span class="add-money-btn btn btn-success font-weight-bold "
+                                                            style="height:40px; line-height: 25px;"
+                                                            onclick="addMoney()">Add Money</span>
+                                                    </div>
+
+                                                </div>
+                                                <span id="amount-error" style="color:  #BA0933; font-size: 13px;"
+                                                    class="mx-3 mt-1"></span>
+                                            </div>
+
+                                            <div class="d-flex mt-4">
+                                                <div>
+                                                    <button class="btn btn-outline-dark me-2" onclick="setAmount(100)">+
+                                                        ₹100</button>
+                                                </div>
+                                                <div>
+                                                    <button class="btn btn-outline-dark me-2" onclick="setAmount(500)">+
+                                                        ₹500</button>
+                                                </div>
+                                                <div>
+                                                    <button class="btn btn-outline-dark me-2"
+                                                        onclick="setAmount(1000)">+ ₹1000</button>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <a href="/wallet" class="btn btn-black">Back to Wallet</a>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+        </div>
+        </div>
+
+    </section>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+    <script>
+
+        function addMoney() {
+
+            // Get the value of the input field
+            let amount = parseFloat(document.getElementById("amount").value);
+            console.log(amount);
+            document.getElementById("amount-error").innerText = "";
+
+            if (!amount) {
+                document.getElementById("amount-error").innerText = "Please enter an amount between ₹1 and ₹10000";
+                return;
+            }
+
+            if (isNaN(amount) || amount < 0) {
+                document.getElementById("amount").value = 0;
+                document.getElementById("amount-error").innerText = "Please enter an amount between ₹1 and ₹10000";
+            }
+
+            if (amount < 1 || amount > 10000) {
+                document.getElementById("amount-error").innerText = "Please enter an amount between ₹1 and ₹10000";
+                return;
+            }
+
+
+            fetch('/wallet/add-money-razorpay', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ amount: amount })
+            })
+                .then(response => {
+
+                    if (response.ok) {
+                        return response.json();
+                    } else {
+                        throw new Error('Failed to initiate payment1');
+                    }
+                })
+                .then(data => {
+
+                    var options = {
+                        key: '<%=razorpaykey%>',
+                        amount: data.order.amount,
+                        currency: data.order.currency,
+                        name: 'StepEx',
+                        description: 'Payment for Your Order',
+                        image: '/logo/stepexlogo.png',
+                        handler: function (response) {
+
+                            console.log('Payment successful! Payment ID:', response);
+
+                            fetch('/wallet/add-money', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({ amount: amount })
+                            })
+                                .then(response => response.json())
+                                .then(data => {
+                                    if (data.success) {
+
+                                        const Toast = Swal.mixin({
+                                            toast: true,
+                                            position: "top",
+                                            showConfirmButton: false,
+                                            timer: 1500,
+                                            timerProgressBar: true,
+                                            didOpen: (toast) => {
+                                                toast.addEventListener('mouseenter', Swal.stopTimer);
+                                                toast.addEventListener('mouseleave', Swal.resumeTimer);
+                                            }
+                                        });
+
+                                        Toast.fire({
+                                            icon: "success",
+                                            title: "Money added successfully."
+                                        }).then(() => {
+                                            window.location.href = "/wallet";
+                                        });
+
+                                    } else {
+                                        Swal.fire({
+                                            icon: 'warning',
+                                            text: "Failed to add money"
+
+                                        });
+                                    }
+                                })
+                                .catch(error => {
+                                    console.error('Error:', error);
+                                    alert('Failed to confirm payment');
+                                });
+                        },
+                        prefill: {
+                            name: 'John Doe', // Pre-fill customer's name
+                            email: 'john@example.com', // Pre-fill customer's email
+                            contact: '9876543210' // Pre-fill customer's phone number
+                        },
+                        notes: {
+                            // Add any additional notes or metadata
+                            'order_id': 'ORDERID12345'
+                        },
+                        theme: {
+                            color: '#F37254' // Customize the color theme
+                        }
+                    };
+                    var rzp = new Razorpay(options);
+                    rzp.open();
+                })
+                .catch(error => {
+                    console.error('Error:hello', error);
+                    alert(error.message, "hello");
+                });
+        }
+
+
+        function setAmount(amount) {
+            console.log("hello");
+            document.getElementById("amount").value = amount;
+        }
+
+    </script>
+
+
+    <%- include("../layouts/footer.ejs") %>

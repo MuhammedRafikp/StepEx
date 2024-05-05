@@ -1,0 +1,156 @@
+<%- include("../form_layouts/header.ejs") %>
+
+    <section class="ftco-section">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-12 col-lg-10">
+                    <div class="wrap d-md-flex">
+                        <div class="img"
+                            style="background-image: url(assets/images/air-jordan-1-low-se-shoes-ZbxSRp.jpeg);">
+                        </div>
+                        <div class="login-wrap p-3 p-md-5">
+                            <div class="d-flex">
+                                <div class="w-100">
+                                    <h3 class="mb-4 text-center font-weight-bold">Register</h3>
+                                </div>
+                            </div>
+
+                            <form action="\register" method="post" class="signin-form" onsubmit="return validateForm()">
+                                <div class="form-group mb-3">
+                                    <label class="label m-0 " for="name">Username</label>
+                                    <input type="text" id="name" name="name" class="form-control" placeholder="Username"
+                                        value="<%= typeof name !== 'undefined' ? name : '' %>">
+                                    <span id="name-error" style="color: red; font-size: 14px;"></span>
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label class="label m-0 " for="name">Email</label>
+                                    <input type="text" id="email" name="email" class="form-control" placeholder="Email"
+                                        value="<%= typeof email !== 'undefined' ? email : '' %>">
+                                    <span id="email-error" style="color: red; font-size: 14px;"></span>
+
+                                    <% if(typeof message!=="undefined" ){ %>
+                                        <p style="color: rgb(255, 0, 0); font-size: 13px;">
+                                            <%= message %>
+                                        </p>
+                                        <% } %>
+
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label class="label m-0 " for="password">Password</label>
+                                    <input type="password" id="password" name="password" class="form-control"
+                                        placeholder="Password">
+                                    <span id="password-error" style="color: red; font-size: 14px;"></span>
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label class="label m-0 " for="password">Confirm Password</label>
+                                    <input type="password" id="confirmPassword" name="confirmPassword"
+                                        class="form-control" placeholder="Password">
+                                    <span id="confirmPassword-error" style="color: red; font-size: 14px;"></span>
+                                </div>
+
+                                <div class="form-group mb-3">
+                                    <label class="label m-0 " for="password">Mobile</label>
+                                    <input type="text" id="mobile" name="mno" class="form-control" placeholder="Mobile"
+                                        value="<%= typeof mobile !== 'undefined' ? mobile : '' %>">
+                                    <span id="mobile-error" style="color: red; font-size: 14px;"></span>
+                                </div>
+                                <div class="form-group">
+                                    <button type="submit"
+                                        class="form-control btn btn-primary rounded submit px-3">Register</button>
+                                </div>
+                            </form>
+
+                            <p class="text-center">Already have an account ?<a href="/login"> Sign
+                                    In</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <script>
+        function validateForm() {
+            var name = document.getElementById("name").value.trim();
+            var email = document.getElementById("email").value.trim();
+            var password = document.getElementById("password").value.trim();
+            var confirmPassword = document.getElementById("confirmPassword").value.trim();
+            var mobile = document.getElementById("mobile").value.trim();
+
+            var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            var passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+
+            var isValid = true;
+
+            if (name === "") {
+                document.getElementById("name-error").textContent = "Name is required.";
+                isValid = false;
+            } else if (!/^[A-Za-z]+$/.test(name)) {
+                document.getElementById("name-error").textContent = "Name should contain only alphabets.";
+                isValid = false;
+            } else {
+                document.getElementById("name-error").textContent = "";
+            }
+
+            if (email === "") {
+                document.getElementById("email-error").textContent = "Email is required.";
+                isValid = false;
+            } else if (!emailRegex.test(email)) {
+                document.getElementById("email-error").textContent = "Invalid email address.";
+                isValid = false;
+            } else if (!email.endsWith(".com")) {
+                document.getElementById("email-error").textContent = "Invalid email address.";
+                isValid = false;
+            } else {
+                document.getElementById("email-error").textContent = "";
+            }
+
+            if (password === "") {
+                document.getElementById("password-error").textContent = "Password is required.";
+                isValid = false;
+            } else if (!passwordRegex.test(password)) {
+                document.getElementById("password-error").textContent = "Password must be at least 8 characters and contain at least one uppercase letter, one lowercase letter, one number, and one special character.";
+                isValid = false;
+            } else {
+                document.getElementById("password-error").textContent = "";
+            }
+
+            if (confirmPassword === "") {
+                document.getElementById("confirmPassword-error").textContent = "Confirm password is required.";
+                isValid = false;
+            } else if (confirmPassword !== password) {
+                document.getElementById("confirmPassword-error").textContent = "Passwords do not match.";
+                isValid = false;
+            } else {
+                document.getElementById("confirmPassword-error").textContent = "";
+            }
+
+            if (mobile === "") {
+                document.getElementById("mobile-error").textContent = "Mobile number is required.";
+                isValid = false;
+            } else if (mobile.charAt(0) <= '5') {
+                document.getElementById("mobile-error").textContent = "Mobile number should start with a number greater than 5.";
+                isValid = false;
+
+            } else if (/^(\d)\1+$/.test(mobile)) {
+                document.getElementById("mobile-error").textContent = "Mobile number should not contain all same digits.";
+                isValid = false;
+            } else if (mobile.match(/0/g).length > 5) {
+                document.getElementById("mobile-error").textContent = "Mobile number should not contain more than 5 zeros.";
+                isValid = false;
+            } else if (!/^\d{10}$/.test(mobile)) {
+                document.getElementById("mobile-error").textContent = "Mobile number should contain exactly 10 digits.";
+                isValid = false;
+
+            } else {
+                document.getElementById("mobile-error").textContent = "";
+            }
+
+            return isValid;
+        }
+    </script>
+
+
+    <%- include("../form_layouts/footer.ejs") %>

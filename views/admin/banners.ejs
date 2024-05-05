@@ -1,0 +1,59 @@
+<%- include('../admin_layouts/header.ejs') %>
+
+    <div class="container-scroller">
+
+        <%-include('navbar.ejs')%>
+
+        <div class="container-fluid page-body-wrapper">
+            
+            <%-include('sidebar.ejs')%>
+
+      <div class="main-panel">
+        <div class="content-wrapper">
+          <div class="col-lg-12 grid-margin stretch-card">
+            <div class="card">
+              <div class="card-body">
+
+                <div class="d-flex justify-content-end  ">
+                  <a href="/admin/add-coupon">
+                    <button type="button" class="btn btn-success btn-fw mx-2 px-3 py-2 "> Add Coupon </button></a>
+                </div>
+                <br>
+                <hr>
+                <table class="table table-striped mt-5">
+                  <thead class="text-center bg-secondary">
+                    <tr>
+                      <th class="font-weight-bold"> No. </th>
+                      <th class="font-weight-bold"> Coupon code </th>
+                      <th class="font-weight-bold"> Min price </th>
+                      <th class="font-weight-bold"> Start date </th>
+                      <th class="font-weight-bold"> Expiry date </th>
+                      <th class="font-weight-bold"> Action </th>
+
+                    </tr>
+                  </thead>
+                  <tbody class="text-center">
+                    <tr>
+                      <td> Herman Beck </td>
+                      <td> Herman Beck </td>
+                      <td> Herman Beck </td>
+                      <td> Herman Beck </td>
+                      <td> Herman Beck </td>
+                      <td>
+                        <a href="" class="btn btn-success px-3 py-2"><span>Edit</span></a>
+                        <button class="btn btn-danger px-3 py-2 ">Delete</button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  </html>
+
+  <%- include('../admin_layouts/footer.ejs') %>
