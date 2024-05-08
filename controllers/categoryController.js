@@ -48,10 +48,10 @@ const addCategory = async (req, res) => {
 }
 
 
-const loadUnlistedCategory = async (req, res) => {
+const loadUnlistedCategories = async (req, res) => {
     try {
         const categoryData = await Category.find({ is_delete: 1 });
-        res.render("unlisted-category", { categories: categoryData });
+        res.render("unlisted-categories", { categories: categoryData });
     } catch (error) {
         console.log(error.message);
     }
@@ -133,7 +133,7 @@ export {
     loadCategory,
     loadAddCategory,
     addCategory,
-    loadUnlistedCategory,
+    loadUnlistedCategories,
     unlistCategory,
     retrieveCategory,
     loadEditCategory,

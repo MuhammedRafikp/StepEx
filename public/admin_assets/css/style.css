@@ -3234,7 +3234,7 @@ pre {
   color: #212529; }
   .table th,
   .table td {
-    padding:  0.9rem ;
+    padding:  0.75rem ;
     vertical-align: top;
     border-top: 1px solid #ebedf2; }
   .table thead th {

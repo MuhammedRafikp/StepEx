@@ -10,20 +10,20 @@
 
                     <div class="main-panel">
                         <div class="content-wrapper">
-
+                            <h3 class="page-title col-12 mb-4">
+                                <span class="page-title-icon bg-gradient-primary text-white mr-2">
+                                  <i class="mdi mdi-cube-outline menu-icon"></i>
+                                </span> ORDERS
+                              </h3>
                             <div class="col-lg-12 grid-margin stretch-card ">
                                 <div class="card">
                                     <div class="card-body">
 
-                                        <div class="d-flex justify-content-between ">
-                                                <h4 class="text-start ">ORDERS</h4>
-                                             
+                                        <div class="d-flex justify-content-end "> 
                                             <a href="#"><button type="button" class="btn btn-danger btn-fw p-2 ">Return
                                                     requests</button></a>
-
                                         </div>
-                                        <br>
-                                        <hr>
+          
                                         <table class="table table-striped mt-5  ">
                                             <thead class="text-center bg-secondary ">
                                                 <tr>
@@ -32,7 +32,7 @@
                                                     <th class="font-weight-bold"> Name</th>
                                                     <th class="font-weight-bold"> Email<br></th>
                                                     <th class="font-weight-bold"> Total</th>
-                                                    <th class="font-weight-bold">Payment status</th>
+                                                    <!-- <th class="font-weight-bold">Payment status</th> -->
                                                     <th class="font-weight-bold"> Date </th>
                                                     <th class="font-weight-bold"> </th>
                                                 </tr>
@@ -62,21 +62,21 @@
                                                             <td>₹<%=order.totalAmount%>
                                                             </td>
 
-                                                            <td>
+                                                            <!-- <td>
                                                                 <span
                                                                     class="badge <%= order.payment_status === 'Pending' ? 'badge-warning' : 
                                                                                  order.payment_status === 'Success' ? 'badge-success' : 
                                                                                  order.payment_status === 'Failed' ? 'badge-danger' : '' %> p-0">
                                                                     <%= order.payment_status %>
                                                                 </span>
-                                                            </td>
+                                                            </td> -->
 
                                                             <td>
                                                                 <%=order.date.toLocaleDateString()%>
                                                             </td>
                                                             <td>
                                                                 <a href="/admin/orders/order-details?id=<%=order.orderId%>"
-                                                                    class="btn btn-success px-3 py-2 "><span>Details</span></a>
+                                                                    class="btn btn-success py-1 px-2"><span>Details</span></a>
                                                             </td>
                                                         </tr>
                                                     </tbody>

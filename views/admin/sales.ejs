@@ -1,28 +1,45 @@
 <%- include('../admin_layouts/header.ejs') %>
 
+    <style>
+        .total-row {
+            height: 60px;
+            /* Adjust the height as needed */
+        }
+    </style>
+
     <div class="container-scroller">
         <%- include('navbar.ejs') %>
             <div class="container-fluid page-body-wrapper">
                 <%- include('sidebar.ejs') %>
                     <div class="main-panel">
+
                         <div class="content-wrapper">
+
+                            <h3 class="page-title col-12 mb-4">
+                                <span class="page-title-icon bg-gradient-primary text-white mr-2">
+                                    <i class="mdi mdi mdi-table menu-icon"></i>
+                                </span> Sales Report
+                            </h3>
                             <div class="col-lg-12 grid-margin stretch-card">
                                 <div class="card">
                                     <div class="card-body">
 
-                                        <h4>SALES REPORT</h4>
-                                        <hr>
-                                        <br>
+
                                         <div class="d-flex justify-content-end ">
                                             <p> Report type :</p>
                                             <select name="reportType" id="reportType"
                                                 class="form-control w-auto h-75 mx-2">
-                                                <option>All</option>
-                                                <option>Today</option>
-                                                <option>Weekly</option>
-                                                <option>Monthly</option>
-                                                <option>Yearly</option>
-                                                <option>Custom</option>
+                                                <option>
+                                                    <%= currentType %>
+                                                </option>
+                                                <% reportTypes.forEach((reportType)=> { %>
+                                                    <% if (reportType !==currentType) { %>
+                                                        <option>
+                                                            <%= reportType %>
+                                                        </option>
+                                                        <% } %>
+                                                            <% }) %>
+
                                             </select>
                                             <div class="date-fields d-none  ">
                                                 <div class="form-group mx-1 ">
@@ -36,11 +53,12 @@
                                                         class="form-control mx-1 h-50">
                                                 </div>
                                             </div>
-
-                                            <button type="button" class="btn btn-success btn-fw mx-2 px-3 py-2"
-                                                onclick="generateReport()">Generate</button>
-
+                                            <div>
+                                                <button type="button" class="btn btn-success btn-fw mx-2 px-3 py-2"
+                                                    onclick="generateReport()">Generate</button>
+                                            </div>
                                         </div>
+
                                         <table class="table table-striped mt-5">
                                             <thead class="text-center bg-secondary">
                                                 <tr>
@@ -52,58 +70,95 @@
                                                     <th class="font-weight-bold"> Product</th>
                                                     <th class="font-weight-bold"> Price </th>
                                                     <th class="font-weight-bold"> Qty</th>
-                                                    
+
                                                     <th class="font-weight-bold"> Total</th>
                                                 </tr>
                                             </thead>
 
-                                         
-                                                <% if (sales && sales.length> 0) { %>
-                                                    <% sales.forEach((sale)=> { %>
-                                                        <% sale.items.forEach((item,index)=> { %>
-                                                            
-                                                        <tbody class="text-center">
-                                                            <tr>
-                                                                <td>
-                                                                    <%= index+1 %>
-                                                                </td>
+                                            <% let count=0 %>
+                                                <% let totalAmount=0 %>
+                                                    <% if (sales && sales.length> 0) { %>
+                                                        <% sales.forEach((sale)=> { %>
+                                                            <% sale.items.forEach((item)=> { %>
+                                                                <% count++; %>
+                                                                    <tbody class="text-center">
+                                                                        <tr class="<%=count %2==0? 'bg-light' :''%>">
+                                                                            <td>
+                                                                                <%= count %>.
+                                                                            </td>
 
-                                                                <td>
-                                                                    <%= sale.orderId %>
-                                                                </td>
-                                                               
-                                                                <td>sale.user.name</td>
-                                                                <td>
-                                                                    <%= sale.payment_method %>
-                                                                </td>
-                                                                <td>
-                                                                    <%= sale.date.toLocaleDateString() %>
-                                                                </td>
-                                                               
-                                                                    <td><%= item.name %></td>
-                                                                    <td><%= item.price %></td>
-                                                                    <td><%= item.quantity %></td>
-                                                                   
-                                                                    <td>₹<%=item.quantity*item.price %></td>
+                                                                            <td>
+                                                                                <%= sale.orderId %>
+                                                                            </td>
+
+                                                                            <td><%= sale.address.name %></td>
+                                                                            <td>
+                                                                                <%= sale.payment_method %>
+                                                                            </td>
+                                                                            <td>
+                                                                                <%= sale.date.toLocaleDateString() %>
+                                                                            </td>
+
+                                                                            <td>
+                                                                                <%= item.name %>
+                                                                            </td>
+                                                                            <td>
+                                                                                <%= item.price %>
+                                                                            </td>
+                                                                            <td>
+                                                                                <%= item.quantity %>
+                                                                            </td>
+
+                                                                            <td>
+                                                                                <%=item.quantity*item.price %>
+                                                                            </td>
+                                                                            <%totalAmount+= (item.quantity*item.price)
+                                                                                %>
 
 
-                                                                   
-                                                            </tr>
-                                                        </tbody>
-                                                        
-                                                        <% }); %>
-                                                        <% }); %>
+                                                                        </tr>
+                                                                    </tbody>
 
-                                                            <% } else { %>
+                                                                    <% }); %>
+                                                                        <% }); %>
 
-                                                                <tbody class="text-center">
-                                                                    <tr>
-                                                                        <td colspan="9">No sales found !</td>
-                                                                    </tr>
-                                                                </tbody>
+                                                                            <% } else { %>
 
-                                                                <% } %>
+                                                                                <tbody class="text-center">
+                                                                                    <tr>
+                                                                                        <td colspan="9">No sales found !
+                                                                                        </td>
+                                                                                    </tr>
+                                                                                </tbody>
+
+                                                                                <% } %>
+
+                                                                                    <% if (sales && sales.length> 0) {
+                                                                                        %>
+                                                                                        <tr
+                                                                                            class="total-row <%=count %2!==0? 'bg-light' :''%>">
+                                                                                            <td colspan="8"
+                                                                                                class="text-right font-weight-bold">
+                                                                                                <span>Total:
+                                                                                                </span>
+                                                                                            </td>
+                                                                                            <td> ₹<%= totalAmount %>
+                                                                                            </td>
+                                                                                        </tr>
+                                                                                        <% } %>
                                         </table>
+                                        <% if (sales && sales.length> 0) { %>
+                                            <div class="d-flex justify-content-end mt-4">
+                                                <button type="button"
+                                                    class="btn btn-outline-dark  btn-icon-text p-1 mx-1" onclick="">Exel
+                                                    <i class="mdi mdi-printer btn-icon-append"></i></button>
+                                                <button type="button" id="pdfButton"
+                                                    class="btn btn-outline-dark  btn-icon-text p-1 mx-1"
+                                                    onclick="downloadPdf()">Pdf <i
+                                                        class="mdi mdi-printer btn-icon-append"></i></button>
+
+                                            </div>
+                                            <% } %>
                                     </div>
                                 </div>
                             </div>
@@ -119,7 +174,7 @@
 
             // Event listener for select element
             reportTypeSelect.addEventListener('change', function () {
-                if (this.value === 'Custom') {
+                if (this.value === 'Custom Date Range') {
                     // Show the date fields
                     dateFields.classList.remove('d-none');
                     dateFields.classList.add('d-flex');
@@ -136,7 +191,7 @@
             const reportType = document.getElementById('reportType').value;
             let queryParams = '';
 
-            if (reportType === 'Custom') {
+            if (reportType === 'Custom Date Range') {
                 const startDate = document.getElementById('startDate').value;
                 const endDate = document.getElementById('endDate').value;
                 queryParams = `?reportType=${reportType}&startDate=${startDate}&endDate=${endDate}`;
@@ -144,25 +199,63 @@
                 queryParams = `?reportType=${reportType}`;
             }
 
-            fetch(`/admin/sales${queryParams}`, {
-                method: "GET",
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    // Handle the response data as needed, such as updating the table with sales data
-                })
-                .catch(error => {
-                    console.error('There was a problem with the fetch operation:', error);
-                });
+            window.location.href = `/admin/sales${queryParams}`
         }
+
+
+
+        // async function downloadPdf() {
+        //     try {
+
+        //         const reportType = document.getElementById('reportType').value;
+        //         let queryParams = '';
+
+        //         if (reportType === 'Custom Date Range') {
+        //             const startDate 
+        //             const endDate 
+        //             queryParams = `?reportType=${reportType}&startDate=${startDate}&endDate=${endDate}`;
+        //         } else {
+        //             queryParams = `?reportType=${reportType}`;
+        //         }
+        //         console.log(queryParams);
+
+        //         const response = await fetch(`/sales/downloadPdf${queryParams}`);
+
+        //         if (!response.ok) {
+        //             throw new Error('Failed to download PDF');
+        //         }
+
+        //         // Convert the response to a blob (binary large object)
+        //         const blob = await response.blob();
+
+        //         // Create a temporary anchor element
+        //         const a = document.createElement('a');
+
+        //         // Create a blob URL for the PDF
+        //         const url = window.URL.createObjectURL(blob);
+
+        //         // Set the anchor element's href attribute to the blob URL
+        //         a.href = url;
+
+        //         // Set the anchor element's download attribute with the desired filename
+        //         a.download = 'sales_report.pdf';
+
+        //         // Append the anchor element to the document body
+        //         document.body.appendChild(a);
+
+        //         // Programmatically trigger a click event on the anchor element
+        //         a.click();
+
+        //         // Remove the anchor element from the document body
+        //         document.body.removeChild(a);
+
+        //         // Revoke the blob URL to release the resources
+        //         window.URL.revokeObjectURL(url);
+        //     } catch (error) {
+        //         console.error('Error downloading PDF:', error);
+        //         // Handle error (e.g., display an error message)
+        //     }
+        // }
 
 
     </script>

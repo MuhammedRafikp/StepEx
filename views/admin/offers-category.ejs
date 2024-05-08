@@ -10,17 +10,19 @@
 
           <div class="main-panel">
             <div class="content-wrapper">
-
+                <h3 class="page-title col-12 mb-4">
+                    <span class="page-title-icon bg-gradient-primary text-white mr-2">
+                        <i class="mdi mdi-tag-multiple menu-icon"></i>
+                    </span> CATEGORY OFFERS
+                </h3>
               <div class="col-lg-12 grid-margin stretch-card">
                 <div class="card">
                   <div class="card-body">
 
-                    <div class="d-flex justify-content-between">
-                      <h4>CATEGORY OFFERS</h4>
+                    <div class="d-flex justify-content-end">
                       <a href="/admin/offers-category/add-offer"><button type="button" class="btn btn-success btn-fw py-2">
                           Add Offer </button></a>
-                    </div>
-                    <hr>
+                          </div>
                     <table class="table table-striped mt-5">
                       <% if (categoryOffer.length > 0) { %>
                           <thead class="text-center bg-secondary">
@@ -40,8 +42,8 @@
                                       <td><%= offer.offer %></td>
                                       <td><%= offer.validity.toLocaleDateString() %></td>
                                       <td>
-                                          <a href="/admin/offers-category/edit-offer?id=<%=offer.category._id%>" class="btn btn-info px-3 py-2"><span>Edit</span></a>
-                                          <button class="btn btn-danger px-3 py-2" onclick="deleteOffer('<%= offer._id %>')">Delete</button>
+                                          <a href="/admin/offers-category/edit-offer?id=<%=offer.category._id%>" class="btn btn-info py-1 px-2"><span>Edit</span></a>
+                                          <button class="btn btn-danger py-1 px-2" onclick="deleteOffer('<%= offer._id %>')">Delete</button>
                                       </td>
                                   </tr>
                               <% }); %>

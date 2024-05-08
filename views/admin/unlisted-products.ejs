@@ -28,12 +28,17 @@
 
                     <div class="main-panel">
                         <div class="content-wrapper">
+                            <h3 class="page-title col-12 mb-4">
+                                <span class="page-title-icon bg-gradient-primary text-white mr-2">
+                                  <i class="mdi mdi-cart menu-icon"></i>
+                                </span>UNLISTED PRODUCTS
+                              </h3>
                             <div class="col-lg-12 grid-margin stretch-card ">
                                 <div class="card">
                                     <div class="card-body">
-                                        <h4 class="card-title">UNLISTED PRODUCTS</h4>
-                                        <hr><br>
                                         <table class="table table-striped mt-3">
+                                            <% if(products.length> 0) { %>
+                                                <% products.forEach((product,index)=>{%>
                                             <thead class="text-center bg-secondary">
                                                 <tr>
                                                     <th class="font-weight-bold"> Image </th>
@@ -44,9 +49,9 @@
                                                     <th class="font-weight-bold"> Date</th>
                                                     <th class="font-weight-bold"> Action </th>
                                                 </tr>
+                                                
                                             </thead>
-                                            <% if(products.length> 0) { %>
-                                                <% products.forEach((product,index)=>{%>
+                                           
                                                     <tbody class="text-center ">
                                                         <tr>
                                                             <td class="py-4">

@@ -1,0 +1,137 @@
+<%- include('../admin_layouts/header.ejs') %>
+
+    <style>
+        .container-scroller {
+            height: 100vh;
+            /* Set height to fill viewport */
+            display: flex;
+            justify-content: center;
+            /* Horizontally center */
+            align-items: center;
+            /* Vertically center */
+        }
+
+        .container {
+            text-align: center;
+            /* Center content horizontally */
+        }
+
+        .total-row {
+            height: 60px;
+            /* Adjust the height as needed */
+        }
+    </style>
+
+    <div class="container-scroller">
+
+        <div class="container-scroller">
+            <div class="container d-flex justify-content-center align-items-center">
+                <div class="text-center">
+                    <h4 style="text-transform: uppercase;">
+                        <%= currentType %> SALES REPORT
+                    </h4>
+                    <table class="table table-striped">
+                        <thead class="text-center bg-secondary">
+                            <tr>
+                                <th class="p-1">
+                                    <p> No. </h5>
+                                </th>
+                                <th class="p-1">
+                                    <p>Order ID
+                                </th>
+                                <th class="p-1 ">
+                                    <p> Billing name
+                                </th>
+                                <th class="p-0">
+                                    <p> pay method
+                                </th>
+                                <th class="p-0 ">
+                                    <p> Date
+                                </th>
+                                <th class="p-0 ">
+                                    <p> Product
+                                </th>
+                                <th class="p-0 ">
+                                    <p> Price
+                                </th>
+                                <th class="p-0 ">
+                                    <p> Qty </p>
+                                </th>
+
+                                <th class="p-0 ">
+                                    <p> Total</p>
+                                </th>
+                            </tr>
+                        </thead>
+
+                        <% let count=0 %>
+                            <% let totalAmount=0 %>
+                                <% if (sales && sales.length> 0) { %>
+                                    <% sales.forEach((sale)=> { %>
+                                        <% sale.items.forEach((item)=> { %>
+                                            <% count++; %>
+                                                <tbody class="text-center">
+                                                    <tr class="<%=count %2==0? 'bg-light' :''%>">
+                                                        <td>
+                                                            <%= count %>.
+                                                        </td>
+
+                                                        <td>
+                                                            <%= sale.orderId %>
+                                                        </td>
+
+                                                        <td>
+                                                            <%= sale.address.name %>
+                                                        </td>
+                                                        <td>
+                                                            <%= sale.payment_method %>
+                                                        </td>
+                                                        <td>
+                                                            <%= sale.date.toLocaleDateString() %>
+                                                        </td>
+
+                                                        <td>
+                                                            <%= item.name %>
+                                                        </td>
+                                                        <td>
+                                                            <%= item.price %>
+                                                        </td>
+                                                        <td>
+                                                            <%= item.quantity %>
+                                                        </td>
+
+                                                        <td>
+                                                            <%=item.quantity*item.price %>
+                                                        </td>
+                                                        <%totalAmount+= (item.quantity*item.price) %>
+
+
+                                                    </tr>
+                                                </tbody>
+
+                                                <% }); %>
+                                                    <% }); %>
+
+                                                        <% } else { %>
+
+                                                            <tbody class="text-center">
+                                                                <tr>
+                                                                    <td colspan="9">No sales found !
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+
+                                                            <% } %>
+
+                                                                <tr class="total-row <%=count %2!==0? 'bg-light' :''%>">
+                                                                    <td colspan="8" class="text-right font-weight-bold"><span>Total:
+                                                                        </span></td>
+                                                                    <td> ₹<%= totalAmount %>
+                                                                    </td>
+                                                                </tr>
+                    </table>
+
+                </div>
+            </div>
+
+            <%- include('../admin_layouts/footer.ejs') %>

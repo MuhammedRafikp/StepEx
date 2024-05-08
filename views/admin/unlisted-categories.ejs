@@ -10,11 +10,14 @@
 
           <div class="main-panel">
             <div class="content-wrapper">
+              <h3 class="page-title col-12 mb-4">
+                <span class="page-title-icon bg-gradient-primary text-white mr-2">
+                  <i class="mdi mdi mdi-grid menu-icon"></i>
+                </span>UNLISTED CATEGORIES
+              </h3>
               <div class="col-lg-12 grid-margin stretch-card">
                 <div class="card">
-                  <div class="card-body">
-                    <h4 class="card-title">UNLISTED CATEGORIES</h4>
-                    <hr><br>
+                  <div class="card-body">  
                     <table class="table table-striped mt-3">
                       <thead class="text-center bg-secondary ">
                         <tr>
@@ -30,11 +33,11 @@
 
 
                           <tbody class="text-center">
-                            <tr>
+                            <tr class="<%=(index+1) %2==0? 'bg-light' :'' %>">
                               <td>
                                 <%=index+1%>.
                               </td>
-                              <td class="py-4">
+                              <td >
                                 <img src="/uploads/categoryImages/<%=category.image%>" alt="">
                               </td>
                               <td>
@@ -42,7 +45,7 @@
                                 <%= category.name %>
                               </td>
                               <td>
-                                <button class="btn btn-success px-3 py-2"
+                                <button class="btn btn-success px-2 py-1"
                                   onclick="retrieveCategory('<%=category._id %>')">Retrieve</button>
                               </td>
                             </tr>

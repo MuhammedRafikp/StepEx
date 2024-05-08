@@ -1,5 +1,6 @@
 import Admin from "../models/adminModel.js";
 import User from "../models/userModel.js";
+import Order from "../models/orderModel.js";
 import bcrypt from "bcrypt";
 
 
@@ -24,7 +25,23 @@ const loadLogin = async (req, res) => {
 
 const loadDashboard = async (req, res) => {
     try {
-        res.render("dashboard")
+        let salesData = await Order.find({});
+        const deliveredOrders = salesData.filter(order => order.items.some(item => item.status === 'Delivered'));
+        
+        const totalSalesCount = deliveredOrders.length;
+        console.log(totalSalesCount)
+        let totalRevenue = 0;
+        deliveredOrders.forEach(order => {
+            order.items.forEach(item => {
+                totalRevenue += parseFloat(item.price) * parseInt(item.quantity);
+            });
+        });
+        const users = await User.find({});
+        
+       
+        const totalUsersCount = users.length;
+        res.render("dashboard",{ totalSalesCount, totalRevenue,totalUsersCount });
+
     } catch (error) {
         console.log(error.message)
     }

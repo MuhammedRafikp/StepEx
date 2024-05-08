@@ -4,7 +4,7 @@ import Address from "../models/addressModel.js";
 import Product from "../models/productsModel.js";
 import Order from "../models/orderModel.js";
 import Wallet from "../models/walletModel.js";
-import Counpon from "../models/couponModel.js";
+import Coupon from "../models/couponModel.js";
 import Razorpay from "razorpay";
 import dotenv from 'dotenv';
 
@@ -36,12 +36,20 @@ const loadCheckout = async (req, res) => {
             }
         }
 
-        res.render("checkout-details", { user: userData, address: address,cart:cartData,totalAmount: totalAmount, cartCount: cartItemCount });
+        const validCoupons = await Coupon.find({
+            min_price: { $lte: totalAmount },
+            validity: { $gte: new Date() }, // Check for validity
+            is_active: true // Check if coupon is active
+        });
+        console.log(validCoupons);
+
+        res.render("checkout-details", { user: userData, address: address, cart: cartData, coupons: validCoupons, totalAmount, cartCount: cartItemCount });
 
     } catch (error) {
         console.log(error.message);
     }
 }
+
 
 const proceedToCheckout = async (req, res) => {
     try {
@@ -127,9 +135,9 @@ const loadPayment = async (req, res) => {
 
         if (cartData) {
             for (const item of cartData.items) {
-                totalAmount += item.products.price * item.quantity;   
+                totalAmount += item.products.offer_price * item.quantity;
             }
-           
+
         }
         // console.log(typeof(item.products.price ));
         console.log(addressData.address[req.session.addressIndex]);

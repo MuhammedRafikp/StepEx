@@ -29,12 +29,19 @@
 
           <div class="main-panel">
             <div class="content-wrapper">
+
+              <h3 class="page-title col-12 mb-4">
+                <span class="page-title-icon bg-gradient-primary text-white mr-2">
+                  <i class="mdi mdi-account-multiple menu-icon"></i>
+                </span> MANAGE USERS
+              </h3>
+
+
               <div class="col-lg-12 grid-margin stretch-card ">
                 <div class="card">
                   <div class="card-body">
-                    <h4 class="card-title">MANAGE USERS</h4>
-                    <hr>
-                    <table class="table table-striped mt-5">
+                    
+                    <table class="table table-striped mt-3">
                       <thead class="text-center bg-secondary ">
                         <tr>
                           <th class="font-weight-bold"> No.</th>
@@ -58,15 +65,15 @@
                               <td>
                                 <%= user.email %>
                               </td>
-                              <td class=" badge <%= user.is_block ? 'badge-danger':'badge-success'; %> p-0 mt-4">
+                              <td class=" badge <%= user.is_block ? 'badge-danger':'badge-success'; %> p-0 mt-3">
                                 <%= user.is_block ? 'Blocked' :'Active'; %>
                               </td>
                               <td>
                                 <% if (user.is_block) { %>
-                                  <button class="btn btn-success px-3 py-2" onclick="unblockUser('<%=user._id %>')">Un
+                                  <button class="btn btn-success py-1 px-2" onclick="unblockUser('<%=user._id %>')">Un
                                     Block</button>
                                   <% } else { %>
-                                    <button class="btn btn-danger px-3 py-2"
+                                    <button class="btn btn-danger py-1 px-2"
                                       onclick="blockUser('<%=user._id %>')">Block</button>
 
                                     <% } %>

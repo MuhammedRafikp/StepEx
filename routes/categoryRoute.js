@@ -22,7 +22,7 @@ const storage = multer.diskStorage({
 });
 
 import { isLogin, isLogout } from "../middleware/adminAuth.js"
-import { loadCategory, loadAddCategory, loadEditCategory, addCategory, loadUnlistedCategory, unlistCategory, retrieveCategory, editCategory } from "../controllers/categoryController.js"
+import { loadCategory, loadAddCategory, loadEditCategory, addCategory, loadUnlistedCategories, unlistCategory, retrieveCategory, editCategory } from "../controllers/categoryController.js"
 
 const upload = multer({ storage: storage });
 
@@ -33,7 +33,7 @@ category_route.get("/categories/add-category", isLogin, loadAddCategory);
 
 category_route.post("/categories/add-category", upload.single('image'), isLogin, addCategory);
 
-category_route.get("/categories/unlisted-category", isLogin, loadUnlistedCategory);
+category_route.get("/categories/unlisted-category", isLogin, loadUnlistedCategories);
 
 category_route.post("/categories/unlist-category", isLogin, unlistCategory);
 

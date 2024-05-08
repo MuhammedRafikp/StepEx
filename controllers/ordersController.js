@@ -2,6 +2,7 @@ import User from "../models/userModel.js";
 import Order from "../models/orderModel.js";
 import Product from "../models/productsModel.js";
 import Cart from "../models/cartModel.js";
+import Wallet from "../models/walletModel.js";
 
 
 const laodOrders = async (req, res) => {
@@ -52,10 +53,10 @@ const cancelOrder = async (req, res) => {
 
         console.log("cancel order")
         const { cancellationReason, productId, orderId } = req.body;
-        console.log(cancellationReason, productId, orderId);
+        // console.log(cancellationReason, productId, orderId);
 
         const updatedOrder = await Order.findOneAndUpdate(
-            { user: req.session._id, orderId: orderId, "items.product_id": productId },
+            { orderId: orderId, "items.product_id": productId },
             {
                 $set: {
                     'items.$.status': "Cancelled",
@@ -72,6 +73,32 @@ const cancelOrder = async (req, res) => {
             { _id: productId },
             { $inc: { quantity: cancelledQuantity } }
         );
+
+        if (updatedOrder.payment_method === "Razorpay" || updatedOrder.payment_method === "Wallet") {
+
+            const wallet = await Wallet.findOne({ user_id: req.session._id });
+
+            const refundAmount = cancelledProduct.price*cancelledQuantity;
+            console.log("refundAmount:", refundAmount);
+            const previousBalance = wallet.balance;
+
+
+            await Wallet.findOneAndUpdate(
+                { user_id: req.session._id },
+                {
+                    $inc: { balance: refundAmount },
+                    $push: {
+                        history: {
+                            amount: refundAmount,
+                            transaction_type: "Refund",
+                            date: new Date(),
+                            previous_balance: previousBalance
+                        }
+                    }
+                },
+                { upsert: true } // Create wallet document if not exists
+            );
+        }
 
         console.log(updatedOrder);
         res.status(200).json({ message: 'Order cancelled successfully' });
@@ -95,9 +122,8 @@ const returnOrder = async (req, res) => {
             { new: true }
         );
 
-        console.log(updatedOrder);
-
         res.status(200).json({ message: 'Order returned successfully' });
+
     } catch (error) {
         console.log(error.message);
         res.status(500).json({ error: 'Internal server error' });
@@ -174,8 +200,7 @@ const approveReturn = async (req, res) => {
     try {
         console.log("return order")
         const { productId, orderId, reason } = req.body;
-        // const returnReason = req.session.reason;
-
+       
         console.log(productId, orderId, reason);
 
         const updatedOrder = await Order.findOneAndUpdate(
@@ -190,22 +215,46 @@ const approveReturn = async (req, res) => {
             { new: true }
         );
 
-        console.log(updatedOrder);
-
         const returnedProduct = updatedOrder.items.find(item => item.product_id.toString() === productId);
         const returnedQuantity = parseInt(returnedProduct.quantity);
+        // console.log("Reason:",returnedProduct.reason);
+        if (returnedProduct.reason !== "Defective or Damaged Product") {
 
-        await Product.findOneAndUpdate(
-            { _id: productId },
-            { $inc: { quantity: returnedQuantity } }
+            await Product.findOneAndUpdate(
+                { _id: productId },
+                { $inc: { quantity: returnedQuantity } }
+            );
+        }
+
+        const wallet = await Wallet.findOne({ user_id: req.session._id });
+
+        const refundAmount = returnedProduct.price*returnedQuantity;
+        const previousBalance = wallet.balance;
+
+        await Wallet.findOneAndUpdate(
+            { user_id: req.session._id },
+            {
+                $inc: { balance: refundAmount },
+                $push: {
+                    history: {
+                        amount: refundAmount,
+                        transaction_type: "Refund",
+                        date: new Date(),
+                        previous_balance: previousBalance
+                    }
+                }
+            },
+            { upsert: true }
         );
 
         res.status(200).json({ message: 'Order returned successfully' });
+
     } catch (error) {
         console.log(error.message);
         res.status(500).json({ error: 'Internal server error' });
     }
 }
+
 
 const declineReturn = async (req, res) => {
     try {

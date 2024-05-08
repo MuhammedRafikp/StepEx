@@ -11,26 +11,24 @@
           <div class="main-panel">
             <div class="content-wrapper">
 
+              <h3 class="page-title col-12 mb-4">
+                <span class="page-title-icon bg-gradient-primary text-white mr-2">
+                  <i class="mdi mdi mdi-grid menu-icon"></i>
+                </span> CATEGORIES
+              </h3>
+
               <div class="col-lg-12 grid-margin stretch-card ">
                 <div class="card">
                   <div class="card-body">
 
-                    <div class="d-flex justify-content-between ">
-                      <div>
-                        <h4 class="text-start ">CATEGORIES</h4>
-                      </div>
-                      <div>
-                        <a href="/admin/categories/add-category"><button type="button"
-                            class="btn btn-success btn-fw mx-2 px-3 py-2 "></i>Add
-                            Category</button></a>
-                        <a href='/admin/categories/unlisted-category'><button type="button"
-                            class="btn btn-danger btn-fw px-3 py-2">Unlisted
-                            Categories</button></a>
-                      </div>
+                    <div class="d-flex justify-content-end ">
+                      <a href="/admin/categories/add-category"><button type="button"
+                          class="btn btn-success btn-fw mx-2 px-3 py-2 "></i>Add
+                          Category</button></a>
+                      <a href='/admin/categories/unlisted-category'><button type="button"
+                          class="btn btn-danger btn-fw px-3 py-2">Unlisted
+                          Categories</button></a>
                     </div>
-
-                    <br>
-                    <hr>
 
                     <table class="table table-striped mt-5">
                       <thead class="text-center bg-secondary">
@@ -46,7 +44,7 @@
                         <% categories.forEach(function(category, index) { %>
 
                           <tbody class="text-center">
-                            <tr class="<%=(index+1) %2==0? 'bg-light' :'' %> ">
+                            <tr class="<%=(index+1) %2==0? 'bg-light' :'' %>">
                               <td>
                                 <%=index+1%>.
                               </td>
@@ -58,9 +56,9 @@
                               </td>
                               <td>
                                 <a href="/admin/categories/edit-category?id=<%=category._id%>"
-                                  class="btn btn-info  px-3 py-2"><span></i> Edit</span></a>
+                                  class="btn btn-info py-1 px-2"><span></i> Edit</span></a>
                                 <button onclick="unlistCategory('<%=category._id %>')"
-                                  class="btn btn-danger px-3 py-2 ">Delete</button>
+                                  class="btn btn-danger py-1 px-2">Delete</button>
                               </td>
                             </tr>
                           </tbody>

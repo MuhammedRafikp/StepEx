@@ -244,7 +244,11 @@
                                                                         style="font-size: 13px;">Return
                                                                         Requested</span>
                                                                 </div>
-                                                                <% }%>
+                                                                <% } else if (item.return_approval == 2) { %>
+                                                                    <div class="row">
+                                                                        <span class="text-info " style="font-size: 13px;">Refund issued ✓</span>
+                                                                    </div>
+                                                                <% } %>
                                             </div>
 
                                         </div>

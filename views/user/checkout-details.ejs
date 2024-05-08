@@ -53,12 +53,13 @@
 		}
 
 		.coupon-card h3 {
-			font-size: 18px;
+			
+			font-size: 15px;
 			font-weight: 600;
 		}
 
 		.coupon-card p {
-			font-size: 15px;
+			font-size: 13px;
 		}
 
 		.coupon-row {
@@ -70,14 +71,14 @@
 
 		#cpnCode {
 			border: 1px dashed #fff;
-			padding: 10px 20px;
+			padding: 5px 10px;
 			border-right: 0;
 		}
 
 		#cpnBtn {
 			border: 1px solid #fff;
 			background: #fff;
-			padding: 10px 20px;
+			padding: 5px 10px;
 			color: black;
 			cursor: pointer;
 		}
@@ -85,8 +86,8 @@
 		.circle1,
 		.circle2 {
 			background: #ffffff;
-			width: 50px;
-			height: 50px;
+			width: 40px;
+			height: 40px;
 			border-radius: 50%;
 			position: absolute;
 			top: 50%;
@@ -297,7 +298,7 @@
 
 	<!-- coupon Modal -->
 	<!-- Modal -->
-	<div class="modal fade ftco-animate " id="couponModal" tabindex="-1" role="dialog"
+	<div class="modal fade ftco-animate" id="couponModal" tabindex="-1" role="dialog"
 		aria-labelledby="couponModalLabel" aria-hidden="true">
 		<div class="modal-dialog" role="document">
 			<div class="modal-content">
@@ -308,20 +309,27 @@
 					</button>
 				</div>
 				<div class="modal-body">
+					<% if (coupons && coupons.length > 0) { %>
 					<!-- Coupon code content goes here -->
+					<% coupons.forEach((coupon)=>{%>
 					<div class="container">
 						<div class="coupon-card">
 							<img src="\logo\stepexlogo.png" class="logo">
-							<h3>20% flat off on all rides within the city</h3>
+							<h3>flat <%= coupon.discount %>% discount on all purchases above ₹<%= coupon.min_price %>.</h3>
 							<div class="coupon-row">
-								<span id="cpnCode">STEALDEAL20</span>
-								<span id="cpnBtn">Copy Code</span>
+								<span id="cpnCode"><%= coupon.coupon_code %></span>
+								<span id="cpnBtn">Apply</span>
 							</div>
-							<p>Valid Till: 20Dec, 2021</p>
+							<p>Valid Till: <%= coupon.validity.toLocaleDateString('en-US',{day: 'numeric' ,
+								month: 'short' , year: 'numeric' }) %></p>
 							<div class="circle1"></div>
 							<div class="circle2"></div>
 						</div>
 					</div>
+					<%}) %>
+					<% } else { %>
+                        <p>No valid coupons available at the moment.</p>
+                    <% } %>
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
