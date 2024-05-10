@@ -13,6 +13,9 @@ const orderSchema = mongoose.Schema({
         type: Number,
         required: true,
     },
+    discount:{
+        type:Number
+    },
 
     items: [
         {

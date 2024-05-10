@@ -5,7 +5,7 @@ const coupon_route = express();
 coupon_route.set("view engine", "ejs");
 coupon_route.set("views", "./views/admin");
 
-import { isLogin, isLogout } from "../middleware/auth.js";
+import { isLogin, isLogout } from "../middleware/adminAuth.js";
 import { isBlocked } from "../middleware/isBlocked.js";
 import { loadCoupons, loadAddCoupon, addCoupon, loadEditCoupon, editCoupon, deleteCoupon, activateCoupon, deactivateCoupon } from "../controllers/couponController.js";
 

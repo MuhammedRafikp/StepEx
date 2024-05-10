@@ -31,7 +31,7 @@ const loadCheckout = async (req, res) => {
         let totalAmount = 0;
         if (cartData) {
             for (const item of cartData.items) {
-                // let qty = item.quantity > item.products.quantity ? item.products.quantity : item.quantity;
+
                 totalAmount += item.products.offer_price * item.quantity;
             }
         }
@@ -43,7 +43,7 @@ const loadCheckout = async (req, res) => {
         });
         console.log(validCoupons);
 
-        res.render("checkout-details", { user: userData, address: address, cart: cartData, coupons: validCoupons, totalAmount, cartCount: cartItemCount });
+        res.render("checkout-details", { user: userData, address: address, cart: cartData, coupons: validCoupons, totalAmount, cartCount: cartItemCount, req });
 
     } catch (error) {
         console.log(error.message);
@@ -76,6 +76,7 @@ const proceedToCheckout = async (req, res) => {
         } else if (maxStockExceed.length > 0) {
             res.status(400).json({ message: 'Few items are exceed maximum quantity.Please reduce the quantity before proceeding to checkout.' });
         } else {
+            delete req.session.discount;
             res.status(200).json();
         }
 
@@ -121,6 +122,20 @@ const selectAddressForCheckout = async (req, res) => {
 }
 
 
+const applyCoupon = async (req, res) => {
+    try {
+        console.log("apply coupon");
+        const { couponCode } = req.body;
+        const coupon = await Coupon.findOne({ coupon_code: couponCode });
+        req.session.discount = coupon.discount;
+        console.log("discount:", req.session.discount);
+        res.status(200).json({ success: true });
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).json({ error: error.message });
+    }
+}
+
 
 const loadPayment = async (req, res) => {
     try {
@@ -137,11 +152,10 @@ const loadPayment = async (req, res) => {
             for (const item of cartData.items) {
                 totalAmount += item.products.offer_price * item.quantity;
             }
-
         }
         // console.log(typeof(item.products.price ));
         console.log(addressData.address[req.session.addressIndex]);
-        res.render("checkout-payment", { user: userData, address: addressData.address[req.session.addressIndex], totalAmount: totalAmount, wallet: walletData, cartCount: cartItemCount, razorpaykey: RAZORPAY_ID_KEY });
+        res.render("checkout-payment", { user: userData, address: addressData.address[req.session.addressIndex], totalAmount: totalAmount, wallet: walletData, cartCount: cartItemCount, razorpaykey: RAZORPAY_ID_KEY, req });
 
     } catch (error) {
         console.log(error.message);
@@ -191,6 +205,7 @@ const confirmOrder = async (req, res) => {
         } else {
 
             let totalAmount = 0;
+            let discount = 0;
             const items = [];
 
             for (const item of cartData.items) {
@@ -213,6 +228,9 @@ const confirmOrder = async (req, res) => {
                 await product.save();
             }
 
+            totalAmount = req.session.discount ? totalAmount - (totalAmount * (req.session.discount / 100)) : totalAmount;
+            discount = req.session.discount ? totalAmount * (req.session.discount / 100) : discount;
+
             await Cart.findOneAndUpdate({ user_id: userId }, { items: [] });
 
             let paymentStatus;
@@ -225,6 +243,7 @@ const confirmOrder = async (req, res) => {
                 user: userId,
                 orderId: orderId,
                 totalAmount: totalAmount,
+                discount: discount,
                 items: items,
                 address: addressData.address[addressIndex],
                 payment_method: paymentMethod,
@@ -232,6 +251,7 @@ const confirmOrder = async (req, res) => {
             });
             await newOrder.save();
 
+            delete req.session.discount;
             res.status(200).json({ success: true });
         }
 
@@ -299,8 +319,9 @@ const loadOrderPlaced = async (req, res) => {
 export {
     loadCheckout,
     proceedToCheckout,
-    loadPayment,
+    applyCoupon,
     selectAddressForCheckout,
+    loadPayment,
     confirmOrder,
     loadOrderPlaced,
     createRazorPay

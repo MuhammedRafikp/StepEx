@@ -166,24 +166,55 @@
 
                                         <a href="/checkout-details" class="text-info ">Change address</a>
                                     </div>
-                                    <div class="cart-total mb-3">
-                                        <h3>Order Summary</h3>
-                                        <p class="d-flex">
-                                            <span>Subtotal</span>
-                                            <span class="subtotal">
-                                                ₹<%=totalAmount%>
-                                            </span>
-                                        </p>
-                                        <p class="d-flex">
-                                            <span>Delivery</span>
-                                            <span>₹0</span>
-                                        </p>
-                                        <hr>
-                                        <p class="d-flex total-price">
-                                            <span>Total</span>
-                                            <span class="total-amount">₹<%=totalAmount%></span>
-                                        </p>
-                                    </div>
+                                    <% if(req.session.discount){%>
+                                        <div class="cart-total mb-3">
+                                            <h3>Order Summary</h3>
+                                            <p class="d-flex">
+                                                <span>Subtotal</span>
+                                                <span class="subtotal">
+                                                    ₹<%=totalAmount%>.00
+                                                </span>
+                                            </p>
+                                            <p class="d-flex justify-content-between ">
+                                                <span>Discount (<%=req.session.discount%>%)</span>
+                                                <span>- ₹ <%=totalAmount*(req.session.discount /100) %>.00</span>
+                                            </p>
+                                            <p class="d-flex">
+                                                <span>Delivery</span>
+                                                <span>₹ 0.00</span>
+                                            </p>
+                                            <hr>
+                                            <p class="d-flex total-price">
+                                                <span>Total</span>
+                                                <span class="total-amount">
+                                                    ₹<%=totalAmount-(totalAmount*(req.session.discount /100)) %>
+                                                </span>
+                                            </p>
+                                        </div>
+                                        <%}else{%>
+                                            <div class="cart-total mb-3">
+                                                <h3>Order Summary</h3>
+                                                <p class="d-flex">
+                                                    <span>Subtotal</span>
+                                                    <span class="subtotal">
+                                                        ₹<%=totalAmount%>
+                                                    </span>
+                                                </p>
+                                                <p class="d-flex justify-content-between">
+                                                    <span>Discount(0%)</span>
+                                                    <span>₹0</span>
+                                                </p>
+                                                <p class="d-flex">
+                                                    <span>Delivery</span>
+                                                    <span>₹0</span>
+                                                </p>
+                                                <hr>
+                                                <p class="d-flex total-price">
+                                                    <span>Total</span>
+                                                    <span class="total-amount">₹<%=totalAmount%></span>
+                                                </p>
+                                            </div>
+                                            <%}%>
                                 </div>
                             </div>
                         </div>
@@ -385,6 +416,12 @@
                             };
                             var rzp = new Razorpay(options);
                             rzp.open();
+                            rzp.on('payment.failed', () => {
+                                // console.log("failed");
+                                setTimeout(() => {
+                                    rzp.close();
+                                }, 2000)
+                            })
                         })
                         .catch(error => {
                             console.error('Error:', error);
@@ -403,7 +440,7 @@
             const cashOnDeliveryOption = document.getElementById('walletOption');
 
             confirmPaymentBtn.addEventListener('click', function () {
-                console.log("heiiiiiiiiiiiiiiiii")
+                console.log("wallet")
                 const noBalance = document.getElementById('no-balance');
                 if (cashOnDeliveryOption.classList.contains('selected')) {
 
@@ -427,9 +464,9 @@
                             icon: "warning",
                             title: 'Insufficient Balance',
                             text: 'Please add funds to your wallet before proceeding.',
-                            width:"550"
+                            width: "550"
                         });
-       
+
                     } else {
 
                         Swal.fire({

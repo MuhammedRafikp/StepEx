@@ -163,6 +163,7 @@ const editProduct = async (req, res) => {
         } else {
 
             const categoryId = await Category.findOne({ name: category }, { _id: 1 });
+            
             const updatedProduct = await Products.findByIdAndUpdate(
                 { _id: id },
                 { $set: { name: name, price: price, category: categoryId, gender: gender, brand: brand, quantity: quantity, description: description } },

@@ -79,73 +79,73 @@
                                                 <% let totalAmount=0 %>
                                                     <% if (sales && sales.length> 0) { %>
                                                         <% sales.forEach((sale)=> { %>
-                                                            <% sale.items.forEach((item)=> { %>
-                                                                <% count++; %>
-                                                                    <tbody class="text-center">
-                                                                        <tr class="<%=count %2==0? 'bg-light' :''%>">
-                                                                            <td>
-                                                                                <%= count %>.
-                                                                            </td>
 
-                                                                            <td>
-                                                                                <%= sale.orderId %>
-                                                                            </td>
+                                                            <% count++; %>
+                                                                <tbody class="text-center">
+                                                                    <tr class="<%=count %2==0? 'bg-light' :''%>">
+                                                                        <td>
+                                                                            <%= count %>.
+                                                                        </td>
 
-                                                                            <td><%= sale.address.name %></td>
-                                                                            <td>
-                                                                                <%= sale.payment_method %>
-                                                                            </td>
-                                                                            <td>
-                                                                                <%= sale.date.toLocaleDateString() %>
-                                                                            </td>
+                                                                        <td>
+                                                                            <%= sale.orderId %>
+                                                                        </td>
 
-                                                                            <td>
-                                                                                <%= item.name %>
-                                                                            </td>
-                                                                            <td>
-                                                                                <%= item.price %>
-                                                                            </td>
-                                                                            <td>
-                                                                                <%= item.quantity %>
-                                                                            </td>
+                                                                        <td>
+                                                                            <%= sale.address.name %>
+                                                                        </td>
+                                                                        <td>
+                                                                            <%= sale.payment_method %>
+                                                                        </td>
+                                                                        <td>
+                                                                            <%= sale.date.toLocaleDateString() %>
+                                                                        </td>
 
-                                                                            <td>
-                                                                                <%=item.quantity*item.price %>
-                                                                            </td>
-                                                                            <%totalAmount+= (item.quantity*item.price)
+                                                                        <td>
+                                                                            <%= sale.items.name %>
+                                                                        </td>
+                                                                        <td>
+                                                                            <%= sale.items.price %>
+                                                                        </td>
+                                                                        <td>
+                                                                            <%= sale.items.quantity %>
+                                                                        </td>
+
+                                                                        <td>
+                                                                            <%=sale.items.quantity*sale.items.price %>
+                                                                        </td>
+                                                                        <%totalAmount+=
+                                                                            (sale.items.quantity*sale.items.price) %>
+                                                                    </tr>
+                                                                </tbody>
+
+
+                                                                <% }); %>
+
+                                                                    <% } else { %>
+
+                                                                        <tbody class="text-center">
+                                                                            <tr>
+                                                                                <td colspan="9">No sales found !
+                                                                                </td>
+                                                                            </tr>
+                                                                        </tbody>
+
+                                                                        <% } %>
+
+                                                                            <% if (sales && sales.length> 0) {
                                                                                 %>
-
-
-                                                                        </tr>
-                                                                    </tbody>
-
-                                                                    <% }); %>
-                                                                        <% }); %>
-
-                                                                            <% } else { %>
-
-                                                                                <tbody class="text-center">
-                                                                                    <tr>
-                                                                                        <td colspan="9">No sales found !
-                                                                                        </td>
-                                                                                    </tr>
-                                                                                </tbody>
-
+                                                                                <tr
+                                                                                    class="total-row <%=count %2!==0? 'bg-light' :''%>">
+                                                                                    <td colspan="8"
+                                                                                        class="text-right font-weight-bold">
+                                                                                        <span>Total:
+                                                                                        </span>
+                                                                                    </td>
+                                                                                    <td> ₹<%= totalAmount %>
+                                                                                    </td>
+                                                                                </tr>
                                                                                 <% } %>
-
-                                                                                    <% if (sales && sales.length> 0) {
-                                                                                        %>
-                                                                                        <tr
-                                                                                            class="total-row <%=count %2!==0? 'bg-light' :''%>">
-                                                                                            <td colspan="8"
-                                                                                                class="text-right font-weight-bold">
-                                                                                                <span>Total:
-                                                                                                </span>
-                                                                                            </td>
-                                                                                            <td> ₹<%= totalAmount %>
-                                                                                            </td>
-                                                                                        </tr>
-                                                                                        <% } %>
                                         </table>
                                         <% if (sales && sales.length> 0) { %>
                                             <div class="d-flex justify-content-end mt-4">
@@ -211,8 +211,8 @@
         //         let queryParams = '';
 
         //         if (reportType === 'Custom Date Range') {
-        //             const startDate 
-        //             const endDate 
+        //             const startDate
+        //             const endDate
         //             queryParams = `?reportType=${reportType}&startDate=${startDate}&endDate=${endDate}`;
         //         } else {
         //             queryParams = `?reportType=${reportType}`;
