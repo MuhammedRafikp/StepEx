@@ -130,7 +130,7 @@ const loadSales = async (req, res) => {
 
             salesData = await Order.aggregate([
                 { $unwind: "$items" },
-                { $match: { "items.status": "Delivered" } },
+                { $match: { "items.status": { $nin: ["Cancelled", "Returned"] } } },
                 {
                     $lookup: {
                         from: "products",
@@ -152,7 +152,7 @@ const loadSales = async (req, res) => {
                     }
                 },
                 { $unwind: "$items" },
-                { $match: { "items.status": "Delivered" } },
+                { $match: { "items.status": { $nin: ["Cancelled", "Returned"] } } },
                 {
                     $lookup: {
                         from: "products",

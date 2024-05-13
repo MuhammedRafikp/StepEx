@@ -266,9 +266,9 @@
 										</a>
 									</div>
 									<% if(req.session.discount){%>
-										<div class="my-1 d-flex justify-content-center ">
-											<span class="text-success ">Coupon applied ✔</span>
-											<span class="text-danger btn ">Remove </span>
+										<div class="mb-1 d-flex justify-content-center ">
+											<span class="text-success mt-1 ">Coupon applied ✔</span>
+											<span id="remove-coupon-btn" class="text-danger btn ">Remove </span>
 										</div>
 										<%}%>
 											<% if(req.session.discount){%>
@@ -282,8 +282,9 @@
 														</span>
 													</p>
 													<p class="d-flex ">
-														<span>Discount (%<%=req.session.discount%>%)</span>
-														<span>- ₹ <%=(totalAmount)*req.session.discount /100 %>.00</span>
+														<span>Discount (<%=req.session.discount%>%)</span>
+														<span>- ₹ <%=(totalAmount)*req.session.discount /100 %>
+																.00</span>
 													</p>
 													<p class="d-flex justify-content-end ">
 														<span>Delivery</span>
@@ -291,10 +292,10 @@
 													</p>
 													<hr>
 													<p class="d-flex total-price">
-														<span >Total</span>
+														<span>Total</span>
 
 														<span class="total-amount">₹<%=totalAmount-
-																((totalAmount)*req.session.discount/100) %></span>
+																(totalAmount*(req.session.discount/100)) %></span>
 														<!-- <span class="total-amount">₹<%= typeof(req.session.discount) %></span> -->
 
 													</p>
@@ -316,7 +317,7 @@
 														</p>
 														<p class="d-flex justify-content-between">
 															<span>Delivery</span>
-															<span >₹0</span>
+															<span>₹0</span>
 														</p>
 														<hr>
 														<p class="d-flex total-price">
@@ -439,12 +440,11 @@
 
 			//apply coupon
 			document.addEventListener('DOMContentLoaded', function () {
-				// Event listener for the Apply button inside the coupon modal
-				const applyCouponBtns = document.querySelectorAll('#cpnBtn');
 
+				const applyCouponBtns = document.querySelectorAll('#cpnBtn');
 				applyCouponBtns.forEach(btn => {
 					btn.addEventListener('click', function () {
-						// Retrieve the coupon code from the button's parent element
+
 						const couponCode = this.parentNode.querySelector('#cpnCode').innerText;
 
 						fetch('/checkout/apply-coupon', {
@@ -455,20 +455,44 @@
 							body: JSON.stringify({ couponCode: couponCode })
 						})
 							.then(response => {
-								// Handle the response as needed
+
 								if (response.ok) {
-									// Coupon applied successfully
-									// Reload the page
 									window.location.reload();
 								} else {
-									// Coupon application failed
-									// You can display an error message or perform any other action
+
 								}
 							})
 							.catch(error => console.error('Error:', error));
 					});
 				});
 			});
+
+			//Remove coupon
+			<!-- Add this script tag at the end of your HTML body -->
+
+
+			document.addEventListener('DOMContentLoaded', function () {
+				const removeCouponBtn = document.getElementById('remove-coupon-btn');
+
+				removeCouponBtn.addEventListener('click', function () {
+					fetch('/checkout/remove-coupon', {
+						method: 'POST',
+						headers: {
+							'Content-Type': 'application/json'
+						}
+					})
+						.then(response => {
+							if (response.ok) {
+								
+								window.location.reload();
+							} else {
+								
+							}
+						})
+						.catch(error => console.error('Error:', error));
+				});
+			});
+
 
 
 		</script>

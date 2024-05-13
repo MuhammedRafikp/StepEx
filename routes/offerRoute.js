@@ -5,7 +5,7 @@ const offer_route = express();
 offer_route.set("view engine", "ejs");
 offer_route.set("views", "./views/admin");
 
-import { isLogin, isLogout } from "../middleware/auth.js";
+import { isLogin, isLogout } from "../middleware/adminAuth.js";
 import { isBlocked } from "../middleware/isBlocked.js";
 import { loadCategoryOffers, loadAddCategoryOffer, addCategoryOffer, loadEditCategoryOffer, editCategoryOffer, deleteCategoryOffer, loadProductOffers, loadAddProductOffer, addProductOffer, loadEditProductOffer, editProductOffer, deleteProductOffer } from "../controllers/offerController.js";
 

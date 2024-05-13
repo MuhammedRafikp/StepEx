@@ -136,6 +136,17 @@ const applyCoupon = async (req, res) => {
     }
 }
 
+const removeCoupon = async (req, res) => {
+    try {
+        delete req.session.discount;
+        res.status(200).json({ success: true });
+
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).json({ error: error.message });
+    }
+}
+
 
 const loadPayment = async (req, res) => {
     try {
@@ -174,7 +185,7 @@ const confirmOrder = async (req, res) => {
 
     try {
 
-        const { paymentMethod } = req.body;
+        const { paymentMethod, paymentStatus } = req.body;
         const userId = req.session._id;
         const addressIndex = req.session.addressIndex;
 
@@ -233,11 +244,7 @@ const confirmOrder = async (req, res) => {
 
             await Cart.findOneAndUpdate({ user_id: userId }, { items: [] });
 
-            let paymentStatus;
 
-            if (paymentMethod === 'Razorpay' || paymentMethod === 'Wallet') {
-                paymentStatus = 'Success';
-            }
 
             const newOrder = new Order({
                 user: userId,
@@ -249,6 +256,7 @@ const confirmOrder = async (req, res) => {
                 payment_method: paymentMethod,
                 payment_status: paymentStatus
             });
+
             await newOrder.save();
 
             delete req.session.discount;
@@ -302,12 +310,12 @@ const createRazorPay = async (req, res) => {
 
 const loadOrderPlaced = async (req, res) => {
     try {
+        const {status} = req.query;
         const userId = req.session._id;
         const userData = await User.findOne({ _id: userId });
         const cartData = await Cart.findOne({ user_id: userId }).populate('items.products');
         const cartItemCount = cartData ? cartData.items.length : 0;
-
-        res.render("order-placed", { user: userData, cartCount: cartItemCount });
+        res.render("order-placed", { user: userData, cartCount: cartItemCount,status });
 
     } catch (error) {
         console.error(error.message)
@@ -320,6 +328,7 @@ export {
     loadCheckout,
     proceedToCheckout,
     applyCoupon,
+    removeCoupon,
     selectAddressForCheckout,
     loadPayment,
     confirmOrder,

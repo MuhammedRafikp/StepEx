@@ -26,7 +26,7 @@ const loadAddProduct = async (req, res) => {
 
     try {
         const categories = await Category.find({ is_delete: 0 });
-        const genders = ["Men", "Women", "Boy", "Girl"];
+        const genders = ["Men", "Women", "Boys", "Girls"];
         res.render("add-product", { categories: categories, genders: genders });
         console.log("loadAddProduct")
 

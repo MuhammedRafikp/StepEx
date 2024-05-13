@@ -37,22 +37,37 @@
 		</div>
 	</div>
 
-	<section class="ftco-section ">
-		<div class="container">
+	<section class="ftco-section bg-light ">
+		<div class="container mt-0">
+
+			<div class="d-flex justify-content-end mb-4">
+				<p style="color: #000; font-weight: 600; " class="m-2 ">SORT BY :</p>
+				<select id="sortBy" style="height: 40px; " class="w-25">
+					<option value="new-to-old" <% if (sortBy==='new-to-old' ) { %>selected<% } %>>Default</option>
+					<option value="old-to-new" <% if (sortBy==='old-to-new' ) { %>selected<% } %>>Old to New</option>
+					<option value="high-to-low" <% if (sortBy==='high-to-low' ) { %>selected<% } %>>Price: High to Low
+					</option>
+					<option value="low-to-high" <% if (sortBy==='low-to-high' ) { %>selected<% } %>>Price: Low to High
+					</option>
+				</select>
+			</div>
+
 			<div class="row">
-				<div class="col-md-8 col-lg-10 order-md-last">
-					<div class="row">
-						<% if(products.length>0){ %>
+				<div class="col-md-6 col-lg-9 order-md-last">
+					<div class="row products-container">
+						<% if(products&&products.length>0){ %>
 							<% products.forEach((product)=>{%>
 								<div class="col-sm-12 col-md-12 col-lg-4 ftco-animate d-flex">
 									<div class="product d-flex flex-column">
 
 										<a href="/shop/single?id=<%= product._id %>" class="img-prod"><img
 												class="img-fluid " src="/uploads/productImages/<%=product.images[0]%>"
-												alt="Colorlib Template">
+												alt="img">
 
-											<span class="status"><%= ((product.price-product.offer_price)/product.price)*100 %>% off</span>
-											
+											<span class="status">
+												<%= ((product.price-product.offer_price)/product.price)*100 %>% off
+											</span>
+
 											<div class="overlay"></div>
 										</a>
 										<div class="text py-3 pb-4 px-3">
@@ -72,13 +87,14 @@
 													</p>
 												</div>
 											</div>
-											<h3><a href="#">
+											<h3><a href="/shop/single?id=<%= product._id %>">
 													<%= product.name %>
 												</a></h3>
 											<div class="pricing d-flex">
-												<s class="price text-secondary"><span>₹ <%= product.price %>
+												<s class="price text-secondary"><span>₹ <%=(product.price) %>
 													</span></s>
-												<p class="price mx-3" style="font-weight: 600;" ><span>₹ <%= product.offer_price %> </span></p>
+												<p class="price mx-3" style="font-weight: 600;"><span>₹ <%=
+															product.offer_price %> </span></p>
 											</div>
 											<div>
 												<p class="badge badge-success mt-2"><span>save ₹ <%=
@@ -119,7 +135,11 @@
 									</div>
 								</div>
 								<%})%>
-									<%}%>
+									<%}else{%>
+										
+												<h5 class="text-center ">No products Found!</h5>
+											
+										<%}%>
 
 					</div>
 
@@ -147,94 +167,101 @@
 
 				</div>
 
-				<div class="col-md-4 col-lg-2">
-					<div class="sidebar">
-						<div class="sidebar-box-2">
-							<h2 class="heading">Categories</h2>
-							<div class="fancy-collapse-panel">
-								<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-									<div class="panel panel-default">
-										<div class="panel-heading" role="tab" id="headingOne">
-											<h4 class="panel-title">
-												<a data-toggle="collapse" data-parent="#accordion" href="#collapseOne"
-													aria-expanded="true" aria-controls="collapseOne">Men's Shoes
-												</a>
-											</h4>
-										</div>
-										<div id="collapseOne" class="panel-collapse collapse" role="tabpanel"
-											aria-labelledby="headingOne">
-											<div class="panel-body">
-												<ul>
-													<li><a href="#">Sport</a></li>
-													<li><a href="#">Casual</a></li>
-													<li><a href="#">Formal</a></li>
-												</ul>
-											</div>
-										</div>
-									</div>
-									<div class="panel panel-default">
-										<div class="panel-heading" role="tab" id="headingTwo">
-											<h4 class="panel-title">
-												<a class="collapsed" data-toggle="collapse" data-parent="#accordion"
-													href="#collapseTwo" aria-expanded="false"
-													aria-controls="collapseTwo">Women's Shoes
-												</a>
-											</h4>
-										</div>
-										<div id="collapseTwo" class="panel-collapse collapse" role="tabpanel"
-											aria-labelledby="headingTwo">
-											<div class="panel-body">
-												<ul>
-													<li><a href="#">Sport</a></li>
-													<li><a href="#">Casual</a></li>
-													<li><a href="#">Formal</a></li>
-												</ul>
-											</div>
-										</div>
-									</div>
+				<div class="col-md-4 col-lg-3">
+					<form action="#" class="search-form">
+						<div class="form-group">
+							<span class="icon ion-ios-search"></span>
+							<input type="text" class="form-control" id="search" placeholder="Search for a product"
+								autocomplete="off">
+						</div>
+					</form>
 
-								</div>
+					<!-- <div action="#" class="search-form d-flex ">
+						<div class="form-group ">
+							<span class="btn btn-primary rounded  icon ion-ios-search"></span>
+							<input type="text" id="search" class="form-control rounded w-100 "
+								placeholder="Search for products">
+
+						</div>
+
+					</div> -->
+					<!-- <div class="sidebar-box-2">
+							<p style="color: #000; font-weight: 600;">SORT BY</p>
+							<select id="sortBy" class="  w-75" style="height: 35px;">
+								<option value="new-to-old">Default</option>
+								<option value="old-to-new">Old to New</option>
+								<option value="high-to-low">Price: High to Low</option>
+								<option value="low-to-high">Price: Low to High</option>
+							</select>
+						</div> -->
+					<div class="sidebar-box ">
+
+
+						<div class="d-flex justify-content-between border-bottom border-solid border-2">
+							<p style="color: #000; font-weight: 600;">FILTERS</p>
+							<a href="#" id="clear-all" class="text-danger font-weight-bold "
+								style="display: none;">Clear all</a>
+						</div>
+
+
+						<div class="my-3  ">
+							<p style="color: #000; font-weight: 600;">CATEGORIES</p>
+
+							<div>
+								<% if(categories && categories.length> 0){ %>
+									<% categories.forEach((category)=> { %>
+										<div class="checkbox-item my-1">
+											<input type="checkbox" id="category_<%= category._id %>" name="category"
+												value="<%= category._id %>" <%
+												if(selectedCategories.includes(String(category._id))) { %> checked
+											<% } %> >
+												<label for="category_<%= category._id %>">
+													<%= category.name %>
+												</label>
+										</div>
+										<% }) %>
+											<% } %>
 							</div>
 						</div>
-						<div class="sidebar-box-2">
-							<h2 class="heading">Price Range</h2>
-							<form method="post" class="colorlib-form-2">
-								<div class="row">
-									<div class="col-md-12">
-										<div class="form-group">
-											<label for="guests">Price from:</label>
-											<div class="form-field">
-												<i class="icon icon-arrow-down3"></i>
-												<select name="people" id="people" class="form-control">
-													<option value="#">1</option>
-													<option value="#">200</option>
-													<option value="#">300</option>
-													<option value="#">400</option>
-													<option value="#">1000</option>
-												</select>
-											</div>
+
+						<div class="my-3 ">
+							<p style="color: #000; font-weight: 600;">GENDER</p>
+
+							<div>
+								<% if(genders && genders.length> 0){ %>
+									<% genders.forEach((gender)=> { %>
+										<div class="checkbox-item my-1">
+											<input type="checkbox" id="<%= gender %>" name="gender"
+												value="<%= gender %>" <% if(selectedGenders.includes(gender)) { %>
+											checked <% } %>>
+												<label for="<%= gender %>">
+													<%= gender %>
+												</label>
 										</div>
-									</div>
-									<div class="col-md-12">
-										<div class="form-group">
-											<label for="guests">Price to:</label>
-											<div class="form-field">
-												<i class="icon icon-arrow-down3"></i>
-												<select name="people" id="people" class="form-control">
-													<option value="#">2000</option>
-													<option value="#">4000</option>
-													<option value="#">6000</option>
-													<option value="#">8000</option>
-													<option value="#">10000</option>
-												</select>
-											</div>
-										</div>
-									</div>
-								</div>
-							</form>
+										<% }) %>
+											<% } %>
+							</div>
+
 						</div>
+
+
+						<div>
+							<p style="color: #000; font-weight: 600;">PRICE RANGE</p>
+							<div id="price-range-slider" class="w-100"></div>
+							<span id="price-range"></span>
+						</div>
+
+						<div class="sidebar-box-2 mt-4 ">
+							<button id="filter-btn" class="btn btn-primary  col-md-12  font-weight-bold">Apply
+								Filter</button>
+						</div>
+
 					</div>
+
+
+
 				</div>
+
 			</div>
 		</div>
 	</section>
@@ -278,7 +305,30 @@
 		</div>
 	</section>
 
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+	<script>
+		const minPrice = "<%= minPrice %>";
+		const maxPrice = "<%= maxPrice %>"
+		$(function () {
+			$("#price-range-slider").slider({
+				range: true,
+				min: 500,
+				max: 10000, // Adjust the max value according to your price range
+				values: [minPrice, maxPrice], // Initial values of the slider
+				slide: function (event, ui) {
+					// Update the display of selected price range
+					$("#price-range").html("₹" + ui.values[0] + " - ₹" + ui.values[1]);
+				}
+			});
+			// Display initial selected price range
+			$("#price-range").html("₹" + $("#price-range-slider").slider("values", 0) +
+				" - ₹" + $("#price-range-slider").slider("values", 1));
+		});
+	</script>
+
 
 	<script>
 		const addToCartButtons = document.querySelectorAll('.addToCart');
@@ -350,6 +400,62 @@
 					}
 				}
 			});
+		});
+
+	</script>
+
+	<script>
+
+		// Function to fetch filtered products
+		const fetchFilteredProducts = async () => {
+			try {
+
+				const searchQuery = document.getElementById('search').value.trim();
+				const categoryFilters = Array.from(document.querySelectorAll('input[name="category"]:checked')).map(input => input.value).join(',');
+				const genderFilters = Array.from(document.querySelectorAll('input[name="gender"]:checked')).map(input => input.value).join(',');
+				const priceRange = $("#price-range-slider").slider("values");
+				const minPrice = priceRange[0];
+				const maxPrice = priceRange[1];
+				const sortBy = document.getElementById('sortBy').value;
+
+				const queryParams = new URLSearchParams({
+					search: searchQuery,
+					category: categoryFilters,
+					gender: genderFilters,
+					minPrice: minPrice,
+					maxPrice: maxPrice,
+					sortBy: sortBy
+				});
+				console.log(queryParams)
+				console.log("enetered")
+				window.location.href = `/shop?${queryParams}`;
+
+			} catch (error) {
+				console.error('Error filtered products:', error);
+			}
+		};
+
+		// Call the fetchFilteredProducts function whenever filter btn clicks 
+		document.getElementById('filter-btn').addEventListener('click', fetchFilteredProducts);
+		document.getElementById("clear-all").addEventListener("click", function () {
+			window.location.href = "/shop";
+
+		});
+
+		document.querySelectorAll('input[type="checkbox"]').forEach(function (checkbox) {
+			checkbox.addEventListener('change', function () {
+				const clearAllButton = document.getElementById('clear-all');
+				if (document.querySelector('input[type="checkbox"]:checked')) {
+					clearAllButton.style.display = 'block';
+				} else {
+					clearAllButton.style.display = 'none';
+				}
+			});
+		});
+
+		document.getElementById('clear-all').addEventListener('click', function (event) {
+			event.preventDefault();
+			window.location.href = "/shop";
 		});
 
 

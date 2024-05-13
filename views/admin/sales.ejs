@@ -1,11 +1,11 @@
 <%- include('../admin_layouts/header.ejs') %>
-
+    <!-- 
     <style>
         .total-row {
             height: 60px;
             /* Adjust the height as needed */
         }
-    </style>
+    </style> -->
 
     <div class="container-scroller">
         <%- include('navbar.ejs') %>
@@ -77,76 +77,108 @@
 
                                             <% let count=0 %>
                                                 <% let totalAmount=0 %>
-                                                    <% if (sales && sales.length> 0) { %>
-                                                        <% sales.forEach((sale)=> { %>
+                                                    <% let discount=0 %>
+                                                        <% if (sales && sales.length> 0) { %>
+                                                            <% sales.forEach((sale)=> { %>
 
-                                                            <% count++; %>
-                                                                <tbody class="text-center">
-                                                                    <tr class="<%=count %2==0? 'bg-light' :''%>">
-                                                                        <td>
-                                                                            <%= count %>.
-                                                                        </td>
-
-                                                                        <td>
-                                                                            <%= sale.orderId %>
-                                                                        </td>
-
-                                                                        <td>
-                                                                            <%= sale.address.name %>
-                                                                        </td>
-                                                                        <td>
-                                                                            <%= sale.payment_method %>
-                                                                        </td>
-                                                                        <td>
-                                                                            <%= sale.date.toLocaleDateString() %>
-                                                                        </td>
-
-                                                                        <td>
-                                                                            <%= sale.items.name %>
-                                                                        </td>
-                                                                        <td>
-                                                                            <%= sale.items.price %>
-                                                                        </td>
-                                                                        <td>
-                                                                            <%= sale.items.quantity %>
-                                                                        </td>
-
-                                                                        <td>
-                                                                            <%=sale.items.quantity*sale.items.price %>
-                                                                        </td>
-                                                                        <%totalAmount+=
-                                                                            (sale.items.quantity*sale.items.price) %>
-                                                                    </tr>
-                                                                </tbody>
-
-
-                                                                <% }); %>
-
-                                                                    <% } else { %>
-
+                                                                <% count++; %>
+                                                                    <% discount+=sale.discount; %>
                                                                         <tbody class="text-center">
-                                                                            <tr>
-                                                                                <td colspan="9">No sales found !
+                                                                            <tr
+                                                                                class="<%=count %2==0? 'bg-light' :''%>">
+                                                                                <td>
+                                                                                    <%= count %>.
                                                                                 </td>
+
+                                                                                <td>
+                                                                                    <%= sale.orderId %>
+                                                                                </td>
+
+                                                                                <td>
+                                                                                    <%= sale.address.name%>
+                                                                                        
+                                                                                </td>
+                                                                                <td>
+                                                                                    <%= sale.payment_method %>
+                                                                                </td>
+                                                                                <td>
+                                                                                    <%= sale.date.toLocaleDateString()
+                                                                                        %>
+                                                                                </td>
+
+                                                                                <td>
+                                                                                    <%= sale.items.name.slice(0, 25) %>...
+                                                                                </td>
+                                                                                <td>
+                                                                                    <%= sale.items.price %>
+                                                                                </td>
+                                                                                <td>
+                                                                                    <%= sale.items.quantity %>
+                                                                                </td>
+
+                                                                                <td>
+                                                                                    <%=sale.items.quantity*sale.items.price
+                                                                                        %>
+                                                                                </td>
+                                                                                <%totalAmount+=
+                                                                                    (sale.items.quantity*sale.items.price)
+                                                                                    %>
                                                                             </tr>
                                                                         </tbody>
 
-                                                                        <% } %>
 
-                                                                            <% if (sales && sales.length> 0) {
-                                                                                %>
-                                                                                <tr
-                                                                                    class="total-row <%=count %2!==0? 'bg-light' :''%>">
-                                                                                    <td colspan="8"
-                                                                                        class="text-right font-weight-bold">
-                                                                                        <span>Total:
-                                                                                        </span>
-                                                                                    </td>
-                                                                                    <td> ₹<%= totalAmount %>
-                                                                                    </td>
-                                                                                </tr>
+                                                                        <% }); %>
+
+                                                                            <% } else { %>
+
+                                                                                <tbody class="text-center">
+                                                                                    <tr>
+                                                                                        <td colspan="9">No sales found !
+                                                                                        </td>
+                                                                                    </tr>
+                                                                                </tbody>
+
                                                                                 <% } %>
+
+                                                                                    <% if (sales && sales.length> 0) {
+                                                                                        %>
+                                                                                        <tr
+                                                                                            class=" <%=count %2!==0? 'bg-light' :''%>">
+                                                                                            <td colspan="8"
+                                                                                                class="text-right  ">
+                                                                                                <div>Sub total:</div>
+                                                                                                    <div>
+                                                                                                        Discount:</div>
+                                                                                                       
+                                                                                                        <div
+                                                                                                            class="font-weight-bold ">
+                                                                                                            Total:</div>
+                                                                                            </td>
+                                                                                            <td class="text-right  ">
+                                                                                                <div> ₹<%=totalAmount %></div>
+                                                                                                <div> - ₹<%=
+                                                                                                        Math.round(discount)
+                                                                                                        %>
+                                                                                                </div>
+                                                                                               
+                                                                                                <div class="font-weight-bold "> ₹<%=totalAmount-Math.round(discount) %></div>
+                                                                                            </td>
+                                                                                        </tr>
+
+                                                                                        <% } %>
+
+
                                         </table>
+                                        <!-- <% if (sales && sales.length> 0) {
+                                            %>
+                                            <div class=" font-weight-bold d-flex ">
+                                                <span>
+                                                    <span class="row ">Total:₹<%= totalAmount %></span>  <span class="row">Discount:</span>
+                                                </span>
+                                            </div>
+                                            
+                                            <% } %> -->
+
                                         <% if (sales && sales.length> 0) { %>
                                             <div class="d-flex justify-content-end mt-4">
                                                 <button type="button"

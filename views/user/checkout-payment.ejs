@@ -221,7 +221,6 @@
                     </div>
     </section>
 
-
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
@@ -309,8 +308,9 @@
                         if (result.isConfirmed) {
                             console.log("confirm")
                             const paymentMethod = 'COD';
-                            const data = { paymentMethod: paymentMethod };
-                            fetch('/order-confirm-order', {
+                            const paymentStatus = "Pending"
+                            const data = { paymentMethod: paymentMethod, paymentStatus: paymentStatus };
+                            fetch('/confirm-order', {
                                 method: 'POST',
                                 headers: {
                                     'Content-Type': 'application/json'
@@ -321,7 +321,7 @@
                                 .then(data => {
 
                                     if (data.success) {
-                                        window.location.href = '/order-placed';
+                                        window.location.href = '/order-placed?status=success';
 
                                     } else {
 
@@ -376,18 +376,21 @@
                                 handler: function (response) {
 
                                     console.log('Payment successful! Payment ID:', response);
+                                    const paymentMethod = 'Razorpay';
+                                    const paymentStatus = "Success";
+                                    const data = { paymentMethod: paymentMethod, paymentStatus: paymentStatus };
 
-                                    fetch('/order-confirm-order', {
+                                    fetch('/confirm-order', {
                                         method: 'POST',
                                         headers: {
                                             'Content-Type': 'application/json'
                                         },
-                                        body: JSON.stringify({ paymentMethod: 'Razorpay' }) // Send payment method
+                                        body: JSON.stringify(data)
                                     })
                                         .then(response => response.json())
                                         .then(data => {
                                             if (data.success) {
-                                                window.location.href = '/order-placed';
+                                                window.location.href = '/order-placed?status=success';
                                             } else {
                                                 Swal.fire({
                                                     icon: 'warning',
@@ -417,11 +420,35 @@
                             var rzp = new Razorpay(options);
                             rzp.open();
                             rzp.on('payment.failed', () => {
-                                // console.log("failed");
                                 setTimeout(() => {
-                                    rzp.close();
-                                }, 2000)
-                            })
+                                    rzp.close(); // Close the payment interface after 4 seconds
+                                    const paymentMethod = 'Razorpay';
+                                    const paymentStatus = "Pending";
+                                    const data = { paymentMethod: paymentMethod, paymentStatus: paymentStatus };
+                                    fetch('/confirm-order', {
+                                        method: 'POST',
+                                        headers: {
+                                            'Content-Type': 'application/json'
+                                        },
+                                        body: JSON.stringify(data)
+                                    })
+                                        .then(response => response.json())
+                                        .then(data => {
+                                            if (data.success) {
+                                                window.location.href = '/order-placed?status=failed';
+                                            } else {
+                                                Swal.fire({
+                                                    icon: 'warning',
+                                                    text: data.message
+                                                });
+                                            }
+                                        })
+                                        .catch(error => {
+                                            console.error('Error:', error);
+                                            alert('Failed to confirm payment');
+                                        });
+                                }, 4000);
+                            });
                         })
                         .catch(error => {
                             console.error('Error:', error);
@@ -483,8 +510,9 @@
                             if (result.isConfirmed) {
                                 console.log("confirm")
                                 const paymentMethod = 'Wallet';
-                                const data = { paymentMethod: paymentMethod };
-                                fetch('/order-confirm-order', {
+                                const paymentStatus = "Success";
+                                const data = { paymentMethod: paymentMethod, paymentStatus: paymentStatus };
+                                fetch('/confirm-order', {
                                     method: 'POST',
                                     headers: {
                                         'Content-Type': 'application/json'
@@ -495,7 +523,7 @@
                                     .then(data => {
 
                                         if (data.success) {
-                                            window.location.href = '/order-placed';
+                                            window.location.href = '/order-placed?status=success';
 
                                         } else {
 
