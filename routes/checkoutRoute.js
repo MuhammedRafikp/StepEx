@@ -14,9 +14,9 @@ checkout_route.get("/checkout-details", isBlocked, isLogin, loadCheckout);
 
 checkout_route.post("/selectAddressForCheckout", isBlocked, isLogin, selectAddressForCheckout);
 
-checkout_route.post("/checkout/apply-coupon",applyCoupon);
+checkout_route.post("/checkout/apply-coupon",isLogin,applyCoupon);
 
-checkout_route.post("/checkout/remove-coupon",removeCoupon);
+checkout_route.post("/checkout/remove-coupon",isLogin,removeCoupon);
 
 checkout_route.get("/checkout-payment", isBlocked, isLogin, loadPayment);
 

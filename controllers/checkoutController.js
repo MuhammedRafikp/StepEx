@@ -185,6 +185,8 @@ const confirmOrder = async (req, res) => {
 
     try {
 
+        console.log("confirm order");
+
         const { paymentMethod, paymentStatus } = req.body;
         const userId = req.session._id;
         const addressIndex = req.session.addressIndex;
@@ -192,6 +194,14 @@ const confirmOrder = async (req, res) => {
         const addressData = await Address.findOne({ user_id: userId });
         const orderId = generateOrderID();
         const cartData = await Cart.findOne({ user_id: userId }).populate('items.products');
+
+        const orders = await Order.findOne({ user: userId });
+        let flag = 0;
+
+        if (!orders) {
+            flag = 1;
+        }
+        console.log("flag", flag)
 
         let outOfStockProducts = [];
         let maxStockExceed = [];
@@ -244,8 +254,6 @@ const confirmOrder = async (req, res) => {
 
             await Cart.findOneAndUpdate({ user_id: userId }, { items: [] });
 
-
-
             const newOrder = new Order({
                 user: userId,
                 orderId: orderId,
@@ -258,12 +266,88 @@ const confirmOrder = async (req, res) => {
             });
 
             await newOrder.save();
-
             delete req.session.discount;
+
+            //for wallet history
+            if (paymentMethod === "Wallet") {
+
+                const wallet = await Wallet.findOne({ user_id: userId });
+                const amount = totalAmount;
+                const previousBalance = wallet.balance;
+                const updatedBalance = previousBalance - amount;
+                wallet.balance = updatedBalance;
+
+                const transaction = {
+                    amount: parseFloat(amount),
+                    transaction_type: 'debit',
+                    previous_balance: previousBalance
+                };
+
+                wallet.history.push(transaction);
+
+                await wallet.save();
+            }
+
+            //referral cashback for refferal person
+            if (flag === 1) {
+
+                const userData = await User.findOne({ _id: userId });
+                console.log("referredCode:", userData);
+                const refferedUserData = await User.findOne({ referral_code: userData.referred_code });
+                console.log("refferedUserId:", refferedUserData);
+
+                const wallet = await Wallet.findOne({ user_id: refferedUserData._id });
+                console.log("wallet:", wallet);
+
+                const amount = 100;
+                const previousBalance = wallet.balance;
+                const updatedBalance = previousBalance + amount;
+                wallet.balance = updatedBalance;
+
+                const transaction = {
+                    amount: parseFloat(amount),
+                    transaction_type: 'Referral cashback',
+                    previous_balance: previousBalance
+                };
+
+                wallet.history.push(transaction);
+
+                await wallet.save();
+            }
+
+            //referral cashback for reffered person
+            if (flag === 1) {
+                let wallet = await Wallet.findOne({ user_id: userId });
+                console.log(userId)
+                if (!wallet) {
+
+                    wallet = new Wallet({
+                        user_id: userId,
+                        balance: 0,
+                        history: []
+                    });
+                }
+
+                const amount = 25;
+                const previousBalance = wallet.balance;
+                const updatedBalance = previousBalance + amount;
+                wallet.balance = updatedBalance;
+
+                const transaction = {
+                    amount: parseFloat(amount),
+                    transaction_type: 'Referal cashback',
+                    previous_balance: previousBalance
+                };
+
+                wallet.history.push(transaction);
+
+                await wallet.save();
+            }
+
             res.status(200).json({ success: true });
         }
 
-        console.log(paymentMethod);
+        console.log("paymentMethod : ",paymentMethod);
     } catch (error) {
         console.log(error.message);
         res.status(500).json({ error: error.message });
@@ -310,12 +394,12 @@ const createRazorPay = async (req, res) => {
 
 const loadOrderPlaced = async (req, res) => {
     try {
-        const {status} = req.query;
+        const { status } = req.query;
         const userId = req.session._id;
         const userData = await User.findOne({ _id: userId });
         const cartData = await Cart.findOne({ user_id: userId }).populate('items.products');
         const cartItemCount = cartData ? cartData.items.length : 0;
-        res.render("order-placed", { user: userData, cartCount: cartItemCount,status });
+        res.render("order-placed", { user: userData, cartCount: cartItemCount, status });
 
     } catch (error) {
         console.error(error.message)

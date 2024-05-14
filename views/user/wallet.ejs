@@ -139,7 +139,9 @@
                                                     </p>
                                                     <% if(wallet){%>
                                                     <p style="color: #000; font-weight: 600;">₹<%=wallet.balance%></p>
-                                                    <%}%>
+                                                    <%}else{%>
+                                                        <p style="color: #000; font-weight: 600;">₹0</p>
+                                                        <%}%>
                                                 </div>
                                                 
                                                 <div class="mt-2">

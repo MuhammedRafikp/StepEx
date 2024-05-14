@@ -3,6 +3,7 @@ import OTP from "../models/otpModel.js";
 import Address from "../models/addressModel.js";
 import Cart from "../models/cartModel.js";
 import Wishlist from "../models/wishlistModel.js";
+import Wallet from "../models/walletModel.js";
 import bcrypt from "bcrypt";
 import nodemailer from "nodemailer";
 import dotenv from 'dotenv';
@@ -49,6 +50,10 @@ const loadLogin = async (req, res) => {
 
 const loadRegister = async (req, res) => {
     try {
+        const referralCode = req.query.referral_code;
+        req.session.referral_code = referralCode;
+        console.log("referral_code:",req.session.referral_code);
+        console.log(referralCode);
         res.render('register');
     } catch (error) {
         console.log(error.message);
@@ -323,21 +328,26 @@ const resendOTP = async (req, res) => {
     }
 }
 
+const generateReferral = () => {
+    return Math.random().toString(36).substring(2, 15);
+}
 
 const verifyOTP = async (req, res) => {
     try {
         const { otp } = req.body;
         const { email } = req.session;
         const otpData = await OTP.findOne({ email: email, OTP: otp });
+        const referralCode = generateReferral();
 
         if (otpData) {
             if (otpData.OTP == otp) {
-
                 const user = new User({
                     name: req.session.name,
                     email: req.session.email,
                     mobile: req.session.mobile,
                     password: req.session.password,
+                    referral_code: referralCode,
+                    referred_code: req.session.referral_code,
                     is_block: 0
                 });
                 await user.save();
@@ -437,78 +447,23 @@ const changePassword = async (req, res) => {
 };
 
 
-// const loadWishlist = async (req, res) => {
-//     try {
-//         const userId = req.session._id;
-//         const userData = await User.findOne({ _id: userId });
-//         const cart = await Cart.findOne({ user_id: userId }).populate('items.products');
-//         const cartItemCount = cart ? cart.items.length : 0;
+const loadError404 = async (req, res) => {
+    try {
+        res.render("error-404")
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal server error.' });
+    }
+}
 
-//         const wishlistData = await Wishlist.findOne({ user_id: userId }).populate("items.product_id");
-
-//         res.render("wishlist", { user: userData, wishlist: wishlistData, cartCount: cartItemCount });
-
-//     } catch (error) {
-//         console.error(error);
-//         res.status(500).json({ error: 'Internal server error.' });
-
-//     }
-// }
-
-// const addToWishlist = async (req, res) => {
-//     try {
-//         const { productId } = req.body;
-//         const userId = req.session._id;
-//         const wishlist = await Wishlist.findOne({ user_id: userId });
-
-//         if (wishlist) {
-//             const existingWishlistItem = await Wishlist.findOne({ user_id: userId, 'items.product_id': productId });
-//             if (existingWishlistItem) {
-//                 return res.status(200).json({ success: false, message: 'Product already in wishlist' });
-//             } else {
-//                 await Wishlist.findOneAndUpdate(
-//                     { user_id: userId },
-//                     { $push: { items: { product_id: productId } } },
-//                     { new: true }
-//                 );
-//                 res.status(200).json({ success: true, message: "Product added to Wishlist successfully" });
-//             }
-
-//         } else {
-
-//             const newWishlistItem = new Wishlist({
-//                 user_id: userId,
-//                 items: [{ product_id: productId }]
-//             });
-//             await newWishlistItem.save();
-//             res.status(200).json({ success: true, message: "Product added to Wishlist successfully" });
-//         }
-
-//         console.log(productId);
-//     } catch (error) {
-//         console.error(error.message);
-//         res.status(500).json({ error: 'Internal server error.' });
-//     }
-// }
-
-
-// const removeProductFromWishlist = async (req, res) => {
-//     try {
-//         const { productId } = req.body;
-//         console.log(productId);
-//         const userId = req.session._id;
-//         await Wishlist.findOneAndUpdate(
-//             { user_id: userId },
-//             { $pull: { items: { product_id: productId } } }
-//         );
-//         res.status(200).json({ message: 'Product removed from wishlist successfully' });
-
-//     } catch (error) {
-//         console.error(error.message);
-//         res.status(500).json({ error: 'Internal server error.' });
-//     }
-// }
-
+const loadError500 = async (req, res) => {
+    try {
+        res.render("error-500")
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal server error.' });
+    }
+}
 
 export {
     loadhome,
@@ -526,5 +481,6 @@ export {
     loadProfile,
     editUser,
     changePassword,
-    
+    loadError404,
+    loadError500
 }

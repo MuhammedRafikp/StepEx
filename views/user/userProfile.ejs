@@ -130,7 +130,7 @@
                                     <div class="card-body">
                                         <div class="row mb-3">
                                             <div class="col-sm-3">
-                                                <h6 class="mb-0 font-weight-bold">User name</h6>
+                                                <h6 class="mb-0 font-weight-bold mt-3">User name </h6>
                                             </div>
                                             <div class="col-sm-9 text-secondary">
                                                 <input type="text" id="name" style="opacity:60%;"
@@ -139,7 +139,7 @@
                                         </div>
                                         <div class="row mb-3">
                                             <div class="col-sm-3">
-                                                <h6 class="mb-0 font-weight-bold">Email</h6>
+                                                <h6 class="mb-0 font-weight-bold mt-3">Email</h6>
                                             </div>
                                             <div class="col-sm-9 text-secondary">
                                                 <input type="text" id="email" style="opacity:60%;"
@@ -148,7 +148,7 @@
                                         </div>
 
                                         <div class="row mb-3">
-                                            <div class="col-sm-3 align-items-center  ">
+                                            <div class="col-sm-3 align-items-center  mt-3">
                                                 <h6 class="mb-0 font-weight-bold">Mobile</h6>
                                             </div>
                                             <div class="col-sm-9 text-secondary ">
@@ -160,7 +160,7 @@
                                         <div class="mt-3 d-none change-password">
 
                                             <div class="row mb-3">
-                                                <div class="col-sm-3 align-items-center  ">
+                                                <div class="col-sm-3 align-items-center mt-3 ">
                                                     <h6 class="mb-0 font-weight-bold">Current Password</h6>
                                                 </div>
                                                 <div class="col-sm-9 text-secondary ">
@@ -171,7 +171,7 @@
                                                 </div>
                                             </div>
                                             <div class="row mb-3">
-                                                <div class="col-sm-3 align-items-center  ">
+                                                <div class="col-sm-3 align-items-center mt-3 ">
                                                     <h6 class="mb-0 font-weight-bold">New Password</h6>
                                                 </div>
                                                 <div class="col-sm-9 text-secondary ">
@@ -181,7 +181,7 @@
                                                 </div>
                                             </div>
                                             <div class="row mb-3">
-                                                <div class="col-sm-3 align-items-center  ">
+                                                <div class="col-sm-3 align-items-center mt-3 ">
                                                     <h6 class="mb-0 font-weight-bold">Confirm Password</h6>
                                                 </div>
                                                 <div class="col-sm-9 text-secondary ">
@@ -199,7 +199,7 @@
                                             <div class="row">
                                                 <div class="col-sm-3 px-0 "></div>
                                                 <div class="col-sm-9 text-secondary">
-                                                    <input type="button" class="btn btn-black edit-btn px-4"
+                                                    <input type="button" id="edit-btn" class="btn btn-black px-4"
                                                         value="Edit">
                                                 </div>
                                             </div>
@@ -207,11 +207,36 @@
                                             <div class="row">
                                                 <div class="col-sm-3 px-0"></div>
                                                 <div class="col-sm-9 text-secondary">
-                                                    <input type="button" class="btn change-password-btn btn-black px-4 "
-                                                        value="Change password">
+                                                    <input type="button" id="change-password-btn"
+                                                        class="btn btn-black px-4 " value="Change password">
                                                 </div>
                                             </div>
                                         </div>
+
+                                        <div class="row mt-5 d-flex ">
+                                            <div class="col-lg-3 align-items-center mt-3">
+                                                <h6 class="mb-0 font-weight-bold">Referal link</h6>
+                                            </div>
+                                            <div class="col-lg-6 text-secondary ">
+                                                <input type="text" id="referal-code" class="form-control rounded "
+                                                    value="http://localhost:3000/register?referral_code=<%=user.referral_code%>" style="font-size: 14px;" readonly>
+                                                
+                                            </div>
+                                            <div class="col-lg-3 mt-2">
+                                                <div id="copy-btn" class="btn btn-black w-75">Copy</div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row ">
+                                            <div class="col-lg-3 align-items-center mt-3"></div>
+                                            <div class="col-lg-9 text-secondary ">
+                                               
+                                                <div class="my-2 text-success " style="font-size: 14px;" >Earn ₹100 for each referral when they place their first order.
+                                                </div>
+                                            </div>
+                                            
+                                        </div>
+
 
                                     </div>
                                 </div>
@@ -230,14 +255,14 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-            const editBtn = document.querySelector('.edit-btn');
+            const editBtn = document.getElementById('edit-btn');
             const nameField = document.getElementById('name');
             const mobileField = document.getElementById('mobile');
 
 
             editBtn.addEventListener('click', function () {
                 if (editBtn.value === 'Edit') {
-                   
+
                     nameField.readOnly = false;
                     mobileField.readOnly = false;
                     nameField.style.opacity = '1';
@@ -267,7 +292,7 @@
                         })
                         .then(data => {
                             console.log('Success:', data);
-                           
+
                             Swal.fire({
                                 icon: 'success',
                                 title: 'Success',
@@ -293,7 +318,7 @@
                 }
             });
 
-            const changePasswordBtn = document.querySelector('.change-password-btn');
+            const changePasswordBtn = document.getElementById('change-password-btn');
             const changePasswordDiv = document.querySelector('.change-password');
             const currentPasswordField = document.getElementById('currentpassword');
             const newPasswordField = document.getElementById('newpassword');
@@ -351,9 +376,8 @@
                     changePasswordDiv.classList.remove('d-none');
                     changePasswordBtn.classList.remove('btn-black');
                     changePasswordBtn.classList.add('btn-primary');
-                    changePasswordBtn.value = 'Save changes';
+                    changePasswordBtn.value = 'Save Password';
                 } else {
-
 
 
                     if (validatePasswordChange()) {
@@ -409,6 +433,27 @@
                 }
             });
         });
+
+
+        const copyBtn = document.getElementById('copy-btn');
+    const referralCodeInput = document.getElementById('referal-code');
+
+    copyBtn.addEventListener('click', function () {
+       
+        referralCodeInput.select();
+        referralCodeInput.setSelectionRange(0, 99999);
+
+        document.execCommand('copy');
+
+        // Deselect the text
+        referralCodeInput.setSelectionRange(0, 0);
+
+        // Optionally, provide visual feedback to the user
+        copyBtn.innerText = 'Copied!';
+        setTimeout(function () {
+            copyBtn.innerText = 'Copy';
+        }, 1000);
+    });
 
     </script>
 

@@ -144,9 +144,12 @@
                                                         Balance:</span>
                                                 </p>
                                                 <% if(wallet){%>
-                                                <p style="color: #000; font-weight: 600;">₹<%=wallet.balance%>
-                                                </p>
-                                                <%}%>
+                                                    <p style="color: #000; font-weight: 600;">₹<%=wallet.balance%>
+                                                    </p>
+                                                    <%}else{%>
+                                                        <p style="color: #000; font-weight: 600;">₹0
+                                                        </p>
+                                                        <%}%>
                                             </div>
                                         </div>
                                         <hr>

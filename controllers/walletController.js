@@ -138,7 +138,7 @@ const WithdrawMoney = async (req, res) => {
         const wallet = await Wallet.findOne({ user_id: userId });
 
         if (!wallet) {
-            return res.status(404).json({ message: 'Wallet not found for this user.' });
+            return res.status(404).json({ message: 'Insufficient balance.' });
         }
 
         if (wallet.balance < amount) {

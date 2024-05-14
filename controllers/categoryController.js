@@ -120,7 +120,7 @@ const editCategory = async (req, res) => {
             res.render("edit-category", { category: categoryData, message: `'${name}' already exists!` });
         } else {
             await Category.findByIdAndUpdate({ _id: id }, { $set: { name: req.body.name, image: image } });
-            res.redirect("/admin/category");
+            res.redirect("/admin/categories");
         }
 
     } catch (error) {
