@@ -13,8 +13,8 @@ const orderSchema = mongoose.Schema({
         type: Number,
         required: true,
     },
-    discount:{
-        type:Number
+    discount: {
+        type: Number
     },
 
     items: [
@@ -55,8 +55,7 @@ const orderSchema = mongoose.Schema({
             },
             status: {
                 type: String,
-                enum: ["Confirmed", "Shipped", "Cancelled", "Delivered", "Returned"],
-                default: "Confirmed",
+                enum: ["Confirmed", "Pending", "Shipped", "Cancelled", "Delivered", "Returned"],
             },
             reason: {
                 type: String

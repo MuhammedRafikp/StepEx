@@ -14,9 +14,9 @@ admin_order_route.get("/orders/order-details",isLogin,loadAdminOrderDetails)
 
 admin_order_route.post("/orders/order-details/change-status",isLogin,changeOrderStatus);
 
-admin_order_route.post("/orders/order-details/return-approve",approveReturn);
+admin_order_route.post("/orders/order-details/return-approve",isLogin,approveReturn);
 
-admin_order_route.post("/orders/order-details/return-decline",declineReturn);
+admin_order_route.post("/orders/order-details/return-decline",isLogin,declineReturn);
 
 
 export default admin_order_route;

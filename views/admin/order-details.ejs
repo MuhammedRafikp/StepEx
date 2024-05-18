@@ -85,9 +85,17 @@
                                                 <p class="mb-0 ">
                                                     <%= order.payment_method %>
                                                 </p>
-                                                <p class="mb-0 ">
-                                                    Status : <%= order.payment_status %>
-                                                </p>
+                                                <span class="text-dark font-weight-bold ">Status :</span>
+
+                                                <span class="<% if (order.payment_status==='Pending') { %>
+                                                    text-danger
+                                                    <% } else  { %>
+                                                        text-success
+                                                        <%}%>">
+                                                    <%= order.payment_status %>
+                                                </span>
+                                               
+
                                             </div>
                                         </div>
                                     </div>
@@ -186,7 +194,7 @@
 
                                                 </div>
                                                 <% if (item.status !="Cancelled" && item.status !="Returned" &&
-                                                    item.status !="Delivered" ) { %>
+                                                    item.status !="Delivered" && item.status !="Pending" ) { %>
 
                                                     <div class="col-lg-3 d-block  ">
                                                         <button class="change-btn btn btn-success py-1 px-4 mt-3"

@@ -232,6 +232,13 @@ const confirmOrder = async (req, res) => {
             for (const item of cartData.items) {
                 const product = await Product.findById(item.products);
 
+                let status = '';
+                if (paymentMethod === "Razorpay" && paymentStatus === "Pending") {
+                    status = "Pending";
+                } else {
+                    status = "Confirmed";
+                }
+
                 const itemDetails = {
                     product_id: item.products,
                     name: product.name,
@@ -241,7 +248,8 @@ const confirmOrder = async (req, res) => {
                     brand: product.brand,
                     imageUrl: product.images[0],
                     quantity: item.quantity,
-                };
+                    status:status
+                }
 
                 items.push(itemDetails);
                 totalAmount += product.offer_price * item.quantity;
@@ -347,7 +355,7 @@ const confirmOrder = async (req, res) => {
             res.status(200).json({ success: true });
         }
 
-        console.log("paymentMethod : ",paymentMethod);
+        console.log("paymentMethod : ", paymentMethod);
     } catch (error) {
         console.log(error.message);
         res.status(500).json({ error: error.message });

@@ -25,20 +25,78 @@ const loadLogin = async (req, res) => {
 
 const loadDashboard = async (req, res) => {
     try {
-        const salesData = await Order.aggregate([
-            { $unwind: "$items" },
-            { $match: { "items.status": { $nin: ["Cancelled", "Returned"] } } },
-            {
-                $lookup: {
-                    from: "products",
-                    localField: "items.product_id",
-                    foreignField: "_id",
-                    as: "productDetails"
-                }
-            },
-            { $unwind: "$productDetails" },
-            { $sort: { date: -1 } }
-        ]);
+
+
+        let salesData = [];
+        const { timePeriod } = req.query;
+        let startDate, endDate;
+
+        switch (timePeriod) {
+            case 'today':
+                startDate = new Date();
+                startDate.setHours(0, 0, 0, 0);
+                endDate = new Date();
+                endDate.setHours(23, 59, 59, 999);
+                break;
+            case 'this-week':
+                startDate = new Date();
+                startDate.setDate(startDate.getDate() - startDate.getDay()); // Start of the current week (Sunday)
+                endDate = new Date(startDate);
+                endDate.setDate(endDate.getDate() + 6); // End of the current week (Saturday)
+                break;
+            case 'this-month':
+                startDate = new Date();
+                startDate.setDate(1); // Start of the current month
+                endDate = new Date();
+                endDate.setDate(endDate.getDate() - 1); // End of the previous day
+                break;
+            case 'this-year':
+                startDate = new Date();
+                startDate.setMonth(0, 1); // Start of the current year
+                endDate = new Date();
+                endDate.setFullYear(startDate.getFullYear() + 1); // End of the current year
+                endDate.setDate(endDate.getDate() - 1); // End of the previous day
+                break;
+            default:
+                // For other cases or default, no need to set start and end dates
+                break;
+        }
+
+        if (startDate && endDate) {
+            salesData = await Order.aggregate([
+                { $match: { "date": { $gte: startDate, $lte: endDate } } },
+                { $unwind: "$items" },
+                { $match: { "items.status": { $nin: ["Cancelled", "Returned"] } } },
+                {
+                    $lookup: {
+                        from: "products",
+                        localField: "items.product_id",
+                        foreignField: "_id",
+                        as: "productDetails"
+                    }
+                },
+                { $unwind: "$productDetails" },
+                { $sort: { date: -1 } }
+            ]);
+        } else {
+            // Fetch default sales data
+            salesData = await Order.aggregate([
+                { $unwind: "$items" },
+                { $match: { "items.status": { $nin: ["Cancelled", "Returned"] } } },
+                {
+                    $lookup: {
+                        from: "products",
+                        localField: "items.product_id",
+                        foreignField: "_id",
+                        as: "productDetails"
+                    }
+                },
+                { $unwind: "$productDetails" },
+                { $sort: { date: -1 } }
+            ]);
+        }
+
+
 
         const bestSellingProducts = await Order.aggregate([
             { $unwind: "$items" },

@@ -58,6 +58,8 @@
                                                     onclick="generateReport()">Generate</button>
                                             </div>
                                         </div>
+                                        <input id="start-date" type="hidden" value="<%=startDate%>">
+                                        <input id="end-date" type="hidden" value="<%=endDate%>">
 
                                         <table class="table table-striped mt-5">
                                             <thead class="text-center bg-secondary">
@@ -80,7 +82,6 @@
                                                     <% let discount=0 %>
                                                         <% if (sales && sales.length> 0) { %>
                                                             <% sales.forEach((sale)=> { %>
-
                                                                 <% count++; %>
                                                                     <% discount+=sale.discount; %>
                                                                         <tbody class="text-center">
@@ -96,7 +97,7 @@
 
                                                                                 <td>
                                                                                     <%= sale.address.name%>
-                                                                                        
+
                                                                                 </td>
                                                                                 <td>
                                                                                     <%= sale.payment_method %>
@@ -107,16 +108,18 @@
                                                                                 </td>
 
                                                                                 <td>
-                                                                                    <%= sale.items.name.slice(0, 25) %>...
+                                                                                    <%= sale.items.name.slice(0, 25) %>
+                                                                                        ...
+                                                                                    <!-- <%= sale.items.name%> -->
                                                                                 </td>
-                                                                                <td>
+                                                                                <td >
                                                                                     <%= sale.items.price %>
                                                                                 </td>
-                                                                                <td>
+                                                                                <td >
                                                                                     <%= sale.items.quantity %>
                                                                                 </td>
 
-                                                                                <td>
+                                                                                <td >
                                                                                     <%=sale.items.quantity*sale.items.price
                                                                                         %>
                                                                                 </td>
@@ -142,26 +145,41 @@
 
                                                                                     <% if (sales && sales.length> 0) {
                                                                                         %>
-                                                                                        <tr
-                                                                                            class=" <%=count %2!==0? 'bg-light' :''%>">
-                                                                                            <td colspan="8"
-                                                                                                class="text-right  ">
-                                                                                                <div>Sub total:</div>
-                                                                                                    <div>
-                                                                                                        Discount:</div>
-                                                                                                       
-                                                                                                        <div
-                                                                                                            class="font-weight-bold ">
-                                                                                                            Total:</div>
+                                                                                        <tr></tr>
+                                                                                        <tr >
+                                                                                            <td colspan="7" >
+                                                                                                Subtotal
+
                                                                                             </td>
-                                                                                            <td class="text-right  ">
-                                                                                                <div> ₹<%=totalAmount %></div>
-                                                                                                <div> - ₹<%=
-                                                                                                        Math.round(discount)
-                                                                                                        %>
-                                                                                                </div>
-                                                                                               
-                                                                                                <div class="font-weight-bold "> ₹<%=totalAmount-Math.round(discount) %></div>
+                                                                                            <td colspan="2" style="text-align: end;">
+
+                                                                                                ₹<%=totalAmount %>
+
+                                                                                            </td>
+                                                                                        </tr>
+
+                                                                                        <tr>
+
+                                                                                            <td colspan="7">
+                                                                                                Discount:
+
+                                                                                            </td>
+                                                                                            <td colspan="2" style="text-align: end;">
+                                                                                                -₹
+                                                                                                <%=Math.round(discount)%>
+                                                                                            </td>
+                                                                                        </tr>
+                                                                                        <tr>
+                                                                                            <td colspan="7"
+                                                                                                class="font-weight-bold ">
+                                                                                                Total:
+
+                                                                                            </td>
+                                                                                            <td colspan="2"
+                                                                                                class="font-weight-bold " style="text-align: end;">
+                                                                                                ₹<%=totalAmount-Math.round(discount)
+                                                                                                    %>
+
                                                                                             </td>
                                                                                         </tr>
 
@@ -181,13 +199,14 @@
 
                                         <% if (sales && sales.length> 0) { %>
                                             <div class="d-flex justify-content-end mt-4">
-                                                <button type="button"
+                                                <button type="button" id="dwnld-exel-btn"
                                                     class="btn btn-outline-dark  btn-icon-text p-1 mx-1" onclick="">Exel
                                                     <i class="mdi mdi-printer btn-icon-append"></i></button>
-                                                <button type="button" id="pdfButton"
-                                                    class="btn btn-outline-dark  btn-icon-text p-1 mx-1"
-                                                    onclick="downloadPdf()">Pdf <i
+                                                <button type="button" id="dwnld-pdf-btn"
+                                                    class="btn btn-outline-dark  btn-icon-text p-1 mx-1">Pdf <i
                                                         class="mdi mdi-printer btn-icon-append"></i></button>
+                                                <!-- <button type="button" id="pdfButton" class="btn btn-outline-dark btn-icon-text p-1 mx-1">Pdf <i class="mdi mdi-printer btn-icon-append"></i></button> -->
+
 
                                             </div>
                                             <% } %>
@@ -199,8 +218,14 @@
             </div>
     </div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.3/xlsx.full.min.js"></script>
+
     <script>
+
         document.addEventListener('DOMContentLoaded', function () {
+
             const reportTypeSelect = document.getElementById('reportType');
             const dateFields = document.querySelector('.date-fields');
 
@@ -235,59 +260,48 @@
         }
 
 
+        document.getElementById("dwnld-pdf-btn").addEventListener("click", function () {
+            let doc = new window.jspdf.jsPDF();
+            let pageCenter = doc.internal.pageSize.getWidth() / 2;
+            const reportType = document.getElementById('reportType').value;
+            // console.log(reportType)
+            doc.setFontSize(25);
+            doc.text("StepEX", pageCenter, 10, { align: 'center' });
+            doc.setFontSize(15);
+            doc.text(`${reportType}'s Sales Report`, pageCenter, 20, { align: 'center' });
 
-        // async function downloadPdf() {
-        //     try {
+            let table = document.querySelector(".table");
 
-        //         const reportType = document.getElementById('reportType').value;
-        //         let queryParams = '';
+            doc.autoTable({ html: table, startY: 35 });
 
-        //         if (reportType === 'Custom Date Range') {
-        //             const startDate
-        //             const endDate
-        //             queryParams = `?reportType=${reportType}&startDate=${startDate}&endDate=${endDate}`;
-        //         } else {
-        //             queryParams = `?reportType=${reportType}`;
-        //         }
-        //         console.log(queryParams);
+            doc.save(`sales_report_${reportType}.pdf`);
+        });
 
-        //         const response = await fetch(`/sales/downloadPdf${queryParams}`);
+        document.getElementById("dwnld-exel-btn").addEventListener("click", function () {
+            let workbook = XLSX.utils.book_new();
 
-        //         if (!response.ok) {
-        //             throw new Error('Failed to download PDF');
-        //         }
+            let table = document.querySelector(".table");
 
-        //         // Convert the response to a blob (binary large object)
-        //         const blob = await response.blob();
+            let worksheet = XLSX.utils.table_to_sheet(table);
 
-        //         // Create a temporary anchor element
-        //         const a = document.createElement('a');
+            XLSX.utils.book_append_sheet(workbook, worksheet, "Sales Report");
 
-        //         // Create a blob URL for the PDF
-        //         const url = window.URL.createObjectURL(blob);
+            let range = XLSX.utils.decode_range(worksheet['!ref']);
+            for (let C = range.s.c; C <= range.e.c; ++C) {
+                let max_width = 0;
+                for (let R = range.s.r; R <= range.e.r; ++R) {
+                    let cell_address = { c: C, r: R };
+                    let cell_ref = XLSX.utils.encode_cell(cell_address);
+                    if (!worksheet[cell_ref]) continue;
+                    let cell_width = XLSX.SSF.format(cell_address, worksheet[cell_ref].v).length;
+                    max_width = Math.max(max_width, cell_width);
+                }
+                worksheet['!cols'] = worksheet['!cols'] || [];
+                worksheet['!cols'][C] = { wch: max_width + 1 };
+            }
 
-        //         // Set the anchor element's href attribute to the blob URL
-        //         a.href = url;
-
-        //         // Set the anchor element's download attribute with the desired filename
-        //         a.download = 'sales_report.pdf';
-
-        //         // Append the anchor element to the document body
-        //         document.body.appendChild(a);
-
-        //         // Programmatically trigger a click event on the anchor element
-        //         a.click();
-
-        //         // Remove the anchor element from the document body
-        //         document.body.removeChild(a);
-
-        //         // Revoke the blob URL to release the resources
-        //         window.URL.revokeObjectURL(url);
-        //     } catch (error) {
-        //         console.error('Error downloading PDF:', error);
-        //         // Handle error (e.g., display an error message)
-        //     }
-        // }
+            XLSX.writeFile(workbook, "sales_report.xlsx", { bookSST: true, type: 'binary' });
+        });
 
 
     </script>

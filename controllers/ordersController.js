@@ -3,6 +3,10 @@ import Order from "../models/orderModel.js";
 import Product from "../models/productsModel.js";
 import Cart from "../models/cartModel.js";
 import Wallet from "../models/walletModel.js";
+import Razorpay from "razorpay";
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 
 const laodOrders = async (req, res) => {
@@ -20,7 +24,7 @@ const laodOrders = async (req, res) => {
         const cartData = await Cart.findOne({ user_id: userId }).populate('items.products');
         const cartItemCount = cartData ? cartData.items.length : 0;
 
-        res.render("orders", { user: userData, orders: ordersData, cartCount: cartItemCount, currentPage: page, totalPages: totalPages })
+        res.render("orders", { user: userData, orders: ordersData, cartCount: cartItemCount, currentPage: page, totalPages: totalPages, razorpaykey: RAZORPAY_ID_KEY })
 
     } catch (error) {
         console.error(error);
@@ -78,7 +82,7 @@ const cancelOrder = async (req, res) => {
 
             const wallet = await Wallet.findOne({ user_id: req.session._id });
 
-            const refundAmount = cancelledProduct.price*cancelledQuantity;
+            const refundAmount = cancelledProduct.price * cancelledQuantity;
             console.log("refundAmount:", refundAmount);
             const previousBalance = wallet.balance;
 
@@ -200,7 +204,7 @@ const approveReturn = async (req, res) => {
     try {
         console.log("return order")
         const { productId, orderId, reason } = req.body;
-       
+
         console.log(productId, orderId, reason);
 
         const updatedOrder = await Order.findOneAndUpdate(
@@ -228,7 +232,7 @@ const approveReturn = async (req, res) => {
 
         const wallet = await Wallet.findOne({ user_id: req.session._id });
 
-        const refundAmount = returnedProduct.price*returnedQuantity;
+        const refundAmount = returnedProduct.price * returnedQuantity;
         const previousBalance = wallet.balance;
 
         await Wallet.findOneAndUpdate(
@@ -280,10 +284,84 @@ const declineReturn = async (req, res) => {
 }
 
 
+const { RAZORPAY_ID_KEY, RAZORPAY_SECRET_KEY } = process.env;
+
+const razorpay = new Razorpay({
+    key_id: RAZORPAY_ID_KEY,
+    key_secret: RAZORPAY_SECRET_KEY
+});
+
+const generatereceiptID = () => {
+    const min = 10000000;
+    const max = 99999999;
+    return Math.floor(Math.random() * (max - min + 1) + min);
+}
+
+const orderRepaymentRazorPpay = async (req, res) => {
+    try {
+        console.log(razorpay.key_id, razorpay.key_secret);
+
+        const { orderId } = req.body;
+        const orderData = await Order.findOne({ orderId: orderId });
+        console.log(orderData.totalAmount);
+        const amount = orderData.totalAmount;
+        const receiptID = generatereceiptID();
+        const order = await razorpay.orders.create({
+            amount: amount * 100,
+            currency: 'INR',
+            receipt: `${receiptID}`,
+            payment_capture: 1
+        });
+
+        res.status(200).json({ success: true, order });
+    } catch (error) {
+        console.error(error, "error");
+        res.status(500).json({ success: false, message: 'Failed to create Razorpay order' });
+    }
+}
+
+
+const orderRepayment = async (req, res) => {
+    try {
+
+        const { orderId } = req.body;
+        console.log(orderId);
+
+        // Update order payment_status to "Success"
+        await Order.findOneAndUpdate(
+            { orderId: orderId },
+            { payment_status: "Success" },
+            { new: true }
+        );
+
+        // Update each product status to "Confirmed"
+        const order = await Order.findOne({ orderId: orderId });
+        const bulkWriteOperations = order.items.map((item) => ({
+            updateOne: {
+                filter: { _id: item.product_id },
+                update: { $set: { "items.$.status": "Confirmed" } }
+            }
+        }));
+
+        // Execute bulk write operations
+        await Order.bulkWrite(bulkWriteOperations);
+
+        console.log(order)
+
+        res.status(200).json({ success: true, message: 'Order payment status updated successfully' });
+
+    } catch (error) {
+
+    }
+}
+
+
 
 export {
     laodOrders,
     loadOrderDetails,
+    orderRepaymentRazorPpay,
+    orderRepayment,
     loadAdminOrders,
     loadAdminOrderDetails,
     changeOrderStatus,

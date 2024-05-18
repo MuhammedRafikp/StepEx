@@ -10,7 +10,6 @@ import { isBlocked } from "../middleware/isBlocked.js";
 import { loadSales } from "../controllers/salesController.js";
 
 
-sales_route.get("/sales", loadSales);
-
+sales_route.get("/sales", isBlocked, isLogin, loadSales);
 
 export default sales_route;

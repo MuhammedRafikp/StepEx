@@ -28,7 +28,7 @@
             <div class="container d-flex justify-content-center align-items-center">
                 <div class="text-center">
                     <h4 style="text-transform: uppercase;">
-                        <%= currentType %> SALES REPORT
+                        <%= currentType %>'S SALES REPORT
                     </h4>
                     <table class="table table-striped">
                         <thead class="text-center bg-secondary">
@@ -66,50 +66,50 @@
 
                         <% let count=0 %>
                             <% let totalAmount=0 %>
-                                <% if (sales && sales.length> 0) { %>
-                                    <% sales.forEach((sale)=> { %>
-                                        <% sale.items.forEach((item)=> { %>
+                                <% let discount=0 %>
+                                    <% if (sales && sales.length> 0) { %>
+                                        <% sales.forEach((sale)=> { %>
                                             <% count++; %>
-                                                <tbody class="text-center">
-                                                    <tr class="<%=count %2==0? 'bg-light' :''%>">
-                                                        <td>
-                                                            <%= count %>.
-                                                        </td>
+                                                <% discount+=sale.discount; %>
+                                                    <tbody class="text-center">
+                                                        <tr class="<%=count %2==0? 'bg-light' :''%>">
+                                                            <td>
+                                                                <%= count %>.
+                                                            </td>
 
-                                                        <td>
-                                                            <%= sale.orderId %>
-                                                        </td>
+                                                            <td>
+                                                                <%= sale.orderId %>
+                                                            </td>
 
-                                                        <td>
-                                                            <%= sale.address.name %>
-                                                        </td>
-                                                        <td>
-                                                            <%= sale.payment_method %>
-                                                        </td>
-                                                        <td>
-                                                            <%= sale.date.toLocaleDateString() %>
-                                                        </td>
+                                                            <td>
+                                                                <%= sale.address.name %>
+                                                            </td>
+                                                            <td>
+                                                                <%= sale.payment_method %>
+                                                            </td>
+                                                            <td>
+                                                                <%= sale.date.toLocaleDateString() %>
+                                                            </td>
 
-                                                        <td>
-                                                            <%= item.name %>
-                                                        </td>
-                                                        <td>
-                                                            <%= item.price %>
-                                                        </td>
-                                                        <td>
-                                                            <%= item.quantity %>
-                                                        </td>
+                                                            <td>
+                                                                <%= sale.items.name.slice(0, 25) %>...
+                                                            </td>
+                                                            <td>
+                                                                <%= sale.items.price %>
+                                                            </td>
+                                                            <td>
+                                                                <%= sale.items.quantity %>
+                                                            </td>
 
-                                                        <td>
-                                                            <%=item.quantity*item.price %>
-                                                        </td>
-                                                        <%totalAmount+= (item.quantity*item.price) %>
+                                                            <td>
+                                                                <%=sale.items.quantity*sale.items.price %>
+                                                            </td>
+                                                            <%totalAmount+= (sale.items.quantity*sale.items.price) %>
 
 
-                                                    </tr>
-                                                </tbody>
+                                                        </tr>
+                                                    </tbody>
 
-                                                <% }); %>
                                                     <% }); %>
 
                                                         <% } else { %>
@@ -123,14 +123,33 @@
 
                                                             <% } %>
 
-                                                                <tr class="total-row <%=count %2!==0? 'bg-light' :''%>">
-                                                                    <td colspan="8" class="text-right font-weight-bold"><span>Total:
-                                                                        </span></td>
-                                                                    <td> ₹<%= totalAmount %>
-                                                                    </td>
-                                                                </tr>
-                    </table>
+                                                                <% if (sales && sales.length> 0) {
+                                                                    %>
+                                                                    <tr class=" <%=count %2!==0? 'bg-light' :''%>">
+                                                                        <td colspan="8" class="text-right  ">
+                                                                            <div>Sub total:</div>
+                                                                            <div>
+                                                                                Discount:</div>
 
+                                                                            <div class="font-weight-bold ">
+                                                                                Total:</div>
+                                                                        </td>
+                                                                        <td class="text-right  ">
+                                                                            <div> ₹<%=totalAmount %>
+                                                                            </div>
+                                                                            <div> - ₹<%= Math.round(discount) %>
+                                                                            </div>
+
+                                                                            <div class="font-weight-bold ">
+                                                                                ₹<%=totalAmount-Math.round(discount) %>
+                                                                            </div>
+                                                                        </td>
+                                                                    </tr>
+
+                                                                    <% } %>
+
+
+                    </table>
                 </div>
             </div>
 

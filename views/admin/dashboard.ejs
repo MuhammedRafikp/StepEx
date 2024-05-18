@@ -91,11 +91,20 @@
                           <option value="this-month">This Month</option>
                           <option value="this-year">This Year</option>
                         </select>
+                        <div>
+                          <button id="apply-btn" class="btn btn-success">Apply</button>
+                        </div>
                       </div>
-                      <canvas id="sale-chart" class="mt-4"></canvas>
+
+                      <!-- <canvas id="sale-chart" class="mt-4"></canvas> -->
+                      <canvas id="myChart" style="width:100%;max-width:700px"></canvas>
+
                     </div>
                   </div>
                 </div>
+
+
+  
 
 
 
@@ -185,7 +194,6 @@
   </div>
   </div>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
 
   <!-- 
   <script src="/admin_assets/vendors/js/vendor.bundle.base.js"></script>
@@ -196,5 +204,76 @@
   <script src="/admin_assets/js/misc.js"></script>
   <script src="/admin_assets/js/dashboard.js"></script>
   <script src="/admin_assets/js/todolist.js"></script> -->
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
+  </script>
+  <script>
+    var xValues = ["Jan", "Feb", "Mar", "Apr", "May","Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    var yValues = [5000, 490, 448, 2400, 1000, 4900, 4446, 2674, 1000, 498, 4488, 2456];
+    var barColors = "blue"
+    new Chart("myChart", {
+      type: "bar",
+      data: {
+        labels: xValues,
+        datasets: [{
+          backgroundColor: barColors,
+          data: yValues
+        }]
+      },
+      options: { }
+    });
+  </script>
+
+
+
+  <!-- <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const timePeriodSelect = document.getElementById('time-period-select');
+      const applyBtn = document.getElementById('apply-btn');
+      const ctx = document.getElementById('myChart').getContext('2d');
+      let chart = null;
+  
+      applyBtn.addEventListener('click', function () {
+        const selectedPeriod = timePeriodSelect.value;
+        fetchSalesData(selectedPeriod);
+      });
+  
+      async function fetchSalesData(selectedPeriod) {
+        try {
+          const response = await fetch(`/admin/sales?timePeriod=${selectedPeriod}`);
+          const data = await response.json();
+          updateChart(data);
+        } catch (error) {
+          console.error(error);
+        }
+      }
+  
+      function updateChart(data) {
+        if (chart) {
+          chart.destroy();
+        }
+  
+        const xValues = data.xValues;
+        const yValues = data.yValues;
+        const barColors = "blue";
+  
+        chart = new Chart(ctx, {
+          type: "bar",
+          data: {
+            labels: xValues,
+            datasets: [{
+              backgroundColor: barColors,
+              data: yValues
+            }]
+          },
+          options: {}
+        });
+      }
+  
+      // Fetch initial data for default time period
+      fetchSalesData(timePeriodSelect.value);
+    });
+  </script>-->
 
   <%- include('../admin_layouts/footer.ejs') %>

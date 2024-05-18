@@ -1,7 +1,7 @@
 <%- include("../layouts/header.ejs") %>
 
     <style>
-        .hero-wrap { 
+        .hero-wrap {
             margin-top: 110px;
             display: flex;
             align-items: center;
@@ -10,7 +10,7 @@
 
         .shop-heading {
             text-align: left;
-        } 
+        }
 
         .breadcrumbs {
             text-align: right;
@@ -141,10 +141,18 @@
                                                                 month: 'short' , year: 'numeric' })%>
                                                     </span>
 
-                                                    <a href="/order/order-details?id=<%=order.orderId%>"
-                                                        class="btn btn-black py-0 px-4">
-                                                        <span>View Order Details</span>
-                                                    </a>
+                                                    <%if(order.payment_method==="Razorpay" &&
+                                                        order.payment_status==="Pending" ){%>
+                                                        <span id="repayment-btn"
+                                                            class="btn btn-success font-weight-bold">Make
+                                                            Repayment</span>
+                                                        <input id="order-id" type="hidden" value="<%=order.orderId%>">
+                                                        <%}%>
+
+                                                            <a href="/order/order-details?id=<%=order.orderId%>"
+                                                                class="text-info py-0 px-4 ">
+                                                                <span>View Order Details</span>
+                                                            </a>
 
                                                 </div>
                                                 <hr>
@@ -224,7 +232,8 @@
                                                             <div class="row mt-4">
                                                                 <div class="col-lg-12">
                                                                     <% if (item.status==='Confirmed' ||
-                                                                        item.status==='Shipped' ) { %>
+                                                                        item.status==='Shipped'
+                                                                        ||item.status==='Pending' ) { %>
 
                                                                         <button
                                                                             class="btn btn-danger px-3 py-1 cancel-order-btn"
@@ -245,16 +254,21 @@
                                                                                 data-orderId="<%=order.orderId%>">Return</button>
                                                                             <% } %>
 
-                                                                            <% if (item.return_approval == 1) { %>
-                                                                                <div class="row">
-                                                                                    <span class="text-info" style="font-size: 13px;">Return Requested</span>
-                                                                                </div>
-                                                                            <% } else if (item.return_approval == 3) { %>
-                                                                                <div class="row">
-                                                                                    <span class="text-danger" style="font-size: 13px;">Return Declined</span>
-                                                                                </div>
-                                                                            <% } %>
-                                                                            
+                                                                                <% if (item.return_approval==1) { %>
+                                                                                    <div class="row">
+                                                                                        <span class="text-info"
+                                                                                            style="font-size: 13px;">Return
+                                                                                            Requested</span>
+                                                                                    </div>
+                                                                                    <% } else if
+                                                                                        (item.return_approval==3) { %>
+                                                                                        <div class="row">
+                                                                                            <span class="text-danger"
+                                                                                                style="font-size: 13px;">Return
+                                                                                                Declined</span>
+                                                                                        </div>
+                                                                                        <% } %>
+
                                                                 </div>
                                                             </div>
 
@@ -311,5 +325,69 @@
     </section>
 
     <%- include("../user/cancel-return-order.ejs") %>
+
+        <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+        <script>
+
+            document.getElementById('repayment-btn').addEventListener('click', function () {
+
+                var orderId = document.getElementById("order-id").value;
+                console.log(orderId);
+
+                fetch('/orders/make-repayment-razorpay', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ orderId: orderId }),
+                })
+                    .then(response => {
+
+                        if (response.ok) {
+
+                            response.json().then(data => {
+                                var options = {
+                                    key: '<%=razorpaykey%>',
+                                    amount: data.order.amount,
+                                    currency: data.order.currency,
+                                    name: 'StepEx',
+                                    description: 'Payment for Your Order',
+                                    image: '/logo/stepexlogo.png',
+
+                                    handler: function (response) {
+                                        fetch('/orders/make-repayment', {
+                                            method: 'POST',
+                                            headers: {
+                                                'Content-Type': 'application/json',
+                                            },
+                                            body: JSON.stringify({ orderId: orderId }),
+                                        })
+                                            .then(paymentResponse => {
+                                                if (paymentResponse.ok) {
+                                                    console.log("paymentResponseOK")
+                                                    window.location.href = window.location.href = '/order-placed?status=success';
+                                                } else {
+                                                    console.log("notOk")
+                                                }
+                                            })
+                                            .catch(error => {
+                                                console.error('Error:', error);
+                                            });
+                                    }
+                                };
+                                var rzp1 = new Razorpay(options);
+                                rzp1.open();
+                            });
+                        } else {
+                            console.log("make-repayment-razorpay is not successful")
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+            });
+        </script>
+
 
         <%- include("../layouts/footer.ejs") %>
