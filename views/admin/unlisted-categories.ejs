@@ -87,7 +87,7 @@
 
         if (confirmation.isConfirmed) {
 
-          await fetch(`/admin/category/retrieve-category?id=${categoryId}`, {
+          await fetch(`/admin/categories/unlisted-categories/retrieve-category?id=${categoryId}`, {
             method: 'POST'
           });
 

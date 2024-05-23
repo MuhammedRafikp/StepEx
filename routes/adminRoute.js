@@ -12,7 +12,7 @@ admin_route.get("/", isLogout, loadLogin);
 
 admin_route.post("/", isLogout, verfyLogin);
 
-admin_route.get("/dashboard", isLogin, loadDashboard);
+admin_route.get("/dashboard",  loadDashboard);
 
 admin_route.get("/logout", isLogin, logout);
 

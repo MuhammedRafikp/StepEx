@@ -106,7 +106,7 @@ const deleteCategoryOffer = async (req, res) => {
         const id = req.query.id;
         console.log(id);
         console.log("hellooo");
-        const offer = await CategoryOffer.findOne({_id:id}); 
+        const offer = await CategoryOffer.findOne({ _id: id });
         console.log("hellooo");
         res.status(200).json({ message: 'Offer deleted successfully' });
     } catch (error) {
@@ -132,10 +132,10 @@ const loadAddProductOffer = async (req, res) => {
     try {
         const productData = await Products.find({ is_delete: 0 });
         res.render("add-offer-product", { products: productData });
-        // console.log(productData);
+
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ success: false, message: 'Internal server error' });
+        error.statusCode = 500;
+        next(error);
     }
 }
 
@@ -161,8 +161,8 @@ const addProductOffer = async (req, res) => {
         }
 
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ success: false, message: 'Internal server error' });
+        error.statusCode = 500;
+        next(error);
     }
 }
 
@@ -177,18 +177,18 @@ const loadEditProductOffer = async (req, res) => {
         res.render("edit-offer-product", { products: productData, productOffer: productOfferData });
 
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ success: false, message: 'Internal server error' });
+        error.statusCode = 500;
+        next(error);
     }
 }
 
 
 const editProductOffer = async (req, res) => {
+
     try {
         console.log(req.body);
         const { id, product, offer, offerPrice, validity } = req.body;
         const productId = await Products.findOne({ name: product }, { _id: 1 });
-        // console.log("productId:", productId)
         console.log(typeof (id))
         const existingProductOffer = await ProductOffer.findOne({ product: productId, _id: { $ne: id } });
 
@@ -206,21 +206,22 @@ const editProductOffer = async (req, res) => {
         }
 
     } catch (error) {
-        console.error(error.message);
-        res.status(500).json({ success: false, message: 'Internal server error' });
+        error.statusCode = 500;
+        next(error);
     }
 }
 
 
 const deleteProductOffer = async (req, res) => {
     try {
-        const id = req.query.id; // Retrieve ID from the request query
-        console.log("id",id);
-        await ProductOffer.deleteOne({_id:id}); // Pass the ID string directly
+        const id = req.query.id;
+        console.log("id", id);
+        await ProductOffer.deleteOne({ _id: id });
         res.status(200).json({ message: 'Offer deleted successfully' });
+
     } catch (error) {
-        console.error(error.message);
-        res.status(500).json({ success: false, message: 'Internal server error' });
+        error.statusCode = 500;
+        next(error);
     }
 }
 

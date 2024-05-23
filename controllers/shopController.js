@@ -93,7 +93,7 @@ import ProductOffer from "../models/productOfferModel.js";
 // }
 
 
-const loadShop = async (req, res) => {
+const loadShop = async (req, res, next) => {
     try {
         console.log("shop");
         console.log(req.query);
@@ -156,18 +156,17 @@ const loadShop = async (req, res) => {
 
         res.render("shop", {
             user: userData, products: productsData, categories: categoryData, genders, cartCount: cartItemCount, totalPages, currentPage: page, selectedCategories: categoryFilter, selectedGenders: genderFilter,
-            minPrice,maxPrice,sortBy
+            minPrice, maxPrice, sortBy
         });
 
     } catch (error) {
-        console.error(error.message);
-        res.status(500).send('Internal Server Error');
+        error.statusCode = 500;
+        next(error);
     }
 };
 
 
-
-const loadSingleProduct = async (req, res) => {
+const loadSingleProduct = async (req, res, next) => {
     try {
         const userId = req.session._id;
         const user = await User.findOne({ _id: userId });
@@ -197,7 +196,8 @@ const loadSingleProduct = async (req, res) => {
         res.render("single-product", { user: user, product: productData, cartCount: cartItemCount });
 
     } catch (error) {
-        console.error(error.message);
+        error.statusCode = 500;
+        next(error);
     }
 }
 

@@ -18,6 +18,9 @@ app.use((req, res, next) => {
     next();
 });
 
+app.set("view engine","ejs");
+
+
 import adminRoute from "./routes/adminRoute.js";
 import CategoryRoute from "./routes/categoryRoute.js";
 import productRoute from "./routes/productRoute.js";
@@ -42,24 +45,20 @@ app.use(express.static('public'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use("/admin", adminRoute);
-app.use("/admin", productRoute);
-app.use("/admin", CategoryRoute);
-app.use("/admin", adminOrderRoute);
-app.use("/admin", offerRoute);
-app.use("/admin", couponRoute);
-app.use("/admin", bannerRoute);
-app.use("/admin", salesRoute);
+app.use("/admin", adminRoute, productRoute, CategoryRoute, adminOrderRoute, offerRoute, couponRoute, bannerRoute, salesRoute);
 
-app.use("/", userRoute);
-app.use("/", shopRoute);
-app.use("/", cartRoute);
-app.use("/", wishlistRoute);
-app.use("/", addressRoute);
-app.use("/", checkoutRoute);
-app.use("/", orderRoute);
-app.use("/", walletRoute);
+app.use("/", userRoute, shopRoute, cartRoute, wishlistRoute, addressRoute, checkoutRoute, orderRoute, walletRoute);
+
+import {errorHandler} from "./middleware/errorHandler.js";
+
+app.use(errorHandler);
+
+app.all("*",(req,res,next)=>{
+    res.render("user/error-404");
+})
+
+const port = 3000;
 
 app.listen(3000, () => {
-    console.log("server is running on port 3000");
+    console.log(`server is running on port ${port}`);
 });

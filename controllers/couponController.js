@@ -1,12 +1,14 @@
 import Coupons from "../models/couponModel.js";
 
+
 const loadCoupons = async (req, res) => {
     try {
         const couponData = await Coupons.find({});
         res.render("coupons", { coupons: couponData });
+
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ success: false, message: 'Internal server error' });
+        error.statusCode = 500;
+        next(error);
     }
 }
 
@@ -14,9 +16,10 @@ const loadCoupons = async (req, res) => {
 const loadAddCoupon = async (req, res) => {
     try {
         res.render("add-coupon");
+
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ success: false, message: 'Internal server error' });
+        error.statusCode = 500;
+        next(error);
     }
 }
 
@@ -44,8 +47,8 @@ const addCoupon = async (req, res) => {
         }
 
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ success: false, message: 'Internal server error' });
+        error.statusCode = 500;
+        next(error);
     }
 }
 
@@ -58,8 +61,8 @@ const loadEditCoupon = async (req, res) => {
         res.render("edit-coupon", { coupon: couponData });
 
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ success: false, message: 'Internal server error' });
+        error.statusCode = 500;
+        next(error);
     }
 }
 
@@ -81,8 +84,8 @@ const editCoupon = async (req, res) => {
         }
 
     } catch (error) {
-        console.error(error.message);
-        res.status(500).json({ success: false, message: 'Internal server error' });
+        error.statusCode = 500;
+        next(error);
     }
 }
 
@@ -101,8 +104,8 @@ const activateCoupon = async (req, res) => {
         res.status(200).json({ message: 'activated successfully' });
         console.log('activated successfully');
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ success: false, message: 'Internal server error' });
+        error.statusCode = 500;
+        next(error);
     }
 }
 
@@ -121,8 +124,8 @@ const deactivateCoupon = async (req, res) => {
         res.status(200).json({ message: 'deactivated successfully' });
         console.log('deactivated successfully');
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ success: false, message: 'Internal server error' });
+        error.statusCode = 500;
+        next(error);
     }
 }
 
@@ -135,8 +138,8 @@ const deleteCoupon = async (req, res) => {
         res.status(200).json({ message: 'coupon deleted successfully' });
 
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ success: false, message: 'Internal server error' });
+        error.statusCode = 500;
+        next(error);
     }
 }
 

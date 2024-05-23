@@ -2,20 +2,24 @@ import Category from "../models/categoryModel.js";
 
 const loadCategory = async (req, res) => {
     try {
-        const categoryData = await Category.find({ is_delete: 0 });
 
-        res.render("category", { categories: categoryData });
+        const categoryData = await Category.find({ is_delete: 0 });
+        res.render("categories", { categories: categoryData });
+
     } catch (error) {
-        console.log(error.message);
+        error.statusCode = 500;
+        next(error);
     }
 }
 
 
 const loadAddCategory = async (req, res) => {
     try {
-        res.render("add-Category")
+        res.render("add-Category");
+
     } catch (error) {
-        console.log(error.message);
+        error.statusCode = 500;
+        next(error);
     }
 }
 
@@ -42,8 +46,10 @@ const addCategory = async (req, res) => {
                 res.redirect("/admin/category");
             }
         }
+
     } catch (error) {
-        console.log(error.message);
+        error.statusCode = 500;
+        next(error);
     }
 }
 
@@ -52,8 +58,10 @@ const loadUnlistedCategories = async (req, res) => {
     try {
         const categoryData = await Category.find({ is_delete: 1 });
         res.render("unlisted-categories", { categories: categoryData });
+
     } catch (error) {
-        console.log(error.message);
+        error.statusCode = 500;
+        next(error);
     }
 }
 
@@ -70,7 +78,8 @@ const unlistCategory = async (req, res) => {
         res.redirect("/admin/category");
 
     } catch (error) {
-        console.log(error.message);
+        error.statusCode = 500;
+        next(error);
     }
 }
 
@@ -83,10 +92,11 @@ const retrieveCategory = async (req, res) => {
             { _id: id },
             { $set: { is_delete: 0 } }
         );
-        res.redirect("/admin/category/unlisted-category");
+        res.redirect("/admin/category/unlisted-categories");
 
     } catch (error) {
-        console.log(error.message);
+        error.statusCode = 500;
+        next(error);
     }
 }
 
@@ -95,9 +105,11 @@ const loadEditCategory = async (req, res) => {
     try {
         const id = req.query.id;
         const categoryData = await Category.findOne({ _id: id });
-        res.render("edit-Category", { category: categoryData })
+        res.render("edit-Category", { category: categoryData });
+
     } catch (error) {
-        console.log(error.message);
+        error.statusCode = 500;
+        next(error);
     }
 }
 
@@ -124,7 +136,8 @@ const editCategory = async (req, res) => {
         }
 
     } catch (error) {
-        console.error(error.message);
+        error.statusCode = 500;
+        next(error);
     }
 }
 

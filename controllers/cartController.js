@@ -1,8 +1,6 @@
 import User from "../models/userModel.js";
 import Cart from "../models/cartModel.js";
-import Address from "../models/addressModel.js";
 import Product from "../models/productsModel.js";
-import Order from "../models/orderModel.js";
 import Razorpay from "razorpay";
 import dotenv from 'dotenv';
 
@@ -23,11 +21,12 @@ const loadCart = async (req, res) => {
         const userData = await User.findOne({ _id: userId });
         const cartData = await Cart.findOne({ user_id: userId }).populate('items.products');
         const cartItemCount = cartData ? cartData.items.length : 0;
-        // console.log("hello ", cartData)
+
         res.render("cart", { user: userData, cart: cartData, cartCount: cartItemCount });
 
     } catch (error) {
-        console.log(error.message);
+        error.statusCode = 500;
+        next(error);
     }
 }
 
@@ -39,8 +38,8 @@ const addToCart = async (req, res) => {
         const userId = req.session._id;
         const cart = await Cart.findOne({ user_id: userId });
         console.log(productId);
-        if (cart) {
 
+        if (cart) {
             const existingCartItem = await Cart.findOne({ user_id: userId, 'items.products': productId });
 
             if (existingCartItem) {
@@ -63,8 +62,8 @@ const addToCart = async (req, res) => {
         }
 
     } catch (error) {
-        console.error(error.message);
-        res.status(500).json({ success: false, message: "Error adding product to cart", error: error.message });
+        error.statusCode = 500;
+        next(error);
     }
 };
 
@@ -85,7 +84,8 @@ const updateCartQuantity = async (req, res) => {
         res.status(200).json({ message: 'Cart quantity updated successfully' });
 
     } catch (error) {
-        console.log(error.message);
+        error.statusCode = 500;
+        next(error);
     }
 }
 
@@ -102,8 +102,8 @@ const removeProductFromCart = async (req, res) => {
         res.status(200).json({ message: 'Product removed from cart successfully' });
 
     } catch (error) {
-        console.log(error.message);
-        res.status(500).json({ error: 'Internal server error' });
+        error.statusCode = 500;
+        next(error);
     }
 }
 

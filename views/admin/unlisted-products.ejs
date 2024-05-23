@@ -54,7 +54,7 @@
                                            
                                                     <tbody class="text-center ">
                                                         <tr>
-                                                            <td class="py-4">
+                                                            <td >
                                                                 <img src="/uploads/productImages/<%=product.images[0]%>"
                                                                     alt="image" />
                                                             </td>
@@ -74,7 +74,7 @@
                                                                 <%= product.createdAt.toLocaleDateString() %>
                                                             </td>
                                                             <td>
-                                                                <button class="btn btn-success"
+                                                                <button class="btn btn-success py-1 px-2 "
                                                                     onclick="retrieveProduct('<%=product._id %>')">Retrieve</button>
 
                                                             </td>
@@ -83,14 +83,19 @@
                                                     <%})%>
                                                         <% } else { %>
 
-                                                            <tbody class="text-center">
-                                                                <tr>
-                                                                    <td colspan="7">No products found !</td>
-                                                                </tr>
-                                                            </tbody>
+                                                            <div class="my-5">
+                                                                <div class="d-flex justify-content-center ">
+                                                                    <img width="100" height="100" src="/assets/images/no-products-found.png" alt="">
+                                                                </div>
+                                                                <div class="d-flex justify-content-center ">
+                                                                    <h6 style="font-weight: 600;">No products Found!</h6>
+                                                                </div>
+                                                            </div>
 
                                                             <% } %>
                                         </table>
+
+                                        <% if(products.length> 0) { %>
 
                                         <div class="pagination d-flex justify-content-start mt-5">
                                             <% if (currentPage> 1) { %>
@@ -115,8 +120,17 @@
                                                                                 href="?page=<%= totalPages %>">&raquo;</a>
                                                                             <% } %>
                                         </div>
+                                        <% } %>
                                     </div>
+                                   
+
+
                                 </div>
+                               
+                            </div>
+
+                            <div class="col-12">
+                                <a href="/admin/products" class="btn btn-primary p-2">Go back</a>
                             </div>
                         </div>
                     </div>

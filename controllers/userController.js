@@ -32,9 +32,10 @@ const loadhome = async (req, res) => {
         const cartItemCount = cart ? cart.items.length : 0;
         console.log(cartItemCount);
         res.render("home", { user: userData, cartCount: cartItemCount });
+
     } catch (error) {
-        console.log(error.message);
-        res.status(500).json({ error: error.message });
+        error.statusCode = 500;
+        next(error);
     }
 }
 
@@ -42,8 +43,10 @@ const loadhome = async (req, res) => {
 const loadLogin = async (req, res) => {
     try {
         res.render("login");
+
     } catch (error) {
-        console.log(error.message);
+        error.statusCode = 500;
+        next(error);
     }
 }
 
@@ -52,16 +55,18 @@ const loadRegister = async (req, res) => {
     try {
         const referralCode = req.query.referral_code;
         req.session.referral_code = referralCode;
-        console.log("referral_code:",req.session.referral_code);
+        console.log("referral_code:", req.session.referral_code);
         console.log(referralCode);
         res.render('register');
+
     } catch (error) {
-        console.log(error.message);
+       error.statusCode = 500;
+        next(error);
     }
 }
 
 
-const verfyLogin = async (req, res) => {
+const verfyLogin = async (req, res,next) => {
     try {
 
         const { email, password } = req.body;
@@ -95,8 +100,9 @@ const verfyLogin = async (req, res) => {
         }
 
     } catch (error) {
-        console.log(error.message);
-        res.status(500).json({ error: error.message });
+
+        error.statusCode = 500;
+        next(error);
     }
 }
 
@@ -104,8 +110,10 @@ const verfyLogin = async (req, res) => {
 const loadResetPasswordLink = async (req, res) => {
     try {
         res.render('reset-password-link');
+
     } catch (error) {
-        console.log(error.message);
+        error.statusCode = 500;
+        next(error);
     }
 }
 
@@ -145,7 +153,8 @@ const sentResetLink = async (username, email, token) => {
         await transporter.sendMail(mailOptions);
 
     } catch (error) {
-        console.log(error);
+        error.statusCode = 500;
+        next(error);
     }
 };
 
@@ -176,8 +185,8 @@ const verifyResetPasswordEmail = async (req, res) => {
         res.status(200).json({ success: true });
 
     } catch (error) {
-        console.log(error.message);
-        res.status(500).json({ error: error.message });
+        error.statusCode = 500;
+        next(error);
     }
 };
 
@@ -190,8 +199,8 @@ const loadResetPassword = async (req, res) => {
         console.log(userData);
         res.render("reset-password", { userId: userData._id });
     } catch (error) {
-        console.log(error.message);
-        res.status(500).json({ error: error.message });
+        error.statusCode = 500;
+        next(error);
     }
 }
 
@@ -208,7 +217,7 @@ const resetPassword = async (req, res) => {
 
     } catch (error) {
         console.log(error.message);
-        res.status(500).json({ error: error.message });
+        next(error);
     }
 }
 
@@ -231,15 +240,14 @@ const sendOTP = async (req, res) => {
         } else {
 
             const Otp = generateOTP();
-            console.log(Otp)
+            console.log("Otp:", Otp)
+
             const spassword = await securePassword(req.body.password);
 
             req.session.name = req.body.name;
             req.session.email = req.body.email;
             req.session.mobile = req.body.mno;
             req.session.password = spassword;
-            req.session.otpExpiration = Date.now() + 30000;
-            console.log(req.session.otpExpiration)
 
             const otp = new OTP({
                 email: req.session.email,
@@ -262,7 +270,6 @@ const sendOTP = async (req, res) => {
                 from: '"Rafi" <rafikp@gmail.com>',
                 to: req.session.email,
                 subject: "Verify ",
-                // text: 'Hello world?',
                 html: `<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
                 <h2 style="text-align: center; color:#3498db;">OTP Verification</h2>
                 <p style="text-align: center;">Please use the following OTP to verify your email:</p>
@@ -271,32 +278,31 @@ const sendOTP = async (req, res) => {
                 <p style="text-align: center;">If you did not request this OTP, please ignore this message.</p>
                 <p style="text-align: center;">Best regards,<br>StepEx</p>
               </div>`
-
-
             };
 
             await transporter.sendMail(mailOptions);
 
-            res.render("verify-otp", { otpExpiration: req.session.otpExpiration });
+            res.render("verify-otp");
         }
 
     } catch (error) {
-        console.error(error);
-
+        error.statusCode = 500;
+        next(error);
     }
 };
 
 
 const resendOTP = async (req, res) => {
+
     try {
         const Otp = generateOTP();
         console.log(Otp);
-        console.log(req.session.otpExpiration)
-        const otp = new OTP({
-            email: req.session.email,
-            OTP: Otp
-        });
-        const otpData = await otp.save()
+
+        await OTP.findOneAndUpdate(
+            { email: req.session.email },
+            { OTP: Otp, expireAt: Date.now() },
+            { upsert: true, new: true }
+        );
 
         let transporter = nodemailer.createTransport({
             service: "gmail",
@@ -323,10 +329,23 @@ const resendOTP = async (req, res) => {
         res.status(200).json({ message: 'OTP sent successfully' });
 
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Failed to send OTP' });
+        // console.error(error);
+        // res.status(500).json({ error: 'Failed to send OTP' });
+        error.statusCode = 500;
+        next(error);
     }
 }
+
+
+const loadVerifyOTP = async (req, res) => {
+    try {
+        res.render("verify-otp");
+    } catch (error) {
+        error.statusCode = 500;
+        next(error);
+    }
+}
+
 
 const generateReferral = () => {
     return Math.random().toString(36).substring(2, 15);
@@ -336,11 +355,14 @@ const verifyOTP = async (req, res) => {
     try {
         const { otp } = req.body;
         const { email } = req.session;
+
         const otpData = await OTP.findOne({ email: email, OTP: otp });
         const referralCode = generateReferral();
 
         if (otpData) {
+
             if (otpData.OTP == otp) {
+
                 const user = new User({
                     name: req.session.name,
                     email: req.session.email,
@@ -356,36 +378,43 @@ const verifyOTP = async (req, res) => {
                 delete req.session.mobile;
                 delete req.session.password;
 
-                res.render("login", { message: "Registration successful..!" });
+                console.log("OTP is correct");
+
+                res.status(201).json({ message: "Registration successful..!" });
+
+                console.log("OTP is correct 2");
 
             } else {
 
-                res.render("verify-otp", { message: "Entered OTP is wrong!" });
+                return res.status(404).json({ message: "Entered OTP is wrong.2" });
             }
+
         } else {
-            res.render("verify-otp", { message: "Entered OTP is wrong!" });
+
+            return res.status(404).json({ message: "Entered OTP is wrong." });
         }
 
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: error.message });
+        // console.error(error);
+        // res.status(500).json({ error: error.message });
+        error.statusCode = 500;
+        next(error);
     }
 };
 
 
 const logout = async (req, res) => {
     try {
-
         delete req.session._id;
-        // console.log(req.session._id, )
         res.redirect("/")
     } catch (error) {
-        console.error(error);
+        error.statusCode = 500;
+        next(error);
     }
 }
 
 
-const loadProfile = async (req, res) => {
+const loadProfile = async (req, res,next) => {
     try {
         const userId = req.session._id;
         const userData = await User.findOne({ _id: userId });
@@ -394,8 +423,10 @@ const loadProfile = async (req, res) => {
         const cartItemCount = cart ? cart.items.length : 0;
 
         res.render("userProfile", { user: userData, cartCount: cartItemCount });
+
     } catch (error) {
-        console.error(error);
+        error.statusCode = 500;
+        next(error);
     }
 }
 
@@ -412,9 +443,11 @@ const editUser = async (req, res) => {
         )
 
         res.status(200).json({ message: 'User information updated successfully.' });
+
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Internal server error.' }); // Send error response
+       
+        error.statusCode = 500;
+        next(error);
     }
 };
 
@@ -422,13 +455,10 @@ const editUser = async (req, res) => {
 const changePassword = async (req, res) => {
     try {
         const { currentPassword, newPassword } = req.body;
-        // console.log(currentPassword,newPassword,"hello pswrd");
         const userId = req.session._id;
 
         const userData = await User.findOne({ _id: userId });
         const passwordMatch = await bcrypt.compare(currentPassword, userData.password);
-
-        // console.log(userData.password);
 
         if (passwordMatch) {
 
@@ -440,35 +470,17 @@ const changePassword = async (req, res) => {
         }
 
     } catch (error) {
-
-        console.error(error);
-        res.status(500).json({ error: 'Internal server error.' });
+        error.statusCode = 500;
+        next(error);
     }
 };
 
-
-const loadError404 = async (req, res) => {
-    try {
-        res.render("error-404")
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Internal server error.' });
-    }
-}
-
-const loadError500 = async (req, res) => {
-    try {
-        res.render("error-500")
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Internal server error.' });
-    }
-}
 
 export {
     loadhome,
     loadLogin,
     loadRegister,
+    loadVerifyOTP,
     verfyLogin,
     loadResetPasswordLink,
     verifyResetPasswordEmail,
@@ -481,6 +493,4 @@ export {
     loadProfile,
     editUser,
     changePassword,
-    loadError404,
-    loadError500
 }

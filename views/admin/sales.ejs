@@ -110,16 +110,16 @@
                                                                                 <td>
                                                                                     <%= sale.items.name.slice(0, 25) %>
                                                                                         ...
-                                                                                    <!-- <%= sale.items.name%> -->
+                                                                                        <!-- <%= sale.items.name%> -->
                                                                                 </td>
-                                                                                <td >
+                                                                                <td>
                                                                                     <%= sale.items.price %>
                                                                                 </td>
-                                                                                <td >
+                                                                                <td>
                                                                                     <%= sale.items.quantity %>
                                                                                 </td>
 
-                                                                                <td >
+                                                                                <td>
                                                                                     <%=sale.items.quantity*sale.items.price
                                                                                         %>
                                                                                 </td>
@@ -146,12 +146,13 @@
                                                                                     <% if (sales && sales.length> 0) {
                                                                                         %>
                                                                                         <tr></tr>
-                                                                                        <tr >
-                                                                                            <td colspan="7" >
+                                                                                        <tr>
+                                                                                            <td colspan="7">
                                                                                                 Subtotal
 
                                                                                             </td>
-                                                                                            <td colspan="2" style="text-align: end;">
+                                                                                            <td colspan="2"
+                                                                                                style="text-align: end;">
 
                                                                                                 ₹<%=totalAmount %>
 
@@ -164,7 +165,8 @@
                                                                                                 Discount:
 
                                                                                             </td>
-                                                                                            <td colspan="2" style="text-align: end;">
+                                                                                            <td colspan="2"
+                                                                                                style="text-align: end;">
                                                                                                 -₹
                                                                                                 <%=Math.round(discount)%>
                                                                                             </td>
@@ -176,7 +178,8 @@
 
                                                                                             </td>
                                                                                             <td colspan="2"
-                                                                                                class="font-weight-bold " style="text-align: end;">
+                                                                                                class="font-weight-bold "
+                                                                                                style="text-align: end;">
                                                                                                 ₹<%=totalAmount-Math.round(discount)
                                                                                                     %>
 

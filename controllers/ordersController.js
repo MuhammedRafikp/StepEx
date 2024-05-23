@@ -8,6 +8,13 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
+const { RAZORPAY_ID_KEY, RAZORPAY_SECRET_KEY } = process.env;
+
+const razorpay = new Razorpay({
+    key_id: RAZORPAY_ID_KEY,
+    key_secret: RAZORPAY_SECRET_KEY
+});
+
 
 const laodOrders = async (req, res) => {
     try {
@@ -27,7 +34,8 @@ const laodOrders = async (req, res) => {
         res.render("orders", { user: userData, orders: ordersData, cartCount: cartItemCount, currentPage: page, totalPages: totalPages, razorpaykey: RAZORPAY_ID_KEY })
 
     } catch (error) {
-        console.error(error);
+        error.statusCode = 500;
+        next(error);
     }
 }
 
@@ -47,7 +55,8 @@ const loadOrderDetails = async (req, res) => {
         res.render("order-details", { user: userData, order: orderData, cartCount: cartItemCount });
 
     } catch (error) {
-        console.error(error);
+        error.statusCode = 500;
+        next(error);
     }
 }
 
@@ -57,7 +66,6 @@ const cancelOrder = async (req, res) => {
 
         console.log("cancel order")
         const { cancellationReason, productId, orderId } = req.body;
-        // console.log(cancellationReason, productId, orderId);
 
         const updatedOrder = await Order.findOneAndUpdate(
             { orderId: orderId, "items.product_id": productId },
@@ -100,15 +108,16 @@ const cancelOrder = async (req, res) => {
                         }
                     }
                 },
-                { upsert: true } // Create wallet document if not exists
+                { upsert: true }
             );
         }
 
         console.log(updatedOrder);
         res.status(200).json({ message: 'Order cancelled successfully' });
+
     } catch (error) {
-        console.log(error.message);
-        res.status(500).json({ error: 'Internal server error' });
+        error.statusCode = 500;
+        next(error);
     }
 }
 
@@ -129,8 +138,8 @@ const returnOrder = async (req, res) => {
         res.status(200).json({ message: 'Order returned successfully' });
 
     } catch (error) {
-        console.log(error.message);
-        res.status(500).json({ error: 'Internal server error' });
+        error.statusCode = 500;
+        next(error);
     }
 }
 
@@ -148,7 +157,8 @@ const loadAdminOrders = async (req, res) => {
         res.render("orders", { orders: ordersData, currentPage: page, totalPages: totalPages });
 
     } catch (error) {
-        console.error(error);
+        error.statusCode = 500;
+        next(error);
     }
 }
 
@@ -158,11 +168,12 @@ const loadAdminOrderDetails = async (req, res) => {
         const orderId = req.query.id;
         console.log("order id:", orderId);
         const orderData = await Order.findOne({ orderId: orderId }).populate("user");
-        // console.log(orderData)
+
         const orderStatus = ["Confirmed", "Shipped", "Cancelled", "Delivered"]
         res.render("order-details", { order: orderData, status: orderStatus });
     } catch (error) {
-        console.error(error);
+        error.statusCode = 500;
+        next(error);
     }
 }
 
@@ -192,13 +203,14 @@ const changeOrderStatus = async (req, res) => {
             );
         }
 
-
         res.status(200).json({});
-    } catch (error) {
 
-        res.status(500).json({ error: 'Failed to change order status' });
+    } catch (error) {
+        error.statusCode = 500;
+        next(error);
     }
 }
+
 
 const approveReturn = async (req, res) => {
     try {
@@ -221,7 +233,7 @@ const approveReturn = async (req, res) => {
 
         const returnedProduct = updatedOrder.items.find(item => item.product_id.toString() === productId);
         const returnedQuantity = parseInt(returnedProduct.quantity);
-        // console.log("Reason:",returnedProduct.reason);
+
         if (returnedProduct.reason !== "Defective or Damaged Product") {
 
             await Product.findOneAndUpdate(
@@ -254,13 +266,14 @@ const approveReturn = async (req, res) => {
         res.status(200).json({ message: 'Order returned successfully' });
 
     } catch (error) {
-        console.log(error.message);
-        res.status(500).json({ error: 'Internal server error' });
+        error.statusCode = 500;
+        next(error);
     }
 }
 
 
 const declineReturn = async (req, res) => {
+
     try {
         console.log("return order")
         const { productId, orderId } = req.body;
@@ -278,18 +291,11 @@ const declineReturn = async (req, res) => {
         res.status(200).json({ message: 'Order returned successfully' });
 
     } catch (error) {
-        console.log(error.message);
-        res.status(500).json({ error: 'Internal server error' });
+        error.statusCode = 500;
+        next(error);
     }
 }
 
-
-const { RAZORPAY_ID_KEY, RAZORPAY_SECRET_KEY } = process.env;
-
-const razorpay = new Razorpay({
-    key_id: RAZORPAY_ID_KEY,
-    key_secret: RAZORPAY_SECRET_KEY
-});
 
 const generatereceiptID = () => {
     const min = 10000000;
@@ -315,8 +321,8 @@ const orderRepaymentRazorPpay = async (req, res) => {
 
         res.status(200).json({ success: true, order });
     } catch (error) {
-        console.error(error, "error");
-        res.status(500).json({ success: false, message: 'Failed to create Razorpay order' });
+        error.statusCode = 500;
+        next(error);
     }
 }
 
@@ -327,7 +333,6 @@ const orderRepayment = async (req, res) => {
         const { orderId } = req.body;
         console.log(orderId);
 
-        // Update order payment_status to "Success"
         await Order.findOneAndUpdate(
             { orderId: orderId },
             { payment_status: "Success" },
@@ -351,7 +356,8 @@ const orderRepayment = async (req, res) => {
         res.status(200).json({ success: true, message: 'Order payment status updated successfully' });
 
     } catch (error) {
-
+        error.statusCode = 500;
+        next(error);
     }
 }
 

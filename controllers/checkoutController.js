@@ -38,15 +38,16 @@ const loadCheckout = async (req, res) => {
 
         const validCoupons = await Coupon.find({
             min_price: { $lte: totalAmount },
-            validity: { $gte: new Date() }, // Check for validity
-            is_active: true // Check if coupon is active
+            validity: { $gte: new Date() },
+            is_active: true 
         });
         console.log(validCoupons);
 
         res.render("checkout-details", { user: userData, address: address, cart: cartData, coupons: validCoupons, totalAmount, cartCount: cartItemCount, req });
 
     } catch (error) {
-        console.log(error.message);
+        error.statusCode = 500;
+        next(error);
     }
 }
 
@@ -81,8 +82,8 @@ const proceedToCheckout = async (req, res) => {
         }
 
     } catch (error) {
-        console.log(error.message);
-        res.status(500).json({ error: error.message });
+        error.statusCode = 500;
+        next(error);
     }
 }
 
@@ -116,8 +117,8 @@ const selectAddressForCheckout = async (req, res) => {
         }
 
     } catch (error) {
-        console.log(error.message);
-        res.status(500).json({ error: error.message });
+        error.statusCode = 500;
+        next(error);
     }
 }
 
@@ -130,9 +131,10 @@ const applyCoupon = async (req, res) => {
         req.session.discount = coupon.discount;
         console.log("discount:", req.session.discount);
         res.status(200).json({ success: true });
+
     } catch (error) {
-        console.log(error.message);
-        res.status(500).json({ error: error.message });
+        error.statusCode = 500;
+        next(error);
     }
 }
 
@@ -142,13 +144,14 @@ const removeCoupon = async (req, res) => {
         res.status(200).json({ success: true });
 
     } catch (error) {
-        console.log(error.message);
-        res.status(500).json({ error: error.message });
+        error.statusCode = 500;
+        next(error);
     }
 }
 
 
 const loadPayment = async (req, res) => {
+
     try {
         const userId = req.session._id;
         const userData = await User.findOne({ _id: userId });
@@ -164,13 +167,13 @@ const loadPayment = async (req, res) => {
                 totalAmount += item.products.offer_price * item.quantity;
             }
         }
-        // console.log(typeof(item.products.price ));
+
         console.log(addressData.address[req.session.addressIndex]);
         res.render("checkout-payment", { user: userData, address: addressData.address[req.session.addressIndex], totalAmount: totalAmount, wallet: walletData, cartCount: cartItemCount, razorpaykey: RAZORPAY_ID_KEY, req });
 
     } catch (error) {
-        console.log(error.message);
-        res.status(500).json({ error: error.message });
+        error.statusCode = 500;
+        next(error);
     }
 }
 

@@ -83,16 +83,25 @@
                         <div id="visit-sale-chart-legend"
                           class="rounded-legend legend-horizontal legend-top-right float-right"></div>
                       </div>
-                      <div class="d-flex justify-content-end  ">
+                      <div class="d-flex justify-content-end  my-4">
                         <label for="time-period-select" class="mx-2 mt-1">Select Time Period:</label>
-                        <select id="time-period-select">
-                          <option value="today">Today</option>
-                          <option value="this-week">This Week</option>
-                          <option value="this-month">This Month</option>
-                          <option value="this-year">This Year</option>
+                        <select id="time-period">
+                          <option>
+                            <%=currentPeriod%>
+                          </option>
+
+                          <% timePeriods.forEach((timePeriod)=>{%>
+                            <% if(timePeriod!==currentPeriod){%>
+                              <option>
+                                <%=timePeriod%>
+                              </option>
+                              <%} %>
+                                <%})%>
+
+
                         </select>
                         <div>
-                          <button id="apply-btn" class="btn btn-success">Apply</button>
+                          <button id="apply-btn" class="btn btn-success btn-fw mx-2 p-2 ">Apply</button>
                         </div>
                       </div>
 
@@ -104,7 +113,7 @@
                 </div>
 
 
-  
+
 
 
 
@@ -182,13 +191,7 @@
                     <% }); %>
                       <% } %>
               </div>
-
-
             </div>
-
-
-
-
           </div>
       </div>
   </div>
@@ -205,75 +208,66 @@
   <script src="/admin_assets/js/dashboard.js"></script>
   <script src="/admin_assets/js/todolist.js"></script> -->
 
-  
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
-  </script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+
   <script>
-    var xValues = ["Jan", "Feb", "Mar", "Apr", "May","Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-    var yValues = [5000, 490, 448, 2400, 1000, 4900, 4446, 2674, 1000, 498, 4488, 2456];
-    var barColors = "blue"
+    
+    let xValues = [];
+    const currentPeriod = "<%=currentPeriod%>";
+    if (currentPeriod === "This Year") {
+      xValues = [
+        'Jan', 'Feb', 'Mar',
+        'Apr', 'May', 'Jun',
+        'Jul', 'Aug', 'Sept',
+        'Oct', 'Nov', 'Dec']
+    } else {
+      xValues = JSON.parse("<%=xValues%>");
+    }
+
+    const yValues = JSON.parse("<%= yValues%>");
+
+    console.log("xValues:", xValues, currentPeriod);
+    console.log("zValues:", yValues);
+
+    var lineColors = "rgba(255, 99, 132, 1)"; // Red color for the line
+
     new Chart("myChart", {
-      type: "bar",
+      type: "bar", // Change to bar chart for example
       data: {
         labels: xValues,
         datasets: [{
-          backgroundColor: barColors,
-          data: yValues
+          label: 'Total Sales',
+          backgroundColor: lineColors, // Use the same color for bars
+          borderColor: lineColors,
+          data: yValues,
+          fill: true
         }]
       },
-      options: { }
+      options: {
+        scales: {
+          yAxes: [{
+            ticks: {
+              beginAtZero: true,
+            }
+          }],
+          xAxes: [{
+
+          }]
+        }
+      }
+    });
+
+    document.getElementById('apply-btn').addEventListener('click', function () {
+      const timePeriod = document.getElementById('time-period').value;
+      console.log("time-period:", timePeriod)
+      window.location.href = `/admin/dashboard?timePeriod=${timePeriod}`;
     });
   </script>
 
 
-
-  <!-- <script>
-    document.addEventListener('DOMContentLoaded', function () {
-      const timePeriodSelect = document.getElementById('time-period-select');
-      const applyBtn = document.getElementById('apply-btn');
-      const ctx = document.getElementById('myChart').getContext('2d');
-      let chart = null;
-  
-      applyBtn.addEventListener('click', function () {
-        const selectedPeriod = timePeriodSelect.value;
-        fetchSalesData(selectedPeriod);
-      });
-  
-      async function fetchSalesData(selectedPeriod) {
-        try {
-          const response = await fetch(`/admin/sales?timePeriod=${selectedPeriod}`);
-          const data = await response.json();
-          updateChart(data);
-        } catch (error) {
-          console.error(error);
-        }
-      }
-  
-      function updateChart(data) {
-        if (chart) {
-          chart.destroy();
-        }
-  
-        const xValues = data.xValues;
-        const yValues = data.yValues;
-        const barColors = "blue";
-  
-        chart = new Chart(ctx, {
-          type: "bar",
-          data: {
-            labels: xValues,
-            datasets: [{
-              backgroundColor: barColors,
-              data: yValues
-            }]
-          },
-          options: {}
-        });
-      }
-  
-      // Fetch initial data for default time period
-      fetchSalesData(timePeriodSelect.value);
-    });
-  </script>-->
 
   <%- include('../admin_layouts/footer.ejs') %>

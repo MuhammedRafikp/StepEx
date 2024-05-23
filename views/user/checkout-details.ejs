@@ -140,18 +140,17 @@
 
 									<div class="d-flex justify-content-between   mb-3">
 										<h6 class="mb-0" style="font-weight: bold; color: #000;">Your Addresses</h6>
-										<button class="btn btn-primary py-2 px-3 " data-toggle="modal"
+										<button class="btn btn-primary py-2 px-3 rounded" data-toggle="modal"
 											data-target="#addAddressModal">
-											<span class="icon-plus  mx-2"></span>
+											<span class="icon-plus mx-2"></span>
 											<span class="font-weight-bold">Add a new address</span>
 										</button>
 									</div>
 									<hr>
-									<!-- <div class=" cart-total"> -->
-									<div class="row">
-										<% if (address && address.address.length>0) { %>
-											<% address.address.forEach((address,index)=> { %>
 
+									<% if (address && address.address.length>0) { %>
+										<div class="row">
+											<% address.address.forEach((address,index)=> { %>
 												<div class="col-lg-6 ">
 													<div class="card">
 														<div class="card-body">
@@ -195,26 +194,33 @@
 
 
 												<% }) %>
-													<% } else { %>
-														<h6 style="font-weight: bold;">
-															No address found !
-														</h6>
-														<% } %>
-									</div>
-									<!-- </div> -->
 
-									<% if (address && address.address.length>0) { %>
-										<div class="d-flex justify-content-sm-start mt-3">
-											<button class="btn btn-info py-2 px-3 select-address">
-												<span class="font-weight-bold">Use this address</span>
-											</button>
 										</div>
-										<% } %>
+										<% } else { %>
+											<div>
+												<div class="d-flex justify-content-center ">
+													<img width="75" height="75"
+														src="\assets\images\no-address-added.png" alt="">
+												</div>
+												<div class="d-flex justify-content-center ">
+
+													<h6 style="font-weight: 600;">No address added yet.
+													</h6>
+												</div>
+											</div>
+											<% } %>
+
+												<% if (address && address.address.length>0) { %>
+													<div class="d-flex justify-content-sm-start mt-3">
+														<button class="btn btn-info py-2 px-3 select-address rounded">
+															<span class="font-weight-bold">Use this address</span>
+														</button>
+													</div>
+													<% } %>
 
 								</div>
 							</div>
 						</div>
-
 
 						<div class="col-lg-4 cart-wrap ftco-animate">
 							<div class="card">
@@ -337,7 +343,6 @@
 	</section>
 
 	<!-- coupon Modal -->
-	<!-- Modal -->
 	<div class="modal fade ftco-animate" id="couponModal" tabindex="-1" role="dialog" aria-labelledby="couponModalLabel"
 		aria-hidden="true">
 		<div class="modal-dialog" role="document">
@@ -350,7 +355,6 @@
 				</div>
 				<div class="modal-body">
 					<% if (coupons && coupons.length> 0) { %>
-						<!-- Coupon code content goes here -->
 						<% coupons.forEach((coupon)=>{%>
 							<div class="container">
 								<div class="coupon-card">
@@ -372,7 +376,7 @@
 							</div>
 							<%}) %>
 								<% } else { %>
-									<p>No valid coupons available at the moment.</p>
+									<p style="font-weight: 600;">No valid coupons available at the moment.</p>
 									<% } %>
 				</div>
 				<div class="modal-footer">
@@ -483,10 +487,10 @@
 					})
 						.then(response => {
 							if (response.ok) {
-								
+
 								window.location.reload();
 							} else {
-								
+
 							}
 						})
 						.catch(error => console.error('Error:', error));

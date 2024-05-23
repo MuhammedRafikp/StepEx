@@ -33,11 +33,11 @@ category_route.get("/categories/add-category", isLogin, loadAddCategory);
 
 category_route.post("/categories/add-category", upload.single('image'), isLogin, addCategory);
 
-category_route.get("/categories/unlisted-category", isLogin, loadUnlistedCategories);
+category_route.get("/categories/unlisted-categories", isLogin, loadUnlistedCategories);
 
 category_route.post("/categories/unlist-category", isLogin, unlistCategory);
 
-category_route.post("/categories/retrieve-category", isLogin, retrieveCategory);
+category_route.post("/categories/unlisted-categories/retrieve-category", isLogin, retrieveCategory);
 
 category_route.get("/categories/edit-category", isLogin, loadEditCategory);
 

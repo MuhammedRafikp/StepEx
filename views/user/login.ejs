@@ -15,7 +15,6 @@
 								</div>
 							</div>
 
-
 							<form id="login-form" class="signin-form">
 								<div class="form-group mb-3">
 									<label class="label m-0 " for="name">Email</label>
@@ -26,7 +25,7 @@
 									<label class="label m-0 " for="password">Password</label>
 									<input type="password" id="password" name="password" class="form-control"
 										placeholder="Password">
-									<span id="password-error" style="color:  #BA0933; font-size: 13px;"></span>
+									<span id="password-error" style="color:#BA0933; font-size: 13px;"></span>
 								</div>
 								<div>
 									<span id="message" style="color:  #BA0933; font-size: 13px;"></span>
@@ -40,7 +39,7 @@
 							</form>
 
 							<div class="d-flex justify-content-end ">
-								<a href="/reset-password-link" style="color: grey;">Forgot Password ?</a>
+								<a href="/reset-password-link">Forgot Password ?</a>
 							</div>
 							<div class="d-flex justify-content-center mt-3">
 								<p class="text-center">Don't have an account ?<a href="/register"> Sign
@@ -102,7 +101,7 @@
 
 								window.location.href = '/';
 							} else {
-								// Handle login failure
+								
 								return response.json();
 							}
 						})
@@ -125,6 +124,7 @@
 									icon: "warning",
 									title: "You have been blocked"
 								});
+
 							} else {
 								// Update the message span with the received message
 								document.getElementById('message').textContent = data && data.message ? data.message : '';

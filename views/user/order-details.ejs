@@ -402,7 +402,6 @@ document.getElementById("dwnld-invoice").addEventListener("click", function () {
             doc.setFontSize(15);
             doc.text(`Invoice/Bill`, pageCenter, 20, { align: 'center' });
 
-            // let table = document.querySelector(".invoice-table");
             let table = document.getElementById(`invoice-table-${productId}`);
 
             doc.autoTable({ html: table, startY: 35 });

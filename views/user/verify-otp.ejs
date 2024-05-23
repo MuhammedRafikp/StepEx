@@ -10,28 +10,29 @@
                         </div>
                         <div class="login-wrap p-3 p-md-5">
 
-                            <form action="/verify-otp" method="post" class="signin-form" onsubmit="return validateForm()">
-                                <div class="form-group mb-3">
-                                    <label class="label m-0" for="name">Enter OTP</label>
-                                    <input type="text" id="otp" name="otp" class="form-control" placeholder="OTP">
-                                    <span id="otp-error" style="color: red; font-size: 14px;" class="error"></span>
-                                </div>
-                                <% if (typeof message !=="undefined" ) { %>
-                                    <p id="message" style="color: red; text-align: center;">
-                                        <%= message %>
-                                    </p>
-                                    <% } %>
 
-                                        <div id="timer" class="text-center"></div>
+                            <div class="form-group mb-3">
+                                <label class="label m-0" for="name">Enter OTP</label>
+                                <input type="text" id="otp" name="otp" class="form-control" placeholder="OTP">
+                                <span id="otp-error" style="color:#BA0933;; font-size: 14px;" class="error"></span>
+                            </div>
 
-                                        <div class="form-group">
-                                            <button type="submit"
-                                                class="form-control btn btn-primary rounded submit px-3">Verify</button>
-                                        </div>
+                            <p id="message" style="color:#BA0933;; text-align: center;">
 
-                            </form>
-                            <button style="display: none;" id="resendOTP" class="btn btn-primary rounded submit "
-                                onclick="resendOtp()">Resend OTP</button>
+                            </p>
+
+                            <div style="font-size: 14px;" class="my-3">
+                                <span>Haven't received the OTP?</span>
+                                <span id="timer"></span>
+                                <span style="display:none; cursor: pointer;" id="resend-OTP" class="text-info">Resend OTP</span>
+                            </div>
+
+                            <div class="form-group">
+                                <button type="button" id="verify-btn"
+                                    class="form-control btn btn-primary rounded submit px-3">Verify</button>
+                            </div>
+
+
 
                         </div>
                     </div>
@@ -42,126 +43,130 @@
 
     <script>
 
+
+      
+
+        document.addEventListener("DOMContentLoaded", function () {
+            startTimer(20, document.getElementById("timer"));
+            document.getElementById("verify-btn").addEventListener("click", function (e) {
+                e.preventDefault();
+                if (validateForm()) {
+                    verifyOTP();
+                }
+            });
+
+            document.getElementById("resend-OTP").addEventListener("click", function () {
+                resendOTP();
+            });
+        });
+
+        function startTimer(duration, display) {
+            var timer = duration, minutes, seconds;
+            var interval = setInterval(function () {
+                // minutes = parseInt(timer / 60, 10);
+                seconds = parseInt(timer % 60, 10);
+
+                // minutes = minutes < 10 ? "0" + minutes : minutes;
+                seconds = seconds < 10 ? "0" + seconds : seconds;
+
+                // display.textContent = minutes + ":" + seconds;
+                display.textContent = "Resend in " + seconds + "s";
+
+                if (--timer < 0) {
+                    clearInterval(interval);
+                    display.textContent = '';
+                    document.getElementById("resend-OTP").style.display = "block";
+                }
+            }, 1000);
+        }
+
+
+        function verifyOTP() {
+            const otp = document.getElementById("otp").value.trim();
+            fetch('/verify-otp', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ otp }),
+            })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(data => {
+                        document.getElementById("otp-error").textContent = data.message;
+                        throw new Error(data.message);
+                    });
+                }
+                return response.json();
+            })
+            .then(data => {
+                const Toast = Swal.mixin({
+                        toast: true,
+                        position: "top",
+                        showConfirmButton: false,
+                        timer: 2000,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.addEventListener('mouseenter', Swal.stopTimer);
+                            toast.addEventListener('mouseleave', Swal.resumeTimer);
+                        }
+                    });
+
+                    Toast.fire({
+                        icon: "success",
+                        title: 'Registration successful!'
+                    }).then(() => {
+                        window.location.href = "/login";
+                    });
+
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+        }
+   
+
+        function resendOTP() {
+            document.getElementById("resend-OTP").style.display = "none";
+            startTimer(20, document.getElementById("timer"));
+
+            fetch('/resend-otp', {
+                method: 'POST',
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log("otp sended successfully")
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
+        }
+
+
         function validateForm() {
-    var otp = document.getElementById("otp").value.trim();
-    var numericRegex = /^[0-9]+$/; 
-    var otpRegex = /^[0-9]{4}$/; 
+            var otp = document.getElementById("otp").value.trim();
+            var numericRegex = /^[0-9]+$/;
+            var otpRegex = /^[0-9]{4}$/;
 
-    var isValid = true;
+            var isValid = true;
 
-    if (otp === "") {
-        document.getElementById("otp-error").textContent = "OTP is required.";
-        isValid = false;
-    } else if (!numericRegex.test(otp)) {
-        document.getElementById("otp-error").textContent = "OTP must be a number.";
-        isValid = false;
-    } else if (otp.length !== 4) {
-        document.getElementById("otp-error").textContent = "OTP must be 4 digits.";
-        isValid = false;
-    } else {
-        document.getElementById("otp-error").textContent = "";
-    }
+            if (otp === "") {
+                document.getElementById("otp-error").textContent = "OTP is required.";
+                isValid = false;
+            } else if (!numericRegex.test(otp)) {
+                document.getElementById("otp-error").textContent = "OTP must be a number.";
+                isValid = false;
+            } else if (otp.length !== 4) {
+                document.getElementById("otp-error").textContent = "OTP must be 4 digits.";
+                isValid = false;
+            } else {
+                document.getElementById("otp-error").textContent = "";
+            }
 
-    return isValid;
-}
-
-(function () {
-      setTimeout(() => {
-        const message = document.getElementById("message");
-		message.style.textAlign="center"
-        message.textContent = "";
-      }, 3000)
-    })();
+            return isValid;
+        }
 
     </script>
-    
-
-        <script>
-
-            const timerElement = document.getElementById('timer');
-            const resendOTP = document.getElementById('resendOTP');
-            const expirationTime = Date.now() + 20000;
-
-            function updateTimer() {
-        
-                const now = new Date().getTime();
-                const distance = expirationTime - now;
-
-                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-                timerElement.innerHTML = "Time remaining: " + minutes + "m " + seconds + "s ";
-
-                if (distance < 0) {
-
-                    clearInterval(timerInterval);
-                    timerElement.innerHTML = "OTP expired";
-                    resendOTP.style.display = 'block';
-
-                }
-            }
-
-            const timerInterval = setInterval(updateTimer, 1000);
-            updateTimer();
-
-        </script>
-
-        <script>
-
-            document.getElementById("resendOTP").addEventListener("click", resendOTP);
-
-            function resendOtp() {
-                console.log("hello");
-                fetch("/resend-otp", {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    
-                })
-                    .then(response => {
-                        if (response.ok) {
-
-                            const timerElement = document.getElementById('timer');
-                            const resendOTP = document.getElementById('resendOTP');
-                            resendOTP.style.display = 'none';
-                            const expirationTime = Date.now() + 30000;
-                            function updateTimer() {
-
-                                const now = new Date().getTime();
-                                const distance = expirationTime - now;
-
-                                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-                                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-                                timerElement.innerHTML = "Time remaining: " + minutes + "m " + seconds + "s ";
-
-                                if (distance < 0) {
-
-                                    clearInterval(timerInterval);
-                                    timerElement.innerHTML = "OTP expired";
-                                    resendOTP.style.display = 'block';
-                                }
-                            }
-
-                            const timerInterval = setInterval(updateTimer, 1000);
-                            updateTimer();
-                            return response.json();
-                        }
-                        throw new Error('Network response was not ok.');
-                    })
-                    .then(data => {
 
 
-                        console.log(data); 
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        alert('Error: ' + error.message);
-                    });
-            }
-
-        </script>
-
-
-<%- include("../form_layouts/footer.ejs") %>
+    <%- include("../form_layouts/footer.ejs") %>

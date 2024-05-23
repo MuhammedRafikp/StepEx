@@ -109,6 +109,13 @@
 						</p>
 
 					</div>
+
+					<%if(product.price===product.offer_price){%>
+
+						<div class="d-flex ">
+							<p  style="color: #000; font-size: 16px; font-weight: 600;"><span>₹ <%= product.offer_price %></span></p>
+						</div>
+						<%}else{%>
 					<div class="d-flex ">
 						<s class="text-secondary "><span>₹ <%= product.price %></span></s>
 						<p class="mx-2" style="color: #000; font-size: 16px; font-weight: 600;"><span>₹ <%= product.offer_price %></span></p>
@@ -116,6 +123,9 @@
 					</div>
 					<p class="badge badge-success"><span>save ₹ <%=
 						product.price-product.offer_price %></span></p>
+	<%}%>
+
+					
 					<p style="color: #292929;">
 						<%= product.description %>
 					</p>
@@ -171,19 +181,19 @@
 
 						<% if(user) {%>
 
-							<a href="#" class="add-to-cart btn btn-primary py-3 px-5 mr-2" style="font-size: 13px;"
-								data-product-id="<%= product._id %>"><span class="icon-shopping_cart mx-1"></span>Add to
+							<a href="#" class="add-to-cart btn btn-primary py-3 font-weight-bold px-5 mr-2 rounded" style="font-size: 13px;"
+								data-product-id="<%= product._id %>"><span class="icon-shopping_cart mx-1 "></span>Add to
 								Cart</a>
-							<a href="#" class="add-to-wishlist btn btn-black py-3 px-5" style="font-size: 13px;"
+							<a href="#" class="add-to-wishlist btn btn-black py-3 px-5 font-weight-bold rounded" style="font-size: 13px;"
 								data-product-id="<%= product._id %>"><span class="icon-heart mx-1"></span>Add to
 								Wishlist</a>
 
 							<% } else{%>
 
-								<a href="/login" class=" btn btn-primary py-3 px-5 mr-2" style="font-size: 13px;"><span
+								<a href="/login" class=" btn btn-primary py-3 px-5 mr-2 font-weight-bold rounded" style="font-size: 13px;"><span
 										class="icon-shopping_cart mx-1 "></span>Add to
 									Cart</a>
-								<a href="/login" class="btn btn-black  py-3 px-5" style="font-size: 13px;"><span
+								<a href="/login" class="btn btn-black  py-3 px-5 font-weight-bold rounded" style="font-size: 13px;"><span
 										class="icon-heart mx-1"></span>Add to
 									Wishlist</a>
 

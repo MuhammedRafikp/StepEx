@@ -17,10 +17,11 @@ const loadAddress = async (req, res) => {
         // const totalCount = await Address.countDocuments({ user_id: userData });
         // const totalPages = Math.ceil(totalCount / limit);
         // console.log(address);
-        
+
         res.render("address", { user: userData, address: address, cartCount: cartItemCount });
     } catch (error) {
-        console.error(error);
+        error.statusCode = 500;
+        next(error);
     }
 }
 
@@ -67,8 +68,8 @@ const addAddress = async (req, res) => {
         }
 
     } catch (error) {
-        console.error(error.message);
-        res.status(500).json({ success: false, message: "Internal server error" });
+        error.statusCode = 500;
+        next(error);
     }
 }
 
@@ -86,9 +87,10 @@ const removeAddress = async (req, res) => {
         address.address.splice(index, 1);
         await address.save();
         res.status(200).json({ message: "Address removed successfully" });
+
     } catch (error) {
-        console.error("Error removing address:", error);
-        res.status(500).json({ message: "Internal server error" });
+        error.statusCode = 500;
+        next(error);
     }
 };
 
@@ -118,12 +120,12 @@ const editAddress = async (req, res) => {
 
         console.log(address);
         res.status(200).json({ success: true, message: "Address updated successfully" });
+
     } catch (error) {
-        console.error(error.message);
-        res.status(500).json({ success: false, message: "Internal server error" });
+        error.statusCode = 500;
+        next(error);
     }
 };
-
 
 
 export {
