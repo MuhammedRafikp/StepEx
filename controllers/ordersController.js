@@ -26,7 +26,7 @@ const laodOrders = async (req, res) => {
         const totalCount = await Order.countDocuments({ user: userId });
         const totalPages = Math.ceil(totalCount / limit);
 
-        const ordersData = await Order.find({ user: userId }).skip(skip).limit(limit);
+        const ordersData = await Order.find({ user: userId }).sort({date:-1}).skip(skip).limit(limit);
 
         const cartData = await Cart.findOne({ user_id: userId }).populate('items.products');
         const cartItemCount = cartData ? cartData.items.length : 0;

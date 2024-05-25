@@ -60,25 +60,24 @@ const loadRegister = async (req, res) => {
         res.render('register');
 
     } catch (error) {
-       error.statusCode = 500;
+        error.statusCode = 500;
         next(error);
     }
 }
 
 
-const verfyLogin = async (req, res,next) => {
+const verfyLogin = async (req, res, next) => {
     try {
 
         const { email, password } = req.body;
         const userData = await User.findOne({ email: email });
-
-        console.log(userData);
+const users=await User.find({})
+        console.log(users);
 
         if (!userData) {
             console.log('User not found !');
             return res.status(404).json({ message: "Email or Password is incorrect." });
         }
-
 
         if (userData.is_block) {
             console.log('User is blocked !');
@@ -98,7 +97,6 @@ const verfyLogin = async (req, res,next) => {
             }
 
         }
-
     } catch (error) {
 
         error.statusCode = 500;
@@ -110,7 +108,6 @@ const verfyLogin = async (req, res,next) => {
 const loadResetPasswordLink = async (req, res) => {
     try {
         res.render('reset-password-link');
-
     } catch (error) {
         error.statusCode = 500;
         next(error);
@@ -414,7 +411,7 @@ const logout = async (req, res) => {
 }
 
 
-const loadProfile = async (req, res,next) => {
+const loadProfile = async (req, res, next) => {
     try {
         const userId = req.session._id;
         const userData = await User.findOne({ _id: userId });
@@ -445,7 +442,7 @@ const editUser = async (req, res) => {
         res.status(200).json({ message: 'User information updated successfully.' });
 
     } catch (error) {
-       
+
         error.statusCode = 500;
         next(error);
     }

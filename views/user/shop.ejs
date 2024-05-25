@@ -93,7 +93,7 @@
 													<%= product.name %>
 												</a></h3>
 
-											<%if(product.price===product.offer_price){%>
+											<%if(product.price <= product.offer_price ){%>
 
 												<div class="pricing d-flex">
 													<p class="price" style="font-weight: 600;"><span>₹ <%= product.price
@@ -327,7 +327,7 @@
 		$(function () {
 			$("#price-range-slider").slider({
 				range: true,
-				min: 500,
+				min: 0,
 				max: 10000, // Adjust the max value according to your price range
 				values: [minPrice, maxPrice], // Initial values of the slider
 				slide: function (event, ui) {

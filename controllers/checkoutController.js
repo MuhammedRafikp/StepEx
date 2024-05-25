@@ -6,9 +6,7 @@ import Order from "../models/orderModel.js";
 import Wallet from "../models/walletModel.js";
 import Coupon from "../models/couponModel.js";
 import Razorpay from "razorpay";
-import dotenv from 'dotenv';
 
-dotenv.config();
 
 const { RAZORPAY_ID_KEY, RAZORPAY_SECRET_KEY } = process.env;
 
@@ -18,9 +16,10 @@ const razorpay = new Razorpay({
 });
 
 
-const loadCheckout = async (req, res) => {
+const loadCheckout = async (req, res,next) => {
 
     try {
+        console.log("key_id:",razorpay.key_id);
         const userId = req.session._id;
         const userData = await User.findOne({ _id: userId });
 
@@ -41,7 +40,7 @@ const loadCheckout = async (req, res) => {
             validity: { $gte: new Date() },
             is_active: true 
         });
-        console.log(validCoupons);
+        // console.log(validCoupons);
 
         res.render("checkout-details", { user: userData, address: address, cart: cartData, coupons: validCoupons, totalAmount, cartCount: cartItemCount, req });
 

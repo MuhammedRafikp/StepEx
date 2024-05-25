@@ -1,9 +1,16 @@
 import mongoose from "mongoose";
-mongoose.connect("mongodb://127.0.0.1:27017/mydb");
+
 
 import express from "express";
 import session from "express-session";
 import { sessionSecret } from "./config/config.js";
+import dotenv from 'dotenv';
+
+dotenv.config();
+
+const {PORT,MONGODB_URI}= process.env;
+
+mongoose.connect(MONGODB_URI);
 
 const app = express();
 
@@ -57,8 +64,10 @@ app.all("*",(req,res,next)=>{
     res.render("user/error-404");
 })
 
-const port = 3000;
 
-app.listen(3000, () => {
-    console.log(`server is running on port ${port}`);
+app.listen(PORT,() => {
+    console.log(MONGODB_URI);
+    console.log(`server is running on port ${PORT}`);
 });
+
+

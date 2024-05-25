@@ -68,6 +68,7 @@ const addProduct = async (req, res) => {
             const newProduct = new Products({
                 name: name,
                 price: price,
+                offer_price:price,
                 category: categoryId,
                 gender: gender,
                 brand: brand,
