@@ -1,6 +1,4 @@
 import mongoose from "mongoose";
-
-
 import express from "express";
 import session from "express-session";
 import { sessionSecret } from "./config/config.js";
@@ -63,7 +61,6 @@ app.use(errorHandler);
 app.all("*",(req,res,next)=>{
     res.render("user/error-404");
 })
-
 
 app.listen(PORT,() => {
     console.log(MONGODB_URI);
