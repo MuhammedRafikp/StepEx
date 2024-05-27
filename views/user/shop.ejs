@@ -16,7 +16,7 @@
 		}
 	</style>
 
-	<div style="background-color: #f0f0f0; height: 60px;" class="hero-wrap">
+	<div style="background-color: #f0f0f0; height: 60px; z-index: 1;" class="hero-wrap">
 		<div class="container">
 			<div class="row no-gutters slider-text align-items-start">
 
@@ -40,9 +40,9 @@
 	<section class="ftco-section bg-light ">
 		<div class="container mt-0">
 
-			<div class="d-flex justify-content-end mb-4">
+			<div class="d-flex justify-content-end mb-4 bg-light">
 				<p style="color: #000; font-weight: 600; " class="m-2 ">SORT BY :</p>
-				<select id="sortBy" style="height: 40px; " class="w-25">
+				<select id="sortBy" style="height: 40px; background-color: #ffffffa6;" class="w-25">
 					<option value="new-to-old" <% if (sortBy==='new-to-old' ) { %>selected<% } %>>Default</option>
 					<option value="old-to-new" <% if (sortBy==='old-to-new' ) { %>selected<% } %>>Old to New</option>
 					<option value="high-to-low" <% if (sortBy==='high-to-low' ) { %>selected<% } %>>Price: High to Low
@@ -66,7 +66,7 @@
 
 											<% if (((product.price-product.offer_price)/product.price)*100>0){%>
 												<span class="status">
-													<%= ((product.price-product.offer_price)/product.price)*100 %>% off
+													<%= Math.round(((product.price-product.offer_price)/product.price)*100) %>% off
 												</span>
 												<%}%>
 
@@ -106,12 +106,12 @@
 														<s class="price text-secondary"><span>₹ <%=(product.price) %>
 															</span></s>
 														<p class="price mx-3" style="font-weight: 600;"><span>₹ <%=
-																	product.offer_price %> </span></p>
+															Math.round(product.offer_price) %> </span></p>
 													</div>
 
 													<div>
 														<p class="badge badge-success mt-2"><span>save ₹ <%=
-																	product.price-product.offer_price %></span></p>
+															Math.round(product.price-product.offer_price) %></span></p>
 													</div>
 
 													<%}%>
@@ -207,7 +207,6 @@
 					</form>
 
 					<div class="sidebar-box ">
-
 
 						<div class="d-flex justify-content-between border-bottom border-solid border-2">
 							<p style="color: #000; font-weight: 600;">FILTERS</p>

@@ -142,7 +142,7 @@ const loadEditProduct = async (req, res) => {
     try {
         const productId = req.query.id;
         const productData = await Products.findOne({ _id: productId }).populate("category");
-        const categories = await Category.find({});
+        const categories = await Category.find({ is_delete: 0 });
         const genders = ["Men", "Women", "Boy", "Girl"];
         res.render("edit-product", { product: productData, categories: categories, genders: genders });
     } catch (error) {
