@@ -1,7 +1,8 @@
 import Coupons from "../models/couponModel.js";
 
 
-const loadCoupons = async (req, res) => {
+
+const loadCoupons = async (req, res,next) => {
     try {
         const couponData = await Coupons.find({});
         res.render("coupons", { coupons: couponData });
@@ -13,7 +14,7 @@ const loadCoupons = async (req, res) => {
 }
 
 
-const loadAddCoupon = async (req, res) => {
+const loadAddCoupon = async (req, res,next) => {
     try {
         res.render("add-coupon");
 

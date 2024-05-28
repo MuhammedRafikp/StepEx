@@ -7,7 +7,7 @@ coupon_route.set("views", "./views/admin");
 
 import { isLogin, isLogout } from "../middleware/adminAuth.js";
 import { isBlocked } from "../middleware/isBlocked.js";
-import { loadCoupons, loadAddCoupon, addCoupon, loadEditCoupon, editCoupon, deleteCoupon, activateCoupon, deactivateCoupon } from "../controllers/couponController.js";
+import {loadCoupons, loadAddCoupon, addCoupon, loadEditCoupon, editCoupon, deleteCoupon, activateCoupon, deactivateCoupon } from "../controllers/couponController.js";
 
 
 coupon_route.get("/coupons", isLogin, loadCoupons);

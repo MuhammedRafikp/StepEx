@@ -1,9 +1,8 @@
 import User from "../models/userModel.js";
 import OTP from "../models/otpModel.js";
-import Address from "../models/addressModel.js";
+import Products from "../models/productsModel.js";
 import Cart from "../models/cartModel.js";
-import Wishlist from "../models/wishlistModel.js";
-import Wallet from "../models/walletModel.js";
+import Coupons from "../models/couponModel.js";
 import bcrypt from "bcrypt";
 import nodemailer from "nodemailer";
 import dotenv from 'dotenv';
@@ -23,15 +22,45 @@ const securePassword = async (password) => {
 }
 
 
-const loadhome = async (req, res) => {
+const loadhome = async (req, res, next) => {
     try {
         const userId = req.session._id;
         const userData = await User.findOne({ _id: userId });
         const cart = await Cart.findOne({ user_id: userId }).populate('items.products');
-
         const cartItemCount = cart ? cart.items.length : 0;
+
+        const topDeals = await Products.aggregate([
+            {
+                $addFields: {
+                    priceDifference: { $subtract: ["$price", "$offer_price"] }
+                }
+            },
+            {
+                $sort: { priceDifference: -1 }
+            },
+            {
+                $limit: 4
+            },
+            {
+                $lookup: {
+                    from: "categories", // Collection name
+                    localField: "category",
+                    foreignField: "_id",
+                    as: "category"
+                }
+            },
+            {
+                $unwind: "$category" // Convert category from array to object
+            }
+        ]);
+
+        const newArrivals = await Products.find({}).populate("category").sort({ createdAt: -1 }).limit(4);
+
+        // console.log(productsWithPriceDifference,"productsWithPriceDifference");
+        // console.log(newArrivals,"newArrivals");
+
         console.log(cartItemCount);
-        res.render("home", { user: userData, cartCount: cartItemCount });
+        res.render("home", { user: userData, topDeals, newArrivals, cartCount: cartItemCount });
 
     } catch (error) {
         error.statusCode = 500;
@@ -71,7 +100,7 @@ const verfyLogin = async (req, res, next) => {
 
         const { email, password } = req.body;
         const userData = await User.findOne({ email: email });
-const users=await User.find({})
+        const users = await User.find({})
         console.log(users);
 
         if (!userData) {
@@ -139,7 +168,7 @@ const sentResetLink = async (username, email, token) => {
             <h5 style="text-align: center; font-size: 18px;">Hi ${username},</h5>
             <p style="text-align: center; font-size: 16px;">We have received a request to reset your password.If this wasn't initiated by you, please ignore this email.</p>
             <p style="text-align: center; font-size: 16px;">To reset your password, click the link below:</p>
-            <p style="text-align: center; font-size: 16px;"><a href='http://localhost:3000/reset-password?token=${token}' style="color: #2ecc71; text-decoration: none;">Reset Your Password</a></p>
+            <p style="text-align: center; font-size: 16px;"><a href='http://stepex.online/reset-password?token=${token}' style="color: #2ecc71; text-decoration: none;">Reset Your Password</a></p>
             <p style="text-align: center; font-size: 16px;">This link will expire in 1 hour for security reasons.</p>
             <p style="text-align: center; font-size: 16px;">If you did not request a password reset or have any concerns, please contact our support team immediately.</p>
             <p style="text-align: center; font-size: 16px; margin: 20px 0;">Best regards,<br>StepEx</p>
@@ -449,7 +478,7 @@ const editUser = async (req, res) => {
 };
 
 
-const changePassword = async (req, res) => {
+const changePassword = async (req, res, next) => {
     try {
         const { currentPassword, newPassword } = req.body;
         const userId = req.session._id;
@@ -473,6 +502,24 @@ const changePassword = async (req, res) => {
 };
 
 
+const loadCoupons = async (req, res, next) => {
+    try {
+        const userId = req.session._id;
+        const userData = await User.findOne({ _id: userId });
+        const couponsData = await Coupons.find({is_active:true});
+        const cart = await Cart.findOne({ user_id: userId }).populate('items.products');
+
+        const cartItemCount = cart ? cart.items.length : 0;
+
+        res.render("coupons", { user: userData, coupons: couponsData, cartCount: cartItemCount });
+
+    } catch (error) {
+        error.statusCode = 500;
+        next(error);
+    }
+}
+
+
 export {
     loadhome,
     loadLogin,
@@ -490,4 +537,5 @@ export {
     loadProfile,
     editUser,
     changePassword,
+    loadCoupons
 }

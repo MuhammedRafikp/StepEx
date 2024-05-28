@@ -1,29 +1,28 @@
-
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>StepEx</title>
-	
-    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800" rel="stylesheet">
-    <link rel="stylesheet" href="/assets/css/open-iconic-bootstrap.min.css">
-    <link rel="stylesheet" href="/assets/css/animate.css">
-    <link rel="stylesheet" href="/assets/css/owl.carousel.min.css">
-    <link rel="stylesheet" href="/assets/css/owl.theme.default.min.css">
-    <link rel="stylesheet" href="/assets/css/magnific-popup.css">
-    <link rel="stylesheet" href="/assets/css/aos.css">
-    <link rel="stylesheet" href="/assets/css/ionicons.min.css">
-    <link rel="stylesheet" href="/assets/css/bootstrap-datepicker.css">
-    <link rel="stylesheet" href="/assets/css/jquery.timepicker.css">
-    <link rel="stylesheet" href="/assets/css/flaticon.css">
-    <link rel="stylesheet" href="/assets/css/icomoon.css">
-    <link rel="stylesheet" href="/assets/css/style.css">
-    <!-- form css  -->
-    <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700&display=swap" rel="stylesheet">
-	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">	
-	<link rel="stylesheet" href="/form_assets/css/style.css"> 
+
+	<link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800" rel="stylesheet">
+	<link rel="stylesheet" href="/assets/css/open-iconic-bootstrap.min.css">
+	<link rel="stylesheet" href="/assets/css/animate.css">
+	<link rel="stylesheet" href="/assets/css/owl.carousel.min.css">
+	<link rel="stylesheet" href="/assets/css/owl.theme.default.min.css">
+	<link rel="stylesheet" href="/assets/css/magnific-popup.css">
+	<link rel="stylesheet" href="/assets/css/aos.css">
+	<link rel="stylesheet" href="/assets/css/ionicons.min.css">
+	<link rel="stylesheet" href="/assets/css/bootstrap-datepicker.css">
+	<link rel="stylesheet" href="/assets/css/jquery.timepicker.css">
+	<link rel="stylesheet" href="/assets/css/flaticon.css">
+	<link rel="stylesheet" href="/assets/css/icomoon.css">
+	<link rel="stylesheet" href="/assets/css/style.css">
+	<!-- form css  -->
+	<link href="https://fonts.googleapis.com/css?family=Lato:300,400,700&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+	<link rel="stylesheet" href="/form_assets/css/style.css">
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10/dist/sweetalert2.min.css">
 	<link rel="icon" href="/logo/stepexlogo.png" type="image/png">
 	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
@@ -31,8 +30,8 @@
 </head>
 
 
-<body class="goto-here" style="background-color:#dbcc8f;" >
-    <nav class="navbar navbar-expand-lg ftco_navbar ftco-navbar-light" id="ftco-navbar" >
+<body class="goto-here" style="background-color:#dbcc8f;">
+	<nav class="navbar navbar-expand-lg ftco_navbar ftco-navbar-light" id="ftco-navbar">
 		<div class="container">
 			<img src="\logo\stepexlogo.png" width="40" height="40" alt="">
 			<a class="navbar-brand" href="/">StepEx</a>
@@ -43,31 +42,30 @@
 
 			<div class="collapse navbar-collapse" id="ftco-nav">
 				<ul class="navbar-nav ml-auto">
-					<li class="nav-item active"><a href="/" class="nav-link">Home</a></li>
-					<li class="nav-item"><a href="/shop" class="nav-link">Shop</a></li>
-					<li class="nav-item"><a href="/about" class="nav-link">About</a></li>
-					<li class="nav-item"><a href="/contact" class="nav-link">Contact</a></li>
-					<li class="nav-item dropdown">
-						<a class="nav-link dropdown-toggle" href="#" id="dropdown04" data-toggle="dropdown"
-							aria-haspopup="true" aria-expanded="false"><span class="icon-person"
-								style="width: 10px; height: 10px; "></a>
-						<div class="dropdown-menu" aria-labelledby="dropdown04">
-							<a class="dropdown-item" href="/login">My account</a>
-							<a class="dropdown-item" href="/login">Sign in</a>
-							<a class="dropdown-item" href="/login"><span class="icon-shopping_cart"> </span> Cart</a>
-							<a class="dropdown-item" href="/login"><span class="icon-heart"> </span>
-								Wishlist</a>
+					<li class="nav-item active"><a href="/" class="nav-link" style="font-weight: 600;">Home</a></li>
+					<li class="nav-item"><a href="/shop" class="nav-link" style="font-weight: 600;">Shop</a></li>
+					<li class="nav-item"><a href="/about" class="nav-link" style="font-weight: 600;">About</a></li>
+					<!-- <li class="nav-item"><a href="/contact" class="nav-link" style="font-weight: 600;">Contact</a></li> -->
+					<li class="nav-item">
+						<div class="nav-link" style="font-weight: 600;">
+							<span id="login" style="cursor: pointer;">Login /</span>
+							<span id="sign-up" style="cursor: pointer;"> Sign Up</span>
 						</div>
 					</li>
-
-					
 					<li class="nav-item cta cta-colored"><a href="/login" class="nav-link"><span
-								class="icon-shopping_cart"></span>[1]</a></li>
-								
-					<!-- <li class="nav-item cta cta-colored"><a href="cart.html" class="nav-link"><span
-								class="icon-heart"></span></a></li> -->
+								class="icon-shopping_cart"></span>[0]</a></li>
+
 				</ul>
 			</div>
 		</div>
 	</nav>
-    
+
+	<script>
+		document.getElementById("login").onclick = function () {
+			window.location.href = "/login"
+		}
+
+		document.getElementById("sign-up").onclick = function () {
+			window.location.href = "/register"
+		}
+	</script>

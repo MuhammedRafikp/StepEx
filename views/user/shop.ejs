@@ -57,7 +57,7 @@
 					<% if(products&&products.length>0){ %>
 						<div class="row products-container">
 							<% products.forEach((product)=>{%>
-								<div class="col-sm-12 col-md-12 col-lg-4 ftco-animate d-flex">
+								<div class="col-sm-6 col-md-6 col-lg-4 ftco-animate d-flex">
 									<div class="product d-flex flex-column">
 
 										<a href="/shop/single?id=<%= product._id %>" class="img-prod"><img
@@ -66,7 +66,8 @@
 
 											<% if (((product.price-product.offer_price)/product.price)*100>0){%>
 												<span class="status">
-													<%= Math.round(((product.price-product.offer_price)/product.price)*100) %>% off
+													<%= Math.round(((product.price-product.offer_price)/product.price)*100)
+														%>% off
 												</span>
 												<%}%>
 
@@ -89,11 +90,13 @@
 													</p>
 												</div>
 											</div>
-											<h3><a href="/shop/single?id=<%= product._id %>">
+											<h3>
+												<a href="/shop/single?id=<%= product._id %>">
 													<%= product.name %>
-												</a></h3>
+												</a>
+											</h3>
 
-											<%if(product.price <= product.offer_price ){%>
+											<%if(product.price <=product.offer_price ){%>
 
 												<div class="pricing d-flex">
 													<p class="price" style="font-weight: 600;"><span>₹ <%= product.price
@@ -106,17 +109,16 @@
 														<s class="price text-secondary"><span>₹ <%=(product.price) %>
 															</span></s>
 														<p class="price mx-3" style="font-weight: 600;"><span>₹ <%=
-															Math.round(product.offer_price) %> </span></p>
+																	Math.round(product.offer_price) %> </span></p>
 													</div>
 
 													<div>
 														<p class="badge badge-success mt-2"><span>save ₹ <%=
-															Math.round(product.price-product.offer_price) %></span></p>
+																	Math.round(product.price-product.offer_price) %>
+															</span></p>
 													</div>
 
 													<%}%>
-
-
 
 
 														<p class="bottom-area d-flex px-3">
@@ -134,18 +136,21 @@
 																			class="addToCart add-to-cart text-center py-2 mr-1 font-weight-bold rounded "
 																			data-product-id="<%= product._id %>"
 																			data-quantity="1">
-																			<span><i
-																					class="ion-ios-cart ml-1 mx-1 "></i>Add
-																				to cart
+																			<span>
+																				<i class="ion-ios-cart ml-1 mx-1 "></i>
+																				Add to cart
 																			</span>
 																		</a>
 
 																		<% } else { %>
 
 																			<a href="/login"
-																				class="add-to-cart text-center py-2 mr-1">
-																				<span>Add to cart <i
-																						class="ion-ios-add ml-1"></i></span>
+																				class="add-to-cart text-center py-2 mr-1 font-weight-bold rounded">
+																				<span>
+																					<i
+																						class="ion-ios-cart ml-1 mx-1 "></i>
+																					Add to cart
+																				</span>
 																			</a>
 
 																			<% } %>
@@ -172,7 +177,7 @@
 							</div>
 							<%}%>
 
-								<div class="pagination d-flex justify-content-center mt-5 ">
+								<!-- <div class="pagination d-flex justify-content-center mt-5 ">
 									<% if (currentPage> 1) { %>
 										<a href="?page=1">&laquo;</a>
 										<% } %>
@@ -193,7 +198,33 @@
 																<% if (currentPage < totalPages) { %>
 																	<a href="?page=<%= totalPages %>">&raquo;</a>
 																	<% } %>
+								</div> -->
+
+								<div class="pagination d-flex justify-content-center mt-5 ">
+									<% if (currentPage> 1) { %>
+										<a
+											href="?page=1&search=<%= search %>&category=<%= selectedCategories.join(',') %>&gender=<%= selectedGenders.join(',') %>&minPrice=<%= minPrice %>&maxPrice=<%= maxPrice %>&sortBy=<%= sortBy %>">&laquo;</a>
+										<% } %>
+											<% for (let i=1; i <=totalPages; i++) { %>
+												<% if (i==currentPage) { %>
+													<span class="btn btn-black font-weight-bold mx-1">
+														<%= i %>
+													</span>
+													<% } else { %>
+														<span>
+															<a href="?page=<%= i %>&search=<%= search %>&category=<%= selectedCategories.join(',') %>&gender=<%= selectedGenders.join(',') %>&minPrice=<%= minPrice %>&maxPrice=<%= maxPrice %>&sortBy=<%= sortBy %>"
+																class="btn btn-primary pagination-btn font-weight-bold mx-1">
+																<%= i %>
+															</a>
+														</span>
+														<% } %>
+															<% } %>
+																<% if (currentPage < totalPages) { %>
+																	<a
+																		href="?page=<%= totalPages %>&search=<%= search %>&category=<%= selectedCategories.join(',') %>&gender=<%= selectedGenders.join(',') %>&minPrice=<%= minPrice %>&maxPrice=<%= maxPrice %>&sortBy=<%= sortBy %>">&raquo;</a>
+																	<% } %>
 								</div>
+
 
 				</div>
 
