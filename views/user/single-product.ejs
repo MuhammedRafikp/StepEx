@@ -49,7 +49,7 @@
 		}
 	</style>
 
-
+	<!---- breadcrumbs---->
 	<div style="background-color: #f0f0f0; height: 60px; z-index: 1;" class="hero-wrap">
 		<div class="container">
 			<div class="row no-gutters slider-text align-items-start">
@@ -113,38 +113,45 @@
 					<%if(product.price===product.offer_price){%>
 
 						<div class="d-flex ">
-							<p  style="color: #000; font-size: 16px; font-weight: 600;"><span>₹ <%= product.offer_price %></span></p>
+							<p style="color: #000; font-size: 16px; font-weight: 600;"><span>₹ <%= product.offer_price
+										%></span></p>
 						</div>
 						<%}else{%>
-					<div class="d-flex ">
-						<s class="text-secondary "><span>₹ <%= product.price %></span></s>
-						<p class="mx-2" style="color: #000; font-size: 16px; font-weight: 600;"><span>₹ <%= product.offer_price %></span></p>
-						<p class="mx-2" style="color: #000; font-size: 16px; font-weight: bold;"><span><%= ((product.price-product.offer_price)/product.price)*100 %>% off</span></p>
-					</div>
-					<p class="badge badge-success"><span>save ₹ <%=
-						product.price-product.offer_price %></span></p>
-	<%}%>
+							<div class="d-flex ">
+								<s class="text-secondary "><span>₹ <%= product.price %></span></s>
+								<p class="mx-2" style="color: #000; font-size: 16px; font-weight: 600;"><span>₹ <%=
+											product.offer_price %></span></p>
+								<p class="mx-2" style="color: #000; font-size: 16px; font-weight: bold;"><span>
+										<%= ((product.price-product.offer_price)/product.price)*100 %>% off
+									</span></p>
+							</div>
+							<p class="badge badge-success"><span>save ₹ <%= product.price-product.offer_price %></span>
+							</p>
+							<%}%>
 
-					
-					<p style="color: #292929;">
-						<%= product.description %>
-					</p>
-					<p style="color: #949494;font-size: 13px;"><span style="font-weight: bold;">BRAND : </span>
-						<%= product.brand %>
-					</p>
-					<p style="color: #949494; font-size: 13px;"><span style="font-weight: bold;">CATEGORY :</span>
-						<%= product.category.name %>
-					</p>
-					<p style="color: #949494;font-size: 13px;"><span style="font-weight: bold;">SIZE : </span>
-						Free size
-					</p>
 
-					<div class="row mt-4">
-						<!-- <div>
+								<p style="color: #292929;">
+									<%= product.description %>
+								</p>
+								<p style="color: #949494;font-size: 13px;"><span style="font-weight: bold;">BRAND :
+									</span>
+									<%= product.brand %>
+								</p>
+								<p style="color: #949494; font-size: 13px;"><span style="font-weight: bold;">CATEGORY
+										:</span>
+									<%= product.category.name %>
+								</p>
+								<p style="color: #949494;font-size: 13px;"><span style="font-weight: bold;">SIZE :
+									</span>
+									Free size
+								</p>
+
+								<div class="row mt-4">
+									<!-- <div>
 							<span class="col-md-6" style="color: #292929; font-weight: bold;">Quantity :</span>
 						</div> -->
 
-						<!-- <div class="input-group col-md-6 d-flex mb-3">
+									<!-- <div class="input-group col-md-6 d-flex mb-3">
 							<span class="input-group-btn mr-2">
 								<button type="button" class="quantity-left-minus btn" data-type="minus" data-field="">
 									<i class="ion-ios-remove"></i>
@@ -161,45 +168,51 @@
 
 						</div> -->
 
-						<div class="w-100"></div>
-						<div class="col-md-12">
-							<% if(product.quantity> 0) { %>
-								<p style="color: #375f2a; font-weight: bold;">
-									In stock ,<span>
-										<%= product.quantity %> pieces available
-									</span>
+									<div class="w-100"></div>
+									<div class="col-md-12">
+										<% if(product.quantity> 0) { %>
+											<p style="color: #375f2a; font-weight: bold;">
+												In stock ,<span>
+													<%= product.quantity %> pieces available
+												</span>
+											</p>
+											<% } else { %>
+												<p style="color: #BA0933; font-weight: bold; ">
+													Currently unavailable.
+												</p>
+												<% } %>
+									</div>
+
+								</div>
+								<p>
+
+									<% if(user) {%>
+
+										<a href="#"
+											class="add-to-cart btn btn-primary py-3 font-weight-bold px-5 mr-2 rounded"
+											style="font-size: 13px;" data-product-id="<%= product._id %>"><span
+												class="icon-shopping_cart mx-1 "></span>Add to
+											Cart</a>
+										<a href="#"
+											class="add-to-wishlist btn btn-black py-3 px-5 font-weight-bold rounded"
+											style="font-size: 13px;" data-product-id="<%= product._id %>"><span
+												class="icon-heart mx-1"></span>Add to
+											Wishlist</a>
+
+										<% } else{%>
+
+											<a href="/login"
+												class=" btn btn-primary py-3 px-5 mr-2 font-weight-bold rounded"
+												style="font-size: 13px;"><span
+													class="icon-shopping_cart mx-1 "></span>Add to
+												Cart</a>
+											<a href="/login" class="btn btn-black  py-3 px-5 font-weight-bold rounded"
+												style="font-size: 13px;"><span class="icon-heart mx-1"></span>Add to
+												Wishlist</a>
+
+											<% }%>
+
 								</p>
-								<% } else { %>
-									<p style="color: #BA0933; font-weight: bold; ">
-										Currently unavailable.
-									</p>
-									<% } %>
-						</div>
-
-					</div>
-					<p>
-
-						<% if(user) {%>
-
-							<a href="#" class="add-to-cart btn btn-primary py-3 font-weight-bold px-5 mr-2 rounded" style="font-size: 13px;"
-								data-product-id="<%= product._id %>"><span class="icon-shopping_cart mx-1 "></span>Add to
-								Cart</a>
-							<a href="#" class="add-to-wishlist btn btn-black py-3 px-5 font-weight-bold rounded" style="font-size: 13px;"
-								data-product-id="<%= product._id %>"><span class="icon-heart mx-1"></span>Add to
-								Wishlist</a>
-
-							<% } else{%>
-
-								<a href="/login" class=" btn btn-primary py-3 px-5 mr-2 font-weight-bold rounded" style="font-size: 13px;"><span
-										class="icon-shopping_cart mx-1 "></span>Add to
-									Cart</a>
-								<a href="/login" class="btn btn-black  py-3 px-5 font-weight-bold rounded" style="font-size: 13px;"><span
-										class="icon-heart mx-1"></span>Add to
-									Wishlist</a>
-
-								<% }%>
-
-					</p>
 				</div>
 			</div>
 

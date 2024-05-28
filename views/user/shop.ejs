@@ -16,6 +16,7 @@
 		}
 	</style>
 
+    <!---- breadcrumbs---->
 	<div style="background-color: #f0f0f0; height: 60px; z-index: 1;" class="hero-wrap">
 		<div class="container">
 			<div class="row no-gutters slider-text align-items-start">
@@ -167,38 +168,15 @@
 
 						<%}else{%>
 
-							<div>
+							<div class="my-5">
 								<div class="d-flex justify-content-center ">
-									<img width="75" height="75" src="/assets/images/no-products-found.png" alt="">
+									<img width="200" height="200" src="/assets/images/no-products-found.png" alt="">
 								</div>
 								<div class="d-flex justify-content-center ">
 									<h6 style="font-weight: 600;">No products Found!</h6>
 								</div>
 							</div>
 							<%}%>
-
-								<!-- <div class="pagination d-flex justify-content-center mt-5 ">
-									<% if (currentPage> 1) { %>
-										<a href="?page=1">&laquo;</a>
-										<% } %>
-											<% for (let i=1; i <=totalPages; i++) { %>
-												<% if (i==currentPage) { %>
-													<span class="btn btn-primary ">
-														<%= i %>
-													</span>
-													<% } else { %>
-														<span> <a href="?page=<%= i %>"
-																class="btn btn-secondary pagination-btn">
-
-																<%= i %>
-
-															</a></span>
-														<% } %>
-															<% } %>
-																<% if (currentPage < totalPages) { %>
-																	<a href="?page=<%= totalPages %>">&raquo;</a>
-																	<% } %>
-								</div> -->
 
 								<div class="pagination d-flex justify-content-center mt-5 ">
 									<% if (currentPage> 1) { %>
@@ -297,10 +275,7 @@
 							<button id="filter-btn" class="btn btn-primary col-md-12 font-weight-bold rounded">Apply
 								Filter</button>
 						</div>
-
 					</div>
-
-
 
 				</div>
 

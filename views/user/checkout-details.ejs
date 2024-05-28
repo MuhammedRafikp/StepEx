@@ -105,8 +105,8 @@
 
 
 
-
-	<div style="background-color: #f0f0f0; height: 60px;" class="hero-wrap">
+	<!---- breadcrumbs---->
+	<div style="background-color: #f0f0f0; height: 60px; z-index: 1;" class="hero-wrap">
 		<div class="container">
 			<div class="row no-gutters slider-text align-items-start">
 
@@ -247,7 +247,7 @@
 														<div class="row ">
 															<div class="col-lg-12">
 																<span style="font-size: 13px;">
-																	₹<%= item.products.offer_price%> X <%=
+																	₹<%= Math.round(item.products.offer_price) %> X <%=
 																			item.quantity%>
 																</span>
 															</div>
@@ -279,18 +279,16 @@
 										<%}%>
 											<% if(req.session.discount){%>
 												<div class="cart-total">
-
 													<h3>Order Summary</h3>
 													<p class="d-flex justify-content-between ">
 														<span>Subtotal</span>
 														<span class="subtotal">
-															₹ <%=totalAmount%>.00
+															₹ <%= Math.round(totalAmount) %>
 														</span>
 													</p>
 													<p class="d-flex ">
 														<span>Discount (<%=req.session.discount%>%)</span>
-														<span>- ₹ <%=(totalAmount)*req.session.discount /100 %>
-																.00</span>
+														<span>- ₹ <%=Math.round((totalAmount)*req.session.discount /100) %></span>
 													</p>
 													<p class="d-flex justify-content-end ">
 														<span>Delivery</span>
@@ -300,9 +298,7 @@
 													<p class="d-flex total-price">
 														<span>Total</span>
 
-														<span class="total-amount">₹<%=totalAmount-
-																(totalAmount*(req.session.discount/100)) %></span>
-														<!-- <span class="total-amount">₹<%= typeof(req.session.discount) %></span> -->
+														<span class="total-amount">₹<%=totalAmount- (totalAmount*(req.session.discount/100)) %></span>
 
 													</p>
 												</div>
@@ -314,7 +310,7 @@
 														<p class="d-flex justify-content-between">
 															<span>Subtotal</span>
 															<span class="subtotal">
-																₹<%=totalAmount%>
+																₹<%=Math.round(totalAmount)%>
 															</span>
 														</p>
 														<p class="d-flex justify-content-between">
@@ -401,7 +397,7 @@
 
 					if (selectedAddress) {
 						const addressIndex = selectedAddress.value;
-						// Send selected address index to backend using Fetch API
+
 						fetch('/selectAddressForCheckout', {
 							method: 'POST',
 							headers: {
@@ -411,12 +407,10 @@
 						})
 							.then(response => {
 								if (response.ok) {
-									// Redirect to checkout-payment page
 									window.location.href = '/checkout-payment';
 								} else if (response.status === 400) {
-									// Display SweetAlert for items unavailable for checkout
-									response.json().then(data => {
 
+									response.json().then(data => {
 										Swal.fire({
 											icon: 'warning',
 											html: data.message,
@@ -429,8 +423,6 @@
 							.catch(error => console.error('Error:', error));
 					} else {
 
-
-						// Display SweetAlert for selecting an address
 						Swal.fire({
 							icon: 'warning',
 							text: 'Please select an address to continue!',
@@ -471,10 +463,8 @@
 				});
 			});
 
+
 			//Remove coupon
-			<!-- Add this script tag at the end of your HTML body -->
-
-
 			document.addEventListener('DOMContentLoaded', function () {
 				const removeCouponBtn = document.getElementById('remove-coupon-btn');
 

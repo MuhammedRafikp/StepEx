@@ -39,7 +39,7 @@
 		}
 	</style>
 
-	<div style="background-color: #f0f0f0; height: 60px;" class="hero-wrap">
+	<div style="background-color: #f0f0f0; height: 60px; z-index: 1;" class="hero-wrap">
 		<div class="container">
 			<div class="row no-gutters slider-text align-items-start">
 
@@ -91,13 +91,25 @@
 														<h3>
 															<%=item.products.name%>
 														</h3>
-														<span> <s class="text-secondary" style="font-size: 13px;"> ₹<%=
-																	item.products.price%></s><span class="price mx-1"> ₹
-																<%= item.products.offer_price%></span></span>
-														<span class="mx-2 text-success " style="font-weight:600;">
-															<%= ((item.products.price-item.products.offer_price)/item.products.price)*100
-																%>% off
-														</span>
+
+														<%if(item.products.price <=item.products.offer_price ){%>
+															<p class="price" style="font-weight: 600;"><span>₹ <%= item.products.price
+																%> </span></p>
+															
+															<%}else{%>
+
+																<span> <s class="text-secondary" style="font-size: 13px;"> ₹
+																	<%= item.products.price%></s><span
+																	class="price mx-1"> ₹
+																	<%= Math.round(item.products.offer_price)%>
+																</span></span>
+															<span class="mx-2 text-success " style="font-weight:600;">
+																<%= Math.round(((item.products.price-item.products.offer_price)/item.products.price)*100)
+																	%>% off
+															</span>
+
+																
+																	<%}%>
 
 													</td>
 
@@ -209,7 +221,7 @@
 				</div>
 			</div>
 
-			<div class="row justify-content-start">
+			<div class="row d-flex justify-content-end">
 				<div class="col col-lg-5 col-md-6 mt-5 cart-wrap ftco-animate">
 					<div class="cart-total mb-3">
 						<h3>Summary</h3>
@@ -226,25 +238,26 @@
 						<hr>
 						<p class="d-flex total-price">
 							<span>Total</span>
-							<span class="total-amount">₹<%= subtotal %>.00</span>
+							<span class="total-amount">₹<%= subtotal %></span>
 						</p>
 					</div>
-					<p class="text-center "><a href="#" class="btn btn-primary checkout-btn py-3 px-4"
-							style="font-size: 15;font-weight: bold;">Proceed to Checkout</a></p>
+					<p class="text-center ">
+						<a href="" class="btn btn-primary font-weight-bold checkout-btn py-3 px-4 rounded"
+							>Proceed to Checkout</a></p>
 				</div>
 			</div>
 
 			<% } else { %>
 				<div>
 					<div class="d-flex justify-content-center ">
-						<img width="125" height="125" src="/assets/images/empty-cart.png" alt="">
+						<img width="200" height="200" src="/assets/images/empty-cart.png" alt="">
 					</div>
 					<div class="d-flex justify-content-center ">
 
 						<h6 style="font-weight: 600;">There are no items in your cart.</h6>
 					</div>
 					<div>
-						<a href=""  class="d-flex justify-content-center">Shop now</a>
+						<a href="/shop" class="d-flex justify-content-center text-primary ">Shop now</a>
 					</div>
 				</div>
 				<% } %>

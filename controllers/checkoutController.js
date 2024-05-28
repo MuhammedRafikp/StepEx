@@ -15,45 +15,8 @@ const razorpay = new Razorpay({
     key_secret: RAZORPAY_SECRET_KEY
 });
 
-
-const loadCheckout = async (req, res,next) => {
-
-    try {
-        console.log("key_id:",razorpay.key_id);
-        const userId = req.session._id;
-        const userData = await User.findOne({ _id: userId });
-
-        const address = await Address.findOne({ user_id: userId });
-        const cartData = await Cart.findOne({ user_id: userId }).populate('items.products');
-        const cartItemCount = cartData ? cartData.items.length : 0;
-
-        let totalAmount = 0;
-        if (cartData) {
-            for (const item of cartData.items) {
-
-                totalAmount += item.products.offer_price * item.quantity;
-            }
-        }
-
-        const validCoupons = await Coupon.find({
-            min_price: { $lte: totalAmount },
-            validity: { $gte: new Date() },
-            is_active: true 
-        });
-        // console.log(validCoupons);
-
-        res.render("checkout-details", { user: userData, address: address, cart: cartData, coupons: validCoupons, totalAmount, cartCount: cartItemCount, req });
-
-    } catch (error) {
-        error.statusCode = 500;
-        next(error);
-    }
-}
-
-
 const proceedToCheckout = async (req, res) => {
     try {
-        console.log("proceedToCheckout");
         const userId = req.session._id;
         const cartData = await Cart.findOne({ user_id: userId }).populate('items.products');
 
@@ -79,6 +42,73 @@ const proceedToCheckout = async (req, res) => {
             delete req.session.discount;
             res.status(200).json();
         }
+
+    } catch (error) {
+        error.statusCode = 500;
+        next(error);
+    }
+}
+
+
+const loadCheckout = async (req, res, next) => {
+
+    try {
+        console.log("key_id:", razorpay.key_id);
+        const userId = req.session._id;
+        const userData = await User.findOne({ _id: userId });
+
+        const address = await Address.findOne({ user_id: userId });
+        const cartData = await Cart.findOne({ user_id: userId }).populate('items.products');
+        const cartItemCount = cartData ? cartData.items.length : 0;
+
+        let totalAmount = 0;
+        if (cartData.items.length > 0) {
+            for (const item of cartData.items) {
+
+                totalAmount += item.products.offer_price * item.quantity;
+            }
+        }
+
+        const validCoupons = await Coupon.find({
+            min_price: { $lte: totalAmount },
+            validity: { $gte: new Date() },
+            is_active: true
+        });
+
+        if (cartData.items.length > 0) {
+            res.render("checkout-details", { user: userData, address: address, cart: cartData, coupons: validCoupons, totalAmount, cartCount: cartItemCount, req });
+
+        } else {
+            res.redirect("/shop");
+        }
+
+
+    } catch (error) {
+        error.statusCode = 500;
+        next(error);
+    }
+}
+
+
+const applyCoupon = async (req, res) => {
+    try {
+        console.log("apply coupon");
+        const { couponCode } = req.body;
+        const coupon = await Coupon.findOne({ coupon_code: couponCode });
+        req.session.discount = coupon.discount;
+        console.log("discount:", req.session.discount);
+        res.status(200).json({ success: true });
+
+    } catch (error) {
+        error.statusCode = 500;
+        next(error);
+    }
+}
+
+const removeCoupon = async (req, res) => {
+    try {
+        delete req.session.discount;
+        res.status(200).json({ success: true });
 
     } catch (error) {
         error.statusCode = 500;
@@ -122,36 +152,14 @@ const selectAddressForCheckout = async (req, res) => {
 }
 
 
-const applyCoupon = async (req, res) => {
-    try {
-        console.log("apply coupon");
-        const { couponCode } = req.body;
-        const coupon = await Coupon.findOne({ coupon_code: couponCode });
-        req.session.discount = coupon.discount;
-        console.log("discount:", req.session.discount);
-        res.status(200).json({ success: true });
-
-    } catch (error) {
-        error.statusCode = 500;
-        next(error);
-    }
-}
-
-const removeCoupon = async (req, res) => {
-    try {
-        delete req.session.discount;
-        res.status(200).json({ success: true });
-
-    } catch (error) {
-        error.statusCode = 500;
-        next(error);
-    }
-}
-
-
 const loadPayment = async (req, res) => {
 
     try {
+
+        if(!req.session.addressIndex){
+            res.redirect("/cart");
+        };
+
         const userId = req.session._id;
         const userData = await User.findOne({ _id: userId });
 
@@ -161,14 +169,19 @@ const loadPayment = async (req, res) => {
         const walletData = await Wallet.findOne({ user_id: userId });
         let totalAmount = 0;
 
-        if (cartData) {
+        if (cartData.items.length > 0) {
             for (const item of cartData.items) {
                 totalAmount += item.products.offer_price * item.quantity;
             }
+
+            res.render("checkout-payment", { user: userData, address: addressData.address[req.session.addressIndex], totalAmount: totalAmount, wallet: walletData, cartCount: cartItemCount, razorpaykey: RAZORPAY_ID_KEY, req });
+
+        } else {
+            res.redirect("/shop");
         }
 
-        console.log(addressData.address[req.session.addressIndex]);
-        res.render("checkout-payment", { user: userData, address: addressData.address[req.session.addressIndex], totalAmount: totalAmount, wallet: walletData, cartCount: cartItemCount, razorpaykey: RAZORPAY_ID_KEY, req });
+
+
 
     } catch (error) {
         error.statusCode = 500;
@@ -250,7 +263,7 @@ const confirmOrder = async (req, res) => {
                     brand: product.brand,
                     imageUrl: product.images[0],
                     quantity: item.quantity,
-                    status:status
+                    status: status
                 }
 
                 items.push(itemDetails);

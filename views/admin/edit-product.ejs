@@ -8,396 +8,415 @@
 
                 <%-include('sidebar.ejs')%>
 
-                    <div class="col-9  ">
-                        <div class="card">
-                            <div class="card-body">
-                                <h4 class="card-title">EDIT PRODUCT</h4>
+                    <div class="main-panel">
+                        <div class="content-wrapper">
+                            <div class="d-flex justify-content-end col-12 my-3 ">
+                                <a href="/admin/products" class="mx-1 text-primary text-decoration-none">Products</a>
+                                /
+                                <a href="" class="mx-1 text-primary text-decoration-none">Edit
+                                    product</a>
+                            </div>
 
-                                <form id="productForm" class="form-sample" enctype="multipart/form-data"
-                                    onsubmit="return validateForm()">
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <div class="form-group row">
-                                                <label class="col-sm-3 col-form-label">Name</label>
-                                                <div class="col-sm-9">
-                                                    <input type="text" id="name" name="name" class="form-control"
-                                                        value="<%=product.name%>" />
-                                                    <span id="name-error" style="color: red; font-size: 14px;"></span>
+                            <div class="col-12">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h4 class="card-title">EDIT PRODUCT</h4>
 
+                                        <form id="productForm" class="form-sample" enctype="multipart/form-data"
+                                            onsubmit="return validateForm()">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="form-group row">
+                                                        <label class="col-sm-3 col-form-label">Name</label>
+                                                        <div class="col-sm-9">
+                                                            <input type="text" id="name" name="name"
+                                                                class="form-control" value="<%=product.name%>" />
+                                                            <span id="name-error"
+                                                                style="color: red; font-size: 14px;"></span>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group row">
+                                                        <label class="col-sm-3 col-form-label">Price</label>
+                                                        <div class="col-sm-9">
+                                                            <input type="text" id="price" name="price"
+                                                                class="form-control" value="<%=product.price %>" />
+                                                            <span id="price-error"
+                                                                style="color: red; font-size: 14px;"></span>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="form-group row">
-                                                <label class="col-sm-3 col-form-label">Price</label>
-                                                <div class="col-sm-9">
-                                                    <input type="text" id="price" name="price" class="form-control"
-                                                        value="<%=product.price %>" />
-                                                    <span id="price-error" style="color: red; font-size: 14px;"></span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <div class="form-group row">
-                                                <label class="col-sm-3 col-form-label">Category</label>
-                                                <div class="col-sm-9">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="form-group row">
+                                                        <label class="col-sm-3 col-form-label">Category</label>
+                                                        <div class="col-sm-9">
 
-                                                    <select class="form-control" name="category">
+                                                            <select class="form-control" name="category">
 
-                                                        <option>
-                                                            <%= product.category.name %>
-                                                        </option>
-
-                                                        <% categories.forEach((category)=> { %>
-                                                            <% if (category.name !==product.category.name) { %>
                                                                 <option>
-                                                                    <%= category.name %>
+                                                                    <%= product.category.name %>
                                                                 </option>
-                                                                <% } %>
-                                                                    <% }) %>
-                                                    </select>
-                                                    <span id="category-error"
-                                                        style="color: red; font-size: 14px;"></span>
 
+                                                                <% categories.forEach((category)=> { %>
+                                                                    <% if (category.name !==product.category.name) { %>
+                                                                        <option>
+                                                                            <%= category.name %>
+                                                                        </option>
+                                                                        <% } %>
+                                                                            <% }) %>
+                                                            </select>
+                                                            <span id="category-error"
+                                                                style="color: red; font-size: 14px;"></span>
+
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="form-group row">
-                                                <label class="col-sm-3 col-form-label">Gender</label>
-                                                <div class="col-sm-9">
-                                                    <select class="form-control" name="gender">
-                                                        <option>
-                                                            <%= product.gender %>
-                                                        </option>
-
-
-                                                        <% genders.forEach((gender)=> { %>
-                                                            <% if (gender !==product.gender) { %>
+                                                <div class="col-md-6">
+                                                    <div class="form-group row">
+                                                        <label class="col-sm-3 col-form-label">Gender</label>
+                                                        <div class="col-sm-9">
+                                                            <select class="form-control" name="gender">
                                                                 <option>
-                                                                    <%= gender %>
+                                                                    <%= product.gender %>
                                                                 </option>
-                                                                <% } %>
-                                                                    <% }) %>
-                                                    </select>
-                                                    <span id="gender-error" style="color: red; font-size: 14px;"></span>
+
+
+                                                                <% genders.forEach((gender)=> { %>
+                                                                    <% if (gender !==product.gender) { %>
+                                                                        <option>
+                                                                            <%= gender %>
+                                                                        </option>
+                                                                        <% } %>
+                                                                            <% }) %>
+                                                            </select>
+                                                            <span id="gender-error"
+                                                                style="color: red; font-size: 14px;"></span>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <div class="form-group row">
-                                                <label class="col-sm-3 col-form-label">Brand</label>
-                                                <div class="col-sm-9">
-                                                    <input type="text" id="brand" name="brand" class="form-control"
-                                                        value="<%=product.brand%>" />
-                                                    <span id="brand-error" style="color: red; font-size: 14px;"></span>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="form-group row">
+                                                        <label class="col-sm-3 col-form-label">Brand</label>
+                                                        <div class="col-sm-9">
+                                                            <input type="text" id="brand" name="brand"
+                                                                class="form-control" value="<%=product.brand%>" />
+                                                            <span id="brand-error"
+                                                                style="color: red; font-size: 14px;"></span>
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="form-group row">
-                                                <label class="col-sm-3 col-form-label">Quantity</label>
-                                                <div class="col-sm-9">
-                                                    <input type="number" id="quantity" name="quantity"
-                                                        class="form-control" value="<%=product.quantity%>" />
-                                                    <span id="quantity-error"
-                                                        style="color: red; font-size: 14px;"></span>
+                                                <div class="col-md-6">
+                                                    <div class="form-group row">
+                                                        <label class="col-sm-3 col-form-label">Quantity</label>
+                                                        <div class="col-sm-9">
+                                                            <input type="number" id="quantity" name="quantity"
+                                                                class="form-control" value="<%=product.quantity%>" />
+                                                            <span id="quantity-error"
+                                                                style="color: red; font-size: 14px;"></span>
+                                                        </div>
+                                                    </div>
                                                 </div>
+
                                             </div>
-                                        </div>
-
-                                    </div>
 
 
-                                    <div class="form-group">
-
-                                        <label>File upload</label>
-                                        <input type="file" id="image" name="images" class="file-upload-default"
-                                            accept="image/*" multiple>
-                                        <div class="input-group col-xs-9">
-                                            <input type="text" class="form-control file-upload-info" disabled
-                                                placeholder="Upload Image">
-                                            <span class="input-group-append">
-                                                <button id="upload-button"
-                                                    class="file-upload-browse btn btn-gradient-primary"
-                                                    type="button">Upload</button>
-                                            </span>
-                                            <input type="hidden" id="hidden" name="id" value="<%=product._id %>">
-
-                                        </div>
-                                        <span id="image-error" style="color: red; font-size: 14px;"></span>
-
-                                    </div>
-                                    <p id="uploaded-images-heading" style="display: none; font-weight: bold;">Newly
-                                        Uploaded
-                                        Images:</p>
-                                    <div id="uploaded-preview-container" class="image-preview-container"></div>
-
-                                    <p class="existing-images-heading" style="font-weight: bold;">Existing Images:</p>
-
-
-                                    <% product.images.forEach(image=> { %>
-
-                                        <div class="image-preview-container">
-                                            <img src="/uploads/productImages/<%= image %>" class="image-preview"
-                                                style="width:150px;height:192px;" />
-                                            <button type="button" class="delete-image-button"
-                                                data-product-id="<%= product._id %>" data-image-name="<%= image %>"
-                                                onclick="deleteImage(this)">X</button>
-
-                                        </div>
-                                        <% }); %>
-
-                                            <br><br><br>
                                             <div class="form-group">
-                                                <label for="description">Description</label>
-                                                <textarea class="form-control" id="description" name="description"
-                                                    rows="4"><%=product.
-                                    description %></textarea>
-                                                <span id="description-error"
-                                                    style="color: red; font-size: 14px;"></span>
+
+                                                <label>File upload</label>
+                                                <input type="file" id="image" name="images" class="file-upload-default"
+                                                    accept="image/*" multiple>
+                                                <div class="input-group col-xs-9">
+                                                    <input type="text" class="form-control file-upload-info" disabled
+                                                        placeholder="Upload Image">
+                                                    <span class="input-group-append">
+                                                        <button id="upload-button"
+                                                            class="file-upload-browse btn btn-gradient-primary"
+                                                            type="button">Upload</button>
+                                                    </span>
+                                                    <input type="hidden" id="hidden" name="id"
+                                                        value="<%=product._id %>">
+
+                                                </div>
+                                                <span id="image-error" style="color: red; font-size: 14px;"></span>
+
                                             </div>
+                                            <p id="uploaded-images-heading" style="display: none; font-weight: bold;">
+                                                Newly
+                                                Uploaded
+                                                Images:</p>
+                                            <div id="uploaded-preview-container" class="image-preview-container"></div>
 
-                                            <button id="submit-button" type="button"
-                                                class="btn btn-gradient-primary mr-2">Update</button>
+                                            <p class="existing-images-heading" style="font-weight: bold;">Existing
+                                                Images:</p>
 
-                                            <a href="/admin/products"><button type="button"
-                                                    class="btn btn-light">Cancel</button></a>
 
-                                </form>
+                                            <% product.images.forEach(image=> { %>
 
+                                                <div class="image-preview-container">
+                                                    <img src="/uploads/productImages/<%= image %>" class="image-preview"
+                                                        style="width:150px;height:192px;" />
+                                                    <button type="button" class="delete-image-button"
+                                                        data-product-id="<%= product._id %>"
+                                                        data-image-name="<%= image %>"
+                                                        onclick="deleteImage(this)">X</button>
+                                                </div>
+
+                                                <% }); %>
+
+                                                    <br><br><br>
+                                                    <div class="form-group">
+                                                        <label for="description">Description</label>
+                                                        <textarea class="form-control" id="description"
+                                                            name="description" rows="4"><%=product.
+                                    description %></textarea>
+                                                        <span id="description-error"
+                                                            style="color: red; font-size: 14px;"></span>
+                                                    </div>
+
+                                                    <button id="submit-button" type="button"
+                                                        class="btn btn-gradient-primary mr-2">Update</button>
+
+                                                    <a href="/admin/products"><button type="button"
+                                                            class="btn btn-light">Cancel</button></a>
+
+                                        </form>
+
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
-
-
             </div>
 
+    </div>
 
-            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 
-            <script>
-                document.getElementById('upload-button').addEventListener('click', function () {
-                    document.getElementById('image').click();
-                });
-            </script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 
-            <script>
+    <script>
+        document.getElementById('upload-button').addEventListener('click', function () {
+            document.getElementById('image').click();
+        });
+    </script>
 
-                document.getElementById('image').addEventListener('change', function (event) {
-                    const files = event.target.files;
-                    const uploadedPreviewContainer = document.getElementById('uploaded-preview-container');
-                    const uploadedImagesHeading = document.getElementById('uploaded-images-heading');
+    <script>
 
-                    uploadedPreviewContainer.innerHTML = '';
+        document.getElementById('image').addEventListener('change', function (event) {
+            const files = event.target.files;
+            const uploadedPreviewContainer = document.getElementById('uploaded-preview-container');
+            const uploadedImagesHeading = document.getElementById('uploaded-images-heading');
 
-                    if (files.length > 0) {
-                        uploadedImagesHeading.style.display = 'block';
+            uploadedPreviewContainer.innerHTML = '';
+
+            if (files.length > 0) {
+                uploadedImagesHeading.style.display = 'block';
+            } else {
+                uploadedImagesHeading.style.display = 'none';
+
+            }
+
+
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                const reader = new FileReader();
+
+                reader.onload = function (e) {
+                    const imageSrc = e.target.result;
+
+
+                    const image = document.createElement('img');
+                    image.src = imageSrc;
+                    image.classList.add('image-preview');
+                    image.style.width = '150px';
+                    image.style.height = '192px';
+
+                    uploadedPreviewContainer.appendChild(image);
+                };
+
+                reader.readAsDataURL(file);
+            }
+        });
+
+
+        const deletedImages = [];
+        function deleteImage(button) {
+            const imageName = button.getAttribute('data-image-name');
+            deletedImages.push(imageName);
+            const imageContainer = button.parentElement;
+            imageContainer.style.display = 'none';
+        }
+
+
+        document.getElementById('submit-button').addEventListener('click', function () {
+            if (validateForm()) {
+                submitForm();
+            }
+
+        });
+
+        function submitForm() {
+            const formData = new FormData(document.getElementById('productForm'));
+            formData.append('deletedImages', JSON.stringify(deletedImages));
+
+            const nameInput = document.getElementById('name');
+            if (nameInput) {
+                formData.set('name', nameInput.value.trim());
+            }
+
+            fetch('/admin/products/edit-product', {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => {
+                    if (response.ok) {
+                        console.log('Form data submitted successfully');
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Product Updated',
+                            text: 'Product updated successfully!',
+                            timer: 1500,
+                            timerProgressBar: true,
+                            showConfirmButton: false
+                        }).then(() => {
+                            window.location.href = '/admin/products';
+                        });
                     } else {
-                        uploadedImagesHeading.style.display = 'none';
 
-                    }
-
-
-                    for (let i = 0; i < files.length; i++) {
-                        const file = files[i];
-                        const reader = new FileReader();
-
-                        reader.onload = function (e) {
-                            const imageSrc = e.target.result;
-
-
-                            const image = document.createElement('img');
-                            image.src = imageSrc;
-                            image.classList.add('image-preview');
-                            image.style.width = '150px';
-                            image.style.height = '192px';
-
-                            uploadedPreviewContainer.appendChild(image);
-                        };
-
-                        reader.readAsDataURL(file);
-                    }
-                });
-
-
-                const deletedImages = [];
-                function deleteImage(button) {
-                    const imageName = button.getAttribute('data-image-name');
-                    deletedImages.push(imageName);
-                    const imageContainer = button.parentElement;
-                    imageContainer.style.display = 'none';
-                }
-
-
-                document.getElementById('submit-button').addEventListener('click', function () {
-                    if (validateForm()) {
-                        submitForm();
-                    }
-
-                });
-
-                function submitForm() {
-                    const formData = new FormData(document.getElementById('productForm'));
-                    formData.append('deletedImages', JSON.stringify(deletedImages));
-
-                    const nameInput = document.getElementById('name');
-                    if (nameInput) {
-                        formData.set('name', nameInput.value.trim());
-                    }
-
-                    fetch('/admin/products/edit-product', {
-                        method: 'POST',
-                        body: formData
-                    })
-                        .then(response => {
-                            if (response.ok) {
-                                console.log('Form data submitted successfully');
+                        return response.json().then(data => {
+                            if (data.message === 'A product with the same name already exists.') {
                                 Swal.fire({
-                                    icon: 'success',
-                                    title: 'Product Updated',
-                                    text: 'Product updated successfully!',
-                                    timer: 1500,
-                                    timerProgressBar: true,
-                                    showConfirmButton: false
-                                }).then(() => {
-                                    window.location.href = '/admin/products';
+                                    icon: 'error',
+                                    title: 'Error',
+                                    text: data.message,
+                                    timer: 2000,
+                                    showConfirmButton: false,
+                                    timerProgressBar: true
                                 });
                             } else {
-
-                                return response.json().then(data => {
-                                    if (data.message === 'A product with the same name already exists.') {
-                                        Swal.fire({
-                                            icon: 'error',
-                                            title: 'Error',
-                                            text: data.message,
-                                            timer: 2000,
-                                            showConfirmButton: false,
-                                            timerProgressBar: true
-                                        });
-                                    } else {
-                                        Swal.fire({
-                                            icon: 'error',
-                                            title: 'Error',
-                                            text: data.message || 'Error submitting form data. Please try again.',
-                                            timer: 2000,
-                                            showConfirmButton: false
-                                        });
-                                    }
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error',
+                                    text: data.message || 'Error submitting form data. Please try again.',
+                                    timer: 2000,
+                                    showConfirmButton: false
                                 });
                             }
-                        })
-                        .catch(error => {
-
-                            console.error('Error:', error);
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Error',
-                                text: 'An unexpected error occurred. Please try again later.',
-                                timer: 3000,
-                                showConfirmButton: false
-                            });
                         });
-                }
-
-                function validateForm() {
-                    var name = document.getElementById("name").value.trim();
-                    var price = document.getElementById("price").value.trim();
-                    var category = document.querySelector("select[name='category']").value.trim();
-                    var gender = document.querySelector("select[name='gender']").value.trim();
-                    var brand = document.getElementById("brand").value.trim();
-                    var quantity = document.getElementById("quantity").value.trim();
-                    var description = document.getElementById("description").value.trim();
-                    var image = document.getElementById("image");
-                    var alphanumericRegex = /^[a-zA-Z0-9\s]+$/;
-                    var numericRegex = /^\d+$/;
-
-                    var isValid = true;
-
-                    if (name === "") {
-                        document.getElementById("name-error").textContent = "Name is required.";
-                        isValid = false;
-                    } else if (!alphanumericRegex.test(name)) {
-                        document.getElementById("name-error").textContent = "Name should not contain any special characters.";
-                        isValid = false;
-                    } else {
-                        document.getElementById("name-error").textContent = "";
                     }
+                })
+                .catch(error => {
+
+                    console.error('Error:', error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'An unexpected error occurred. Please try again later.',
+                        timer: 3000,
+                        showConfirmButton: false
+                    });
+                });
+        }
+
+        function validateForm() {
+            var name = document.getElementById("name").value.trim();
+            var price = document.getElementById("price").value.trim();
+            var category = document.querySelector("select[name='category']").value.trim();
+            var gender = document.querySelector("select[name='gender']").value.trim();
+            var brand = document.getElementById("brand").value.trim();
+            var quantity = document.getElementById("quantity").value.trim();
+            var description = document.getElementById("description").value.trim();
+            var image = document.getElementById("image");
+            var alphanumericRegex = /^[a-zA-Z0-9\s]+$/;
+            var numericRegex = /^\d+$/;
+
+            var isValid = true;
+
+            if (name === "") {
+                document.getElementById("name-error").textContent = "Name is required.";
+                isValid = false;
+            } else if (!alphanumericRegex.test(name)) {
+                document.getElementById("name-error").textContent = "Name should not contain any special characters.";
+                isValid = false;
+            } else {
+                document.getElementById("name-error").textContent = "";
+            }
 
 
-                    if (price === "") {
-                        document.getElementById("price-error").textContent = "Price is required.";
-                        isValid = false;
-                    } else if (isNaN(parseFloat(price))) {
-                        document.getElementById("price-error").textContent = "Price must be a valid number.";
-                        isValid = false;
-                    } else if (parseFloat(price) <= 0) {
-                        document.getElementById("price-error").textContent = "Price must be greater than 0.";
-                        isValid = false;
-                    } else {
-                        document.getElementById("price-error").textContent = "";
-                    }
+            if (price === "") {
+                document.getElementById("price-error").textContent = "Price is required.";
+                isValid = false;
+            } else if (isNaN(parseFloat(price))) {
+                document.getElementById("price-error").textContent = "Price must be a valid number.";
+                isValid = false;
+            } else if (parseFloat(price) <= 0) {
+                document.getElementById("price-error").textContent = "Price must be greater than 0.";
+                isValid = false;
+            } else {
+                document.getElementById("price-error").textContent = "";
+            }
 
 
-                    if (category === "") {
-                        document.getElementById("category-error").textContent = "Category is required.";
-                        isValid = false;
-                    } else {
-                        document.getElementById("category-error").textContent = "";
-                    }
+            if (category === "") {
+                document.getElementById("category-error").textContent = "Category is required.";
+                isValid = false;
+            } else {
+                document.getElementById("category-error").textContent = "";
+            }
 
 
-                    if (gender === "") {
-                        document.getElementById("gender-error").textContent = "Gender is required.";
-                        isValid = false;
-                    } else {
-                        document.getElementById("gender-error").textContent = "";
-                    }
+            if (gender === "") {
+                document.getElementById("gender-error").textContent = "Gender is required.";
+                isValid = false;
+            } else {
+                document.getElementById("gender-error").textContent = "";
+            }
 
 
-                    if (brand === "") {
-                        document.getElementById("brand-error").textContent = "Brand is required.";
-                        isValid = false;
-                    } else {
-                        document.getElementById("brand-error").textContent = "";
-                    }
+            if (brand === "") {
+                document.getElementById("brand-error").textContent = "Brand is required.";
+                isValid = false;
+            } else {
+                document.getElementById("brand-error").textContent = "";
+            }
 
 
-                    if (quantity === "") {
-                        document.getElementById("quantity-error").textContent = "Quantity is required.";
-                        isValid = false;
-                    } else if (!numericRegex.test(quantity)) {
-                        document.getElementById("quantity-error").textContent = "Quantity must be a positive number.";
-                        isValid = false;
-                    } else if (parseInt(quantity) < 0 || parseInt(quantity) > 100) {
-                        document.getElementById("quantity-error").textContent = "Quantity must be between 0 and 100.";
-                        isValid = false;
-                    } else {
-                        document.getElementById("quantity-error").textContent = "";
-                    }
+            if (quantity === "") {
+                document.getElementById("quantity-error").textContent = "Quantity is required.";
+                isValid = false;
+            } else if (!numericRegex.test(quantity)) {
+                document.getElementById("quantity-error").textContent = "Quantity must be a positive number.";
+                isValid = false;
+            } else if (parseInt(quantity) < 0 || parseInt(quantity) > 100) {
+                document.getElementById("quantity-error").textContent = "Quantity must be between 0 and 100.";
+                isValid = false;
+            } else {
+                document.getElementById("quantity-error").textContent = "";
+            }
 
 
-                    if (description === "") {
-                        document.getElementById("description-error").textContent = "Description is required.";
-                        isValid = false;
-                    } else {
-                        document.getElementById("description-error").textContent = "";
-                    }
+            if (description === "") {
+                document.getElementById("description-error").textContent = "Description is required.";
+                isValid = false;
+            } else {
+                document.getElementById("description-error").textContent = "";
+            }
 
-                    if (image.files.length > 5) {
-                        document.getElementById("image-error").textContent = "Maximum 5 images allowed.";
-                        isValid = false;
-                    } else {
-                        document.getElementById("image-error").textContent = "";
-                    }
+            if (image.files.length > 5) {
+                document.getElementById("image-error").textContent = "Maximum 5 images allowed.";
+                isValid = false;
+            } else {
+                document.getElementById("image-error").textContent = "";
+            }
 
-                    return isValid;
-                }
+            return isValid;
+        }
 
-            </script>
+    </script>
 
-            <%- include('../admin_layouts/footer.ejs') %>
+    <%- include('../admin_layouts/footer.ejs') %>

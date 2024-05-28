@@ -36,8 +36,8 @@
         }
     </style>
 
-
-    <div style="background-color: #f0f0f0; height: 60px;" class="hero-wrap">
+    <!---- breadcrumbs---->
+    <div style="background-color: #f0f0f0; height: 60px; z-index: 1;" class="hero-wrap">
         <div class="container">
             <div class="row no-gutters slider-text align-items-start">
 
@@ -58,6 +58,7 @@
         </div>
     </div>
 
+    <!---- profile sidebar---->
     <section class="ftco-section">
         <div class="container d-grid justify-content-between " style="margin-top:-50px;">
             <div class="row">
@@ -76,21 +77,18 @@
                                                 <h6>
                                                     <%=user.name%>
                                                 </h6>
-                                                <!-- <p class="text-secondary mb-1">Full Stack Developer</p>
-                                                <p class="text-muted font-size-sm">Bay Area, San Francisco, CA</p>
-                                                <button class="btn btn-primary">Follow</button>
-                                                <button class="btn btn-outline-primary">Message</button>  -->
                                             </div>
                                         </div>
 
                                         <ul class="list-group list-group-flush ">
                                             <li
                                                 class="list-group-item d-flex justify-content-between align-items-center flex-wrap border-0 ">
-                                                <a href="/profile" class=" btn btn-primary py-2 px-4 mr-2 w-100 active rounded"
+                                                <a href="/profile"
+                                                    class=" btn btn-primary py-2 px-4 mr-2 w-100 active rounded"
                                                     style="font-size: 14px; font-weight: bold; "><span
-                                                        class="icon-person mx-1"></span> Account deatails</a> 
+                                                        class="icon-person mx-1"></span> Account deatails</a>
 
-                                                       
+
                                             </li>
                                             <li
                                                 class="list-group-item d-flex justify-content-between align-items-center flex-wrap border-0">
@@ -201,8 +199,8 @@
                                             <div class="row">
                                                 <div class="col-sm-3 px-0 "></div>
                                                 <div class="col-sm-9 text-secondary">
-                                                    <input type="button" id="edit-btn" class="btn btn-black px-4 rounded"
-                                                        value="Edit">
+                                                    <input type="button" id="edit-btn"
+                                                        class="btn btn-black px-4 rounded" value="Edit">
                                                 </div>
                                             </div>
 
@@ -221,8 +219,9 @@
                                             </div>
                                             <div class="col-lg-6 text-secondary ">
                                                 <input type="text" id="referal-code" class="form-control rounded "
-                                                    value="http://stepex.online/register?referral_code=<%=user.referral_code%>" style="font-size: 14px;" readonly>
-                                                
+                                                    value="http://stepex.online/register?referral_code=<%=user.referral_code%>"
+                                                    style="font-size: 14px;" readonly>
+
                                             </div>
                                             <div class="col-lg-3 mt-2">
                                                 <div id="copy-btn" class="btn btn-black w-75 rounded">Copy</div>
@@ -232,11 +231,12 @@
                                         <div class="row ">
                                             <div class="col-lg-3 align-items-center mt-3"></div>
                                             <div class="col-lg-9 text-secondary ">
-                                               
-                                                <div class="my-2 text-success " style="font-size: 14px;" >Earn ₹100 for each referral when they place their first order.
+
+                                                <div class="my-2 text-success " style="font-size: 14px;">Earn ₹100 for
+                                                    each referral when they place their first order.
                                                 </div>
                                             </div>
-                                            
+
                                         </div>
 
 
@@ -438,24 +438,24 @@
 
 
         const copyBtn = document.getElementById('copy-btn');
-    const referralCodeInput = document.getElementById('referal-code');
+        const referralCodeInput = document.getElementById('referal-code');
 
-    copyBtn.addEventListener('click', function () {
-       
-        referralCodeInput.select();
-        referralCodeInput.setSelectionRange(0, 99999);
+        copyBtn.addEventListener('click', function () {
 
-        document.execCommand('copy');
+            referralCodeInput.select();
+            referralCodeInput.setSelectionRange(0, 99999);
 
-        // Deselect the text
-        referralCodeInput.setSelectionRange(0, 0);
+            document.execCommand('copy');
 
-        // Optionally, provide visual feedback to the user
-        copyBtn.innerText = 'Copied!';
-        setTimeout(function () {
-            copyBtn.innerText = 'Copy';
-        }, 1000);
-    });
+            // Deselect the text
+            referralCodeInput.setSelectionRange(0, 0);
+
+            // Optionally, provide visual feedback to the user
+            copyBtn.innerText = 'Copied!';
+            setTimeout(function () {
+                copyBtn.innerText = 'Copy';
+            }, 1000);
+        });
 
     </script>
 
