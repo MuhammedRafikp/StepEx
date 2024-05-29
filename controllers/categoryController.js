@@ -16,7 +16,7 @@ const loadCategory = async (req, res, next) => {
 
 const loadAddCategory = async (req, res, next) => {
     try {
-        res.render("add-Category");
+        res.render("add-category");
 
     } catch (error) {
         error.statusCode = 500;
