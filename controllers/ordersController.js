@@ -26,7 +26,7 @@ const laodOrders = async (req, res) => {
         const totalCount = await Order.countDocuments({ user: userId });
         const totalPages = Math.ceil(totalCount / limit);
 
-        const ordersData = await Order.find({ user: userId }).sort({date:-1}).skip(skip).limit(limit);
+        const ordersData = await Order.find({ user: userId }).sort({ date: -1 }).skip(skip).limit(limit);
 
         const cartData = await Cart.findOne({ user_id: userId }).populate('items.products');
         const cartItemCount = cartData ? cartData.items.length : 0;
@@ -40,14 +40,17 @@ const laodOrders = async (req, res) => {
 }
 
 
-const loadOrderDetails = async (req, res) => {
+const loadOrderDetails = async (req, res, next) => {
     try {
         const orderId = req.query.id;
         console.log(orderId);
         const userId = req.session._id;
         const userData = await User.findOne({ _id: userId });
 
-        const orderData = await Order.findOne({ orderId: orderId }).populate("user");
+        const orderData = await Order.findOne({ user: req.session._id, orderId: orderId }).populate("user");
+        if(!orderData){
+            return res.redirect('/orders');
+        }
 
         const cartData = await Cart.findOne({ user_id: userId }).populate('items.products');
         const cartItemCount = cartData ? cartData.items.length : 0;

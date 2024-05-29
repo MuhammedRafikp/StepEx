@@ -156,7 +156,7 @@ const loadPayment = async (req, res) => {
 
     try {
 
-        if(!req.session.addressIndex){
+        if (!req.session.addressIndex) {
             res.redirect("/cart");
         };
 
@@ -272,8 +272,8 @@ const confirmOrder = async (req, res) => {
                 await product.save();
             }
 
-            totalAmount = req.session.discount ? totalAmount - (totalAmount * (req.session.discount / 100)) : totalAmount;
-            discount = req.session.discount ? totalAmount * (req.session.discount / 100) : discount;
+            totalAmount = req.session.discount ? Math.round(totalAmount - (totalAmount * (req.session.discount / 100))) : totalAmount;
+            discount = req.session.discount ? Math.round(totalAmount * (req.session.discount / 100)) : Math.round(discount);
 
             await Cart.findOneAndUpdate({ user_id: userId }, { items: [] });
 
@@ -395,6 +395,11 @@ const createRazorPay = async (req, res) => {
             for (const item of cartData.items) {
                 totalAmount += item.products.price * item.quantity;
             }
+        }
+
+        if (req.session.discount) {
+            totalAmount -= (totalAmount * (req.session.discount / 100));
+            totalAmount = Math.round(totalAmount);
         }
 
         const receiptID = generatereceiptID();

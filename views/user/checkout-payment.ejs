@@ -200,12 +200,12 @@
                                             <p class="d-flex">
                                                 <span>Subtotal</span>
                                                 <span class="subtotal">
-                                                    ₹<%=totalAmount%>.00
+                                                    ₹<%=Math.round(totalAmount)%>.00
                                                 </span>
                                             </p>
                                             <p class="d-flex justify-content-between ">
                                                 <span>Discount (<%=req.session.discount%>%)</span>
-                                                <span>- ₹ <%=totalAmount*(req.session.discount /100) %></span>
+                                                <span>- ₹ <%= Math.round(totalAmount*(req.session.discount /100)) %></span>
                                             </p>
                                             <p class="d-flex">
                                                 <span>Delivery</span>
@@ -215,7 +215,7 @@
                                             <p class="d-flex total-price">
                                                 <span>Total</span>
                                                 <span class="total-amount">
-                                                    ₹<%=totalAmount-(totalAmount*(req.session.discount /100)) %>
+                                                    ₹<%=Math.round(totalAmount-(totalAmount*(req.session.discount /100))) %>
                                                 </span>
                                             </p>
                                         </div>
@@ -225,11 +225,11 @@
                                                 <p class="d-flex">
                                                     <span>Subtotal</span>
                                                     <span class="subtotal">
-                                                        ₹<%=totalAmount%>
+                                                        ₹<%=Math.round(totalAmount)%>
                                                     </span>
                                                 </p>
                                                 <p class="d-flex justify-content-between">
-                                                    <span>Discount(0%)</span>
+                                                    <span>Discount (0%)</span>
                                                     <span>₹0</span>
                                                 </p>
                                                 <p class="d-flex">
@@ -239,7 +239,7 @@
                                                 <hr>
                                                 <p class="d-flex total-price">
                                                     <span>Total</span>
-                                                    <span class="total-amount">₹<%=totalAmount%></span>
+                                                    <span class="total-amount">₹<%=Math.round(totalAmount)%></span>
                                                 </p>
                                             </div>
                                             <%}%>
@@ -282,7 +282,6 @@
 
             razorPayOption.addEventListener('click', function () {
 
-                
                 toggleSelection(razorPayOption);
                 removeSelection(walletOption);
                 removeSelection(cashOnDeliveryOption);
@@ -475,23 +474,23 @@
                                         });
                                 },
                                 prefill: {
-                                    name: 'John Doe', // Pre-fill customer's name
-                                    email: 'john@example.com', // Pre-fill customer's email
-                                    contact: '9876543210' // Pre-fill customer's phone number
+                                    name: 'John Doe', 
+                                    email: 'john@example.com', 
+                                    contact: '9876543210'
                                 },
                                 notes: {
-                                    // Add any additional notes or metadata
+                                   
                                     'order_id': 'ORDERID12345'
                                 },
                                 theme: {
-                                    color: '#F37254' // Customize the color theme
+                                    color: '#F37254' 
                                 }
                             };
                             var rzp = new Razorpay(options);
                             rzp.open();
                             rzp.on('payment.failed', () => {
                                 setTimeout(() => {
-                                    rzp.close(); // Close the payment interface after 4 seconds
+                                    rzp.close(); 
                                     const paymentMethod = 'Razorpay';
                                     const paymentStatus = "Pending";
                                     const data = { paymentMethod: paymentMethod, paymentStatus: paymentStatus };

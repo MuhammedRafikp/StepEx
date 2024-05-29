@@ -196,7 +196,7 @@
 
 													<td class="total" style="font-weight: 600;">
 														<span>Total : </span><br>
-														<span>₹<%=item.quantity * item.products.offer_price %></span>
+														<span>₹<%= Math.round(item.quantity * item.products.offer_price) %></span>
 
 													</td>
 
@@ -228,7 +228,7 @@
 						<p class="d-flex">
 							<span>Subtotal</span>
 							<span class="subtotal">
-								<%= subtotal %>
+								₹<%= Math.round(subtotal) %>
 							</span>
 						</p>
 						<p class="d-flex">
@@ -238,7 +238,7 @@
 						<hr>
 						<p class="d-flex total-price">
 							<span>Total</span>
-							<span class="total-amount">₹<%= subtotal %></span>
+							<span class="total-amount">₹<%= Math.round(subtotal) %></span>
 						</p>
 					</div>
 					<p class="text-center ">

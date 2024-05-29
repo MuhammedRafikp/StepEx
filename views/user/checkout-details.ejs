@@ -298,7 +298,7 @@
 													<p class="d-flex total-price">
 														<span>Total</span>
 
-														<span class="total-amount">₹<%=totalAmount- (totalAmount*(req.session.discount/100)) %></span>
+														<span class="total-amount">₹<%=Math.round(totalAmount- (totalAmount*(req.session.discount/100))) %></span>
 
 													</p>
 												</div>
@@ -325,7 +325,7 @@
 														<p class="d-flex total-price">
 															<span>Total</span>
 
-															<span class="total-amount">₹<%=totalAmount%></span>
+															<span class="total-amount">₹<%= Math.round(totalAmount) %></span>
 
 
 														</p>

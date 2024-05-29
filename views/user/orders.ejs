@@ -136,9 +136,13 @@
 
                                                 <div class="d-flex justify-content-between  mb-3">
                                                     <span class="mb-0">
-                                                        #Order ID:<%=order.orderId%> | Ordered on
+                                                        Order ID:<%=order.orderId%> <br>  Ordered on
                                                             <%=order.date.toLocaleDateString('en-US',{day: 'numeric' ,
                                                                 month: 'short' , year: 'numeric' })%>
+                                                    </span>
+                                                    <span class="mb-0">
+                                                        Total : <br> 
+                                                        ₹<%= order.totalAmount %>
                                                     </span>
 
                                                     <%if(order.payment_method==="Razorpay" &&
@@ -164,7 +168,7 @@
                                                             <img src="\uploads\productImages\<%=item.imageUrl%>"
                                                                 width="90" height="90" alt="">
                                                         </div>
-                                                        <div class="col-lg-4  ">
+                                                        <div class="col-lg-6">
                                                             <div class="row">
                                                                 <div class="col-lg-12">
                                                                     <span>
@@ -187,7 +191,7 @@
                                                             </div>
                                                         </div>
 
-                                                        <div class="col-lg-2">
+                                                        <!-- <div class="col-lg-2">
 
                                                             <div class="row">
                                                                 <div class="col-lg-12">
@@ -201,7 +205,8 @@
                                                                 </div>
                                                             </div>
 
-                                                        </div>
+                                                        </div> -->
+
                                                         <div class="col-lg-2">
                                                             <div class="row">
                                                                 <div class="col-lg-12">

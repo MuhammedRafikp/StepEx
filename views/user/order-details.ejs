@@ -24,7 +24,6 @@
             min-width: 0;
             word-wrap: break-word;
             background-color: #ffffff;
-            /* background-color: #f8f9fa; */
             background-clip: border-box;
             border: 1 solid;
             border-radius: .25rem;
@@ -132,20 +131,20 @@
                                 </div>
 
                                 <div class=" col-lg-4 ">
-                                    <!-- <h6 style=" font-weight: bold; color: #000;"><span class="icon-note"></span>
+                                    <h6 style=" font-weight: bold; color: #000;"><span class="icon-note"></span>
                                             Order
                                             Summary</h6>
 
                                             <p class="mb-0 ">
-                                                <%= order.user.name %>
+                                                Subtotal : ₹<%= order.totalAmount- order.discount %>
                                             </p>
 
                                             <p class="mb-0 ">
-                                                <%= order.user.email %>
+                                                Discount : - ₹<%= order.discount %>
                                             </p>
-                                            <p class="mb-0 ">
-                                                <%= order.user.mobile %>
-                                            </p> -->
+                                            <p class="mb-0 " style="font-weight: 600; color: #000;">
+                                                Grand Total : ₹<%= order.totalAmount - order.discount %>
+                                            </p>
 
                                 </div>
 
@@ -175,7 +174,7 @@
                                             alt="">
                                     </div>
 
-                                    <div class="col-lg-3 ">
+                                    <div class="col-lg-5">
                                         <div class="row">
                                             <div class="col-lg-12">
                                                 <span>
@@ -202,7 +201,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="col-lg-2">
+                                    <!-- <div class="col-lg-2">
                                         <div class="row">
                                             <div class="col-lg-12">
                                                 <span> Total </span>
@@ -213,7 +212,7 @@
                                                 <span style="color: #000;"> ₹<%= item.quantity*item.price %> </span>
                                             </div>
                                         </div>
-                                    </div>
+                                    </div> -->
 
                                     <div class="col-lg-2">
                                         <div class="row">
