@@ -106,7 +106,7 @@ const loadEditCategory = async (req, res, next) => {
     try {
         const id = req.query.id;
         const categoryData = await Category.findOne({ _id: id });
-        res.render("edit-Category", { category: categoryData });
+        res.render("edit-category", { category: categoryData });
 
     } catch (error) {
         error.statusCode = 500;
