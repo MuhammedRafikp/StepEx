@@ -7,7 +7,6 @@ admin_order_route.set("views", "./views/admin");
 import { isLogin, isLogout } from "../middleware/adminAuth.js";
 import{loadAdminOrders,loadAdminOrderDetails,changeOrderStatus,approveReturn,declineReturn} from "../controllers/ordersController.js";
 
-
 admin_order_route.get("/orders",isLogin,loadAdminOrders);
 
 admin_order_route.get("/orders/order-details",isLogin,loadAdminOrderDetails)

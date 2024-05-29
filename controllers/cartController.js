@@ -14,7 +14,7 @@ const razorpay = new Razorpay({
 });
 
 
-const loadCart = async (req, res) => {
+const loadCart = async (req, res, next) => {
 
     try {
         const userId = req.session._id;
@@ -31,7 +31,7 @@ const loadCart = async (req, res) => {
 }
 
 
-const addToCart = async (req, res) => {
+const addToCart = async (req, res, next) => {
 
     try {
         const { productId } = req.body;
@@ -68,7 +68,7 @@ const addToCart = async (req, res) => {
 };
 
 
-const updateCartQuantity = async (req, res) => {
+const updateCartQuantity = async (req, res, next) => {
     try {
         const { productId, quantity } = req.body;
 
@@ -89,7 +89,7 @@ const updateCartQuantity = async (req, res) => {
     }
 }
 
-const removeProductFromCart = async (req, res) => {
+const removeProductFromCart = async (req, res, next) => {
     try {
         const { productId } = req.body;
         const userId = req.session._id;

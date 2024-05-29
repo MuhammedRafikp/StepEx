@@ -7,10 +7,8 @@ shop_route.set("views", "./views/user");
 import { isBlocked } from "../middleware/isBlocked.js";
 import { loadShop, loadSingleProduct } from "../controllers/shopController.js"
 
-
 shop_route.get("/shop", isBlocked, loadShop);
 
 shop_route.get("/shop/single", isBlocked, loadSingleProduct);
-
 
 export default shop_route;

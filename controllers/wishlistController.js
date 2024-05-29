@@ -3,7 +3,7 @@ import Cart from "../models/cartModel.js";
 import Wishlist from "../models/wishlistModel.js";
 
 
-const loadWishlist = async (req, res) => {
+const loadWishlist = async (req, res, next) => {
     try {
         const userId = req.session._id;
         const userData = await User.findOne({ _id: userId });
@@ -15,13 +15,12 @@ const loadWishlist = async (req, res) => {
         res.render("wishlist", { user: userData, wishlist: wishlistData, cartCount: cartItemCount });
 
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Internal server error.' });
-
+        error.statusCode = 500;
+        next(error);
     }
 }
 
-const addToWishlist = async (req, res) => {
+const addToWishlist = async (req, res, next) => {
     try {
         const { productId } = req.body;
         const userId = req.session._id;
@@ -52,13 +51,13 @@ const addToWishlist = async (req, res) => {
 
         console.log(productId);
     } catch (error) {
-        console.error(error.message);
-        res.status(500).json({ error: 'Internal server error.' });
+        error.statusCode = 500;
+        next(error);
     }
 }
 
 
-const removeProductFromWishlist = async (req, res) => {
+const removeProductFromWishlist = async (req, res, next) => {
     try {
         const { productId } = req.body;
         console.log(productId);
@@ -70,12 +69,12 @@ const removeProductFromWishlist = async (req, res) => {
         res.status(200).json({ message: 'Product removed from wishlist successfully' });
 
     } catch (error) {
-        console.error(error.message);
-        res.status(500).json({ error: 'Internal server error.' });
+        error.statusCode = 500;
+        next(error);
     }
 }
 
-export{
+export {
     loadWishlist,
     addToWishlist,
     removeProductFromWishlist

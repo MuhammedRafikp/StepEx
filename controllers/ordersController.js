@@ -16,7 +16,7 @@ const razorpay = new Razorpay({
 });
 
 
-const laodOrders = async (req, res) => {
+const laodOrders = async (req, res,next) => {
     try {
         const userId = req.session._id;
         const userData = await User.findOne({ _id: userId });
@@ -64,7 +64,7 @@ const loadOrderDetails = async (req, res, next) => {
 }
 
 
-const cancelOrder = async (req, res) => {
+const cancelOrder = async (req, res,next) => {
     try {
 
         console.log("cancel order")
@@ -125,7 +125,7 @@ const cancelOrder = async (req, res) => {
 }
 
 
-const returnOrder = async (req, res) => {
+const returnOrder = async (req, res,next) => {
     try {
         console.log("return order")
         const { productId, orderId, returnReason } = req.body;
@@ -147,7 +147,7 @@ const returnOrder = async (req, res) => {
 }
 
 
-const loadAdminOrders = async (req, res) => {
+const loadAdminOrders = async (req, res,next) => {
 
     try {
         const page = parseInt(req.query.page) || 1;
@@ -166,7 +166,7 @@ const loadAdminOrders = async (req, res) => {
 }
 
 
-const loadAdminOrderDetails = async (req, res) => {
+const loadAdminOrderDetails = async (req, res,next) => {
     try {
         const orderId = req.query.id;
         console.log("order id:", orderId);
@@ -181,7 +181,7 @@ const loadAdminOrderDetails = async (req, res) => {
 }
 
 
-const changeOrderStatus = async (req, res) => {
+const changeOrderStatus = async (req, res,next) => {
     try {
         console.log("hello");
         const { orderId, productId, status } = req.body;
@@ -215,7 +215,7 @@ const changeOrderStatus = async (req, res) => {
 }
 
 
-const approveReturn = async (req, res) => {
+const approveReturn = async (req, res,next) => {
     try {
         console.log("return order")
         const { productId, orderId, reason } = req.body;
@@ -275,7 +275,7 @@ const approveReturn = async (req, res) => {
 }
 
 
-const declineReturn = async (req, res) => {
+const declineReturn = async (req, res,next) => {
 
     try {
         console.log("return order")
@@ -306,7 +306,7 @@ const generatereceiptID = () => {
     return Math.floor(Math.random() * (max - min + 1) + min);
 }
 
-const orderRepaymentRazorPpay = async (req, res) => {
+const orderRepaymentRazorPpay = async (req, res,next) => {
     try {
         console.log(razorpay.key_id, razorpay.key_secret);
 
@@ -330,7 +330,7 @@ const orderRepaymentRazorPpay = async (req, res) => {
 }
 
 
-const orderRepayment = async (req, res) => {
+const orderRepayment = async (req, res,next) => {
     try {
 
         const { orderId } = req.body;
@@ -363,7 +363,6 @@ const orderRepayment = async (req, res) => {
         next(error);
     }
 }
-
 
 
 export {

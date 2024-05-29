@@ -15,16 +15,17 @@ const securePassword = async (password) => {
 }
 
 
-const loadLogin = async (req, res) => {
+const loadLogin = async (req, res, next) => {
     try {
         res.render("login")
     } catch (error) {
-        console.log(error.message)
+        error.statusCode = 500;
+        next(error);
     }
 }
 
 
-const loadDashboard = async (req, res) => {
+const loadDashboard = async (req, res, next) => {
     try {
 
         const { timePeriod } = req.query;
@@ -33,7 +34,7 @@ const loadDashboard = async (req, res) => {
         console.log(timePeriod);
         let timePeriods = ["Today", "Last Week", "Last Month", "This Year"]
         let currentPeriod = timePeriod;
-        // Initialize the start and end dates based on the selected time period
+
         const currentDate = new Date();
         if (!timePeriod || timePeriod === 'Today') {
             startDate = new Date(currentDate.setHours(0, 0, 0, 0));
@@ -46,21 +47,21 @@ const loadDashboard = async (req, res) => {
             startDate.setHours(0, 0, 0, 0);
             endDate = new Date(currentDate.setDate(firstDayOfWeek + 6));
             endDate.setHours(23, 59, 59, 999);
+
         } else if (timePeriod === 'Last Month') {
             startDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
             endDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
+
         } else if (timePeriod === 'This Year') {
             startDate = new Date(currentDate.getFullYear(), 0, 1);
             endDate = new Date(currentDate.getFullYear(), 11, 31);
         }
 
-        // Fetch sales data within the date range and excluding cancelled and returned statuses
         const salesData = await Order.find({
             date: { $gte: startDate, $lte: endDate },
             'items.status': { $nin: ["Cancelled", "Returned"] }
         });
 
-        // Initialize xValues and yValues arrays
         let xValues = [];
         let yValues = [];
 
@@ -78,6 +79,7 @@ const loadDashboard = async (req, res) => {
                     .reduce((total, order) => total + order.totalAmount, 0);
                 yValues.push(totalAmount);
             }
+
         } else if (timePeriod === 'This Year') {
             for (let i = 0; i < 12; i++) {
                 const currentMonth = new Date(currentDate.getFullYear(), i, 1);
@@ -94,11 +96,11 @@ const loadDashboard = async (req, res) => {
             {
                 $group: {
                     _id: "$items.product_id",
-                    totalQuantitySold: { $sum: 1 } // Summing the quantity
+                    totalQuantitySold: { $sum: 1 }
                 }
             },
             { $sort: { totalQuantitySold: -1 } },
-            { $limit: 4 }, // Limit to top 5 most selling products
+            { $limit: 4 },
             {
                 $lookup: {
                     from: "products",
@@ -107,7 +109,7 @@ const loadDashboard = async (req, res) => {
                     as: "productDetails"
                 }
             },
-            { $unwind: "$productDetails" } // Unwind to get the product details
+            { $unwind: "$productDetails" }
         ]);
 
 
@@ -117,11 +119,11 @@ const loadDashboard = async (req, res) => {
             {
                 $group: {
                     _id: "$items.category",
-                    totalQuantitySold: { $sum: 1 } // Summing the quantity
+                    totalQuantitySold: { $sum: 1 }
                 }
             },
             { $sort: { totalQuantitySold: -1 } },
-            { $limit: 3 }, // Limit to top 5 most selling products
+            { $limit: 3 },
             {
                 $lookup: {
                     from: "categories",
@@ -130,7 +132,7 @@ const loadDashboard = async (req, res) => {
                     as: "categoryDetails"
                 }
             },
-            { $unwind: "$categoryDetails" } // Unwind to get the product details
+            { $unwind: "$categoryDetails" }
         ]);
 
 
@@ -146,12 +148,13 @@ const loadDashboard = async (req, res) => {
         });
 
     } catch (error) {
-        console.log(error.message);
+        error.statusCode = 500;
+        next(error);
     }
 };
 
 
-const verfyLogin = async (req, res) => {
+const verfyLogin = async (req, res, next) => {
     try {
         const email = req.body.email;
         const password = req.body.password;
@@ -170,12 +173,13 @@ const verfyLogin = async (req, res) => {
         }
 
     } catch (error) {
-        console.log(error.message);
+        error.statusCode = 500;
+        next(error);
     }
 }
 
 
-const loadUsers = async (req, res) => {
+const loadUsers = async (req, res, next) => {
     try {
         const page = req.query.page || 1;
         const limit = 10;
@@ -185,16 +189,16 @@ const loadUsers = async (req, res) => {
 
         const totalPages = Math.ceil(totalUsers / limit);
 
-        res.render("users", { users, totalPages, currentPage: page })
+        res.render("users", { users, totalPages, currentPage: page });
+
     } catch (error) {
-
-        console.error('Error fetching users:', error);
-
+        error.statusCode = 500;
+        next(error);
     }
 };
 
 
-const blockUser = async (req, res) => {
+const blockUser = async (req, res, next) => {
     try {
         const id = req.query.id;
         console.log(id)
@@ -205,12 +209,13 @@ const blockUser = async (req, res) => {
 
         res.redirect("/admin/user-management");
     } catch (error) {
-        console.log(error.message)
+        error.statusCode = 500;
+        next(error);
     }
 }
 
 
-const unBlockUser = async (req, res) => {
+const unBlockUser = async (req, res, next) => {
     try {
         const id = req.query.id;
         console.log(id)
@@ -221,18 +226,20 @@ const unBlockUser = async (req, res) => {
         );
         res.redirect("/admin/user-management");
     } catch (error) {
-        console.log(error.message)
+        error.statusCode = 500;
+        next(error);
     }
 }
 
 
-const logout = async (req, res) => {
+const logout = async (req, res, next) => {
     try {
         delete req.session.admin_id;
         res.redirect("/admin");
 
     } catch (error) {
-        console.log(error.message)
+        error.statusCode = 500;
+        next(error);
     }
 }
 

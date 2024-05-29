@@ -15,7 +15,7 @@ const razorpay = new Razorpay({
     key_secret: RAZORPAY_SECRET_KEY
 });
 
-const proceedToCheckout = async (req, res) => {
+const proceedToCheckout = async (req, res, next) => {
     try {
         const userId = req.session._id;
         const cartData = await Cart.findOne({ user_id: userId }).populate('items.products');
@@ -90,7 +90,7 @@ const loadCheckout = async (req, res, next) => {
 }
 
 
-const applyCoupon = async (req, res) => {
+const applyCoupon = async (req, res, next) => {
     try {
         console.log("apply coupon");
         const { couponCode } = req.body;
@@ -105,7 +105,7 @@ const applyCoupon = async (req, res) => {
     }
 }
 
-const removeCoupon = async (req, res) => {
+const removeCoupon = async (req, res, next) => {
     try {
         delete req.session.discount;
         res.status(200).json({ success: true });
@@ -117,7 +117,7 @@ const removeCoupon = async (req, res) => {
 }
 
 
-const selectAddressForCheckout = async (req, res) => {
+const selectAddressForCheckout = async (req, res, next) => {
     try {
         req.session.addressIndex = req.body.addressIndex;
         const userId = req.session._id;
@@ -152,7 +152,7 @@ const selectAddressForCheckout = async (req, res) => {
 }
 
 
-const loadPayment = async (req, res) => {
+const loadPayment = async (req, res, next) => {
 
     try {
 
@@ -180,9 +180,6 @@ const loadPayment = async (req, res) => {
             res.redirect("/shop");
         }
 
-
-
-
     } catch (error) {
         error.statusCode = 500;
         next(error);
@@ -196,11 +193,9 @@ const generateOrderID = () => {
     return Math.floor(Math.random() * (max - min + 1) + min);
 }
 
-const confirmOrder = async (req, res) => {
+const confirmOrder = async (req, res, next) => {
 
     try {
-
-        console.log("confirm order");
 
         const { paymentMethod, paymentStatus } = req.body;
         const userId = req.session._id;
@@ -372,8 +367,8 @@ const confirmOrder = async (req, res) => {
 
         console.log("paymentMethod : ", paymentMethod);
     } catch (error) {
-        console.log(error.message);
-        res.status(500).json({ error: error.message });
+        error.statusCode = 500;
+        next(error);
     }
 }
 
@@ -384,7 +379,7 @@ const generatereceiptID = () => {
     return Math.floor(Math.random() * (max - min + 1) + min);
 }
 
-const createRazorPay = async (req, res) => {
+const createRazorPay = async (req, res, next) => {
     try {
         console.log(razorpay.key_id, razorpay.key_secret);
         const userId = req.session._id;
@@ -413,14 +408,14 @@ const createRazorPay = async (req, res) => {
 
         res.status(200).json({ success: true, order });
     } catch (error) {
-        console.error(error, "error");
-        res.status(500).json({ success: false, message: 'Failed to create Razorpay order' });
+        error.statusCode = 500;
+        next(error);
     }
 };
 
 
 
-const loadOrderPlaced = async (req, res) => {
+const loadOrderPlaced = async (req, res, next) => {
     try {
         const { status } = req.query;
         const userId = req.session._id;
@@ -430,8 +425,8 @@ const loadOrderPlaced = async (req, res) => {
         res.render("order-placed", { user: userData, cartCount: cartItemCount, status });
 
     } catch (error) {
-        console.error(error.message)
-        res.status(500).json({});
+        error.statusCode = 500;
+        next(error);
     }
 }
 

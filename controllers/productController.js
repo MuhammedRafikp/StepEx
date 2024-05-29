@@ -3,26 +3,27 @@ import Category from "../models/categoryModel.js";
 import sharp from "sharp";
 
 
-const loadProducts = async (req, res) => {
+const loadProducts = async (req, res,next) => {
 
     try {
         const page = req.query.page || 1;
         const limit = 5;
         const skip = (page - 1) * limit;
         const productsData = await Products.find({ is_delete: 0 }).populate("category").skip(skip).limit(limit);
-        // console.log(productsData);
+        
         const totalProducts = await Products.countDocuments({});
         const totalPages = Math.ceil(totalProducts / limit);
 
         res.render("products", { products: productsData, totalPages, currentPage: page });
-        // console.log(productsData)
+       
     } catch (error) {
-        console.log(error.message);
+        error.statusCode = 500;
+        next(error);
     }
 }
 
 
-const loadAddProduct = async (req, res) => {
+const loadAddProduct = async (req, res,next) => {
 
     try {
         const categories = await Category.find({ is_delete: 0 });
@@ -31,13 +32,13 @@ const loadAddProduct = async (req, res) => {
         console.log("loadAddProduct")
 
     } catch (error) {
-
-        console.log(error.message);
+        error.statusCode = 500;
+        next(error);
     }
 }
 
 
-const addProduct = async (req, res) => {
+const addProduct = async (req, res,next) => {
     try {
 
         const { name, price, category, gender, brand, quantity, description } = req.body;
@@ -81,14 +82,13 @@ const addProduct = async (req, res) => {
         }
 
     } catch (error) {
-        console.error(error.message);
-
-        res.status(500).json({ success: false, error: error.message });
+        error.statusCode = 500;
+        next(error);
     }
 };
 
 
-const loadUnlsitedProducts = async (req, res) => {
+const loadUnlsitedProducts = async (req, res,next) => {
     try {
         const page = req.query.page || 1;
         const limit = 10;
@@ -99,12 +99,13 @@ const loadUnlsitedProducts = async (req, res) => {
         const totalPages = Math.ceil(totalProducts / limit);
         res.render("unlisted-products", { products: productData, totalPages, currentPage: page })
     } catch (error) {
-        console.error(error.message);
+        error.statusCode = 500;
+        next(error);
     }
 }
 
 
-const unlistProduct = async (req, res) => {
+const unlistProduct = async (req, res,next) => {
     try {
         const id = req.query.id;
         console.log("unlist");
@@ -116,12 +117,13 @@ const unlistProduct = async (req, res) => {
         res.redirect("/admin/products");
 
     } catch (error) {
-        console.error(error.message);
+        error.statusCode = 500;
+        next(error);
     }
 }
 
 
-const retrieveProduct = async (req, res) => {
+const retrieveProduct = async (req, res,next) => {
     try {
         const id = req.query.id;
         console.log("unlist");
@@ -133,12 +135,13 @@ const retrieveProduct = async (req, res) => {
         res.redirect("/admin/products/unlisted-products");
 
     } catch (error) {
-        console.error(error.message);
+        error.statusCode = 500;
+        next(error);
     }
 }
 
 
-const loadEditProduct = async (req, res) => {
+const loadEditProduct = async (req, res,next) => {
     try {
         const productId = req.query.id;
         const productData = await Products.findOne({ _id: productId }).populate("category");
@@ -146,12 +149,13 @@ const loadEditProduct = async (req, res) => {
         const genders = ["Men", "Women", "Boy", "Girl"];
         res.render("edit-product", { product: productData, categories: categories, genders: genders });
     } catch (error) {
-        console.log(error.message);
+        error.statusCode = 500;
+        next(error);
     }
 }
 
 
-const editProduct = async (req, res) => {
+const editProduct = async (req, res,next) => {
     try {
 
         const { id, name, price, category, gender, brand, quantity, description, deletedImages } = req.body;
@@ -172,8 +176,7 @@ const editProduct = async (req, res) => {
             );
 
             const imageToDelete = JSON.parse(deletedImages);
-            console.log(typeof (imageToDelete))
-            //    console.log(imageToDelete)
+            
             imageToDelete.forEach(async imageName => {
                 const index = updatedProduct.images.indexOf(imageName);
                 if (index !== -1) {
@@ -198,9 +201,8 @@ const editProduct = async (req, res) => {
         }
 
     } catch (error) {
-        console.error('Error:', error.message);
-        console.log("hello")
-        res.status(500).json({ success: false, message: 'Internal server error' });
+        error.statusCode = 500;
+        next(error);
     }
 };
 

@@ -3,7 +3,7 @@ import Address from "../models/addressModel.js";
 import Cart from "../models/cartModel.js";
 
 
-const loadAddress = async (req, res) => {
+const loadAddress = async (req, res, next) => {
     try {
         const userId = req.session._id;
         const userData = await User.findOne({ _id: userId });
@@ -26,7 +26,7 @@ const loadAddress = async (req, res) => {
 }
 
 
-const addAddress = async (req, res) => {
+const addAddress = async (req, res, next) => {
     try {
         console.log("add address hi")
         console.log(req.body)
@@ -74,7 +74,7 @@ const addAddress = async (req, res) => {
 }
 
 
-const removeAddress = async (req, res) => {
+const removeAddress = async (req, res, next) => {
     try {
         const index = req.query.index;
         // console.log("index:", index);
@@ -95,7 +95,7 @@ const removeAddress = async (req, res) => {
 };
 
 
-const editAddress = async (req, res) => {
+const editAddress = async (req, res, next) => {
     try {
         const userId = req.session._id;
         const { index, name, street_address, place, city, state, mno, pincode } = req.body;

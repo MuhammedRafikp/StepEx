@@ -1,6 +1,6 @@
 import Order from "../models/orderModel.js";
 
-const loadSales = async (req, res) => {
+const loadSales = async (req, res,next) => {
     try {
 
         let { reportType, startDate, endDate } = req.query;
@@ -49,7 +49,6 @@ const loadSales = async (req, res) => {
             endDate.setHours(23, 59, 59, 999);
         }
 
-        // console.log("startDate:",startDate,"endDate:",endDate);
 
         let salesData;
 
@@ -96,9 +95,8 @@ const loadSales = async (req, res) => {
         res.render("sales", { sales: salesData, currentType, reportTypes, reportType, startDate, endDate });
 
     } catch (error) {
-
-        console.error(error.message);
-        res.status(500).send('Internal server error');
+        error.statusCode = 500;
+        next(error);
     }
 }
 

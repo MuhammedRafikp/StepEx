@@ -43,23 +43,19 @@ const loadhome = async (req, res, next) => {
             },
             {
                 $lookup: {
-                    from: "categories", // Collection name
+                    from: "categories",
                     localField: "category",
                     foreignField: "_id",
                     as: "category"
                 }
             },
             {
-                $unwind: "$category" // Convert category from array to object
+                $unwind: "$category"
             }
         ]);
 
         const newArrivals = await Products.find({}).populate("category").sort({ createdAt: -1 }).limit(4);
 
-        // console.log(productsWithPriceDifference,"productsWithPriceDifference");
-        // console.log(newArrivals,"newArrivals");
-
-        console.log(cartItemCount);
         res.render("home", { user: userData, topDeals, newArrivals, cartCount: cartItemCount });
 
     } catch (error) {
@@ -69,7 +65,7 @@ const loadhome = async (req, res, next) => {
 }
 
 
-const loadLogin = async (req, res) => {
+const loadLogin = async (req, res, next) => {
     try {
         res.render("login");
 
@@ -80,7 +76,7 @@ const loadLogin = async (req, res) => {
 }
 
 
-const loadRegister = async (req, res) => {
+const loadRegister = async (req, res, next) => {
     try {
         const referralCode = req.query.referral_code;
         req.session.referral_code = referralCode;
@@ -126,15 +122,15 @@ const verfyLogin = async (req, res, next) => {
             }
 
         }
-    } catch (error) {
 
+    } catch (error) {
         error.statusCode = 500;
         next(error);
     }
 }
 
 
-const loadResetPasswordLink = async (req, res) => {
+const loadResetPasswordLink = async (req, res, next) => {
     try {
         res.render('reset-password-link');
     } catch (error) {
@@ -144,7 +140,6 @@ const loadResetPasswordLink = async (req, res) => {
 }
 
 const sentResetLink = async (username, email, token) => {
-    console.log(APP_EMAIL_ID, APP_PASSWORD)
 
     try {
         let transporter = nodemailer.createTransport({
@@ -179,8 +174,7 @@ const sentResetLink = async (username, email, token) => {
         await transporter.sendMail(mailOptions);
 
     } catch (error) {
-        error.statusCode = 500;
-        next(error);
+        console.log(error.message);
     }
 };
 
@@ -189,7 +183,7 @@ const generateVerificationToken = () => {
     return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
 };
 
-const verifyResetPasswordEmail = async (req, res) => {
+const verifyResetPasswordEmail = async (req, res, next) => {
     try {
         const { email } = req.body;
         console.log(email);
@@ -217,13 +211,15 @@ const verifyResetPasswordEmail = async (req, res) => {
 };
 
 
-const loadResetPassword = async (req, res) => {
+const loadResetPassword = async (req, res, next) => {
+
     try {
         const { token } = req.query;
         console.log(token);
         const userData = await User.findOne({ token: token });
         console.log(userData);
         res.render("reset-password", { userId: userData._id });
+
     } catch (error) {
         error.statusCode = 500;
         next(error);
@@ -231,7 +227,8 @@ const loadResetPassword = async (req, res) => {
 }
 
 
-const resetPassword = async (req, res) => {
+const resetPassword = async (req, res, next) => {
+
     try {
         const { userId, newPassword } = req.body;
         console.log(newPassword, userId);
@@ -252,7 +249,7 @@ const generateOTP = () => {
     return Math.floor(1000 + Math.random() * 9000);
 };
 
-const sendOTP = async (req, res) => {
+const sendOTP = async (req, res, next) => {
     try {
 
         const { email } = req.body;
@@ -318,7 +315,7 @@ const sendOTP = async (req, res) => {
 };
 
 
-const resendOTP = async (req, res) => {
+const resendOTP = async (req, res, next) => {
 
     try {
         const Otp = generateOTP();
@@ -355,17 +352,17 @@ const resendOTP = async (req, res) => {
         res.status(200).json({ message: 'OTP sent successfully' });
 
     } catch (error) {
-        // console.error(error);
-        // res.status(500).json({ error: 'Failed to send OTP' });
+
         error.statusCode = 500;
         next(error);
     }
 }
 
 
-const loadVerifyOTP = async (req, res) => {
+const loadVerifyOTP = async (req, res, next) => {
     try {
         res.render("verify-otp");
+
     } catch (error) {
         error.statusCode = 500;
         next(error);
@@ -377,7 +374,7 @@ const generateReferral = () => {
     return Math.random().toString(36).substring(2, 15);
 }
 
-const verifyOTP = async (req, res) => {
+const verifyOTP = async (req, res, next) => {
     try {
         const { otp } = req.body;
         const { email } = req.session;
@@ -421,18 +418,18 @@ const verifyOTP = async (req, res) => {
         }
 
     } catch (error) {
-        // console.error(error);
-        // res.status(500).json({ error: error.message });
         error.statusCode = 500;
         next(error);
     }
 };
 
 
-const logout = async (req, res) => {
+const logout = async (req, res, next) => {
+
     try {
         delete req.session._id;
-        res.redirect("/")
+        res.redirect("/");
+
     } catch (error) {
         error.statusCode = 500;
         next(error);
@@ -457,7 +454,7 @@ const loadProfile = async (req, res, next) => {
 }
 
 
-const editUser = async (req, res) => {
+const editUser = async (req, res, next) => {
     try {
         const userId = req.session._id;
         const { name, mobile } = req.body;
@@ -471,7 +468,6 @@ const editUser = async (req, res) => {
         res.status(200).json({ message: 'User information updated successfully.' });
 
     } catch (error) {
-
         error.statusCode = 500;
         next(error);
     }
@@ -479,6 +475,7 @@ const editUser = async (req, res) => {
 
 
 const changePassword = async (req, res, next) => {
+
     try {
         const { currentPassword, newPassword } = req.body;
         const userId = req.session._id;
@@ -506,7 +503,7 @@ const loadCoupons = async (req, res, next) => {
     try {
         const userId = req.session._id;
         const userData = await User.findOne({ _id: userId });
-        const couponsData = await Coupons.find({is_active:true});
+        const couponsData = await Coupons.find({ is_active: true });
         const cart = await Cart.findOne({ user_id: userId }).populate('items.products');
 
         const cartItemCount = cart ? cart.items.length : 0;

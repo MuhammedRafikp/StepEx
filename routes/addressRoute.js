@@ -8,7 +8,6 @@ import { isLogin, isLogout } from "../middleware/auth.js";
 import { isBlocked } from "../middleware/isBlocked.js";
 import {loadAddress,addAddress,editAddress,removeAddress} from "../controllers/addressController.js";
 
-
 address_route.get("/address",isBlocked,isLogin,loadAddress);
 
 address_route.post("/address/add-address",isBlocked,isLogin,addAddress);

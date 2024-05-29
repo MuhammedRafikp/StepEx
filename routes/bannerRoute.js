@@ -9,7 +9,6 @@ import { isLogin, isLogout } from "../middleware/auth.js";
 import { isBlocked } from "../middleware/isBlocked.js";
 import {loadBanners} from "../controllers/bannerController.js";
 
-
 // banner_route.get("/banners",loadBanners);
 
 

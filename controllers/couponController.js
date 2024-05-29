@@ -2,7 +2,7 @@ import Coupons from "../models/couponModel.js";
 
 
 
-const loadCoupons = async (req, res,next) => {
+const loadCoupons = async (req, res, next) => {
     try {
         const couponData = await Coupons.find({});
         res.render("coupons", { coupons: couponData });
@@ -14,7 +14,7 @@ const loadCoupons = async (req, res,next) => {
 }
 
 
-const loadAddCoupon = async (req, res,next) => {
+const loadAddCoupon = async (req, res, next) => {
     try {
         res.render("add-coupon");
 
@@ -25,7 +25,7 @@ const loadAddCoupon = async (req, res,next) => {
 }
 
 
-const addCoupon = async (req, res) => {
+const addCoupon = async (req, res, next) => {
     try {
         console.log("hello");
         const { couponCode, minPrice, discount, validity } = req.body;
@@ -54,7 +54,7 @@ const addCoupon = async (req, res) => {
 }
 
 
-const loadEditCoupon = async (req, res) => {
+const loadEditCoupon = async (req, res, next) => {
     try {
         const couponId = req.query.id;
         const couponData = await Coupons.findOne({ _id: couponId });
@@ -68,7 +68,7 @@ const loadEditCoupon = async (req, res) => {
 }
 
 
-const editCoupon = async (req, res) => {
+const editCoupon = async (req, res, next) => {
     try {
         console.log("editCoupon");
         const { couponId, couponCode, minPrice, discount, validity } = req.body;
@@ -91,7 +91,7 @@ const editCoupon = async (req, res) => {
 }
 
 
-const activateCoupon = async (req, res) => {
+const activateCoupon = async (req, res, next) => {
     try {
         console.log("activateCoupon");
         const couponId = req.query.id;
@@ -111,7 +111,7 @@ const activateCoupon = async (req, res) => {
 }
 
 
-const deactivateCoupon = async (req, res) => {
+const deactivateCoupon = async (req, res, next) => {
     try {
         console.log("deactivateCoupon");
         const couponId = req.query.id;
@@ -131,11 +131,11 @@ const deactivateCoupon = async (req, res) => {
 }
 
 
-const deleteCoupon = async (req, res) => {
+const deleteCoupon = async (req, res, next) => {
     try {
         console.log("deleteCoupon");
-        const couponId=req.query.id;
-        await Coupons.deleteOne({_id:couponId}); 
+        const couponId = req.query.id;
+        await Coupons.deleteOne({ _id: couponId });
         res.status(200).json({ message: 'coupon deleted successfully' });
 
     } catch (error) {

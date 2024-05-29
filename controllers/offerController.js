@@ -3,27 +3,30 @@ import Products from "../models/productsModel.js";
 import CategoryOffer from "../models/categoryOfferModel.js";
 import ProductOffer from "../models/productOfferModel.js";
 
-const loadCategoryOffers = async (req, res) => {
+
+const loadCategoryOffers = async (req, res,next) => {
     try {
         const categoryOffersData = await CategoryOffer.find({}).populate("category");
         res.render("offers-category", { categoryOffer: categoryOffersData });
     } catch (error) {
-        console.error(error);
+        error.statusCode = 500;
+        next(error);
     }
 }
 
 
-const loadAddCategoryOffer = async (req, res) => {
+const loadAddCategoryOffer = async (req, res,next) => {
     try {
         const categoryData = await Category.find({})
         res.render("add-offer-category", { category: categoryData });
     } catch (error) {
-        console.error(error);
+        error.statusCode = 500;
+        next(error);
     }
 }
 
 
-const addCategoryOffer = async (req, res) => {
+const addCategoryOffer = async (req, res,next) => {
     try {
         console.log(req.body);
         const { categoryId, offer, validity } = req.body;
@@ -33,7 +36,7 @@ const addCategoryOffer = async (req, res) => {
         console.log(existingCategoryOffer);
 
         if (existingCategoryOffer) {
-            // console.log('Category offer already exists' )
+            
             return res.status(409).json({ success: false, message: 'Offer with this category already exists' });
 
         } else {
@@ -48,12 +51,12 @@ const addCategoryOffer = async (req, res) => {
         }
 
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ success: false, message: 'Internal server error' });
+        error.statusCode = 500;
+        next(error);
     }
 }
 
-const loadEditCategoryOffer = async (req, res) => {
+const loadEditCategoryOffer = async (req, res,next) => {
     try {
         const categoryId = req.query.id;
         console.log(categoryId);
@@ -63,13 +66,13 @@ const loadEditCategoryOffer = async (req, res) => {
         res.render("edit-offer-category", { category: categoryData, categoryOffer: categoryOfferData });
 
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ success: false, message: 'Internal server error' });
+        error.statusCode = 500;
+        next(error);
     }
 }
 
 
-const editCategoryOffer = async (req, res) => {
+const editCategoryOffer = async (req, res,next) => {
     try {
         console.log("hello");
         const { id, category, offer, validity } = req.body;
@@ -77,8 +80,6 @@ const editCategoryOffer = async (req, res) => {
         const categoryId = await Category.findOne({ name: category }, { _id: 1 });
         console.log("id:", categoryId);
         const existingCategoryOffer = await CategoryOffer.findOne({ category: categoryId, _id: { $ne: id } });
-
-        // console.log(existingCategoryOffer);
 
         if (existingCategoryOffer) {
 
@@ -95,13 +96,13 @@ const editCategoryOffer = async (req, res) => {
         }
 
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ success: false, message: 'Internal server error' });
+        error.statusCode = 500;
+        next(error);
     }
 }
 
 
-const deleteCategoryOffer = async (req, res) => {
+const deleteCategoryOffer = async (req, res,next) => {
     try {
         const id = req.query.id;
         console.log(id);
@@ -110,25 +111,25 @@ const deleteCategoryOffer = async (req, res) => {
         console.log("hellooo");
         res.status(200).json({ message: 'Offer deleted successfully' });
     } catch (error) {
-        console.error(error.message);
-        res.status(500).json({ success: false, message: 'Internal server error' });
+        error.statusCode = 500;
+        next(error);
     }
 }
 
 
-const loadProductOffers = async (req, res) => {
+const loadProductOffers = async (req, res,next) => {
     try {
         const productOffersdata = await ProductOffer.find({}).populate("product");
         res.render("offers-product", { productOffer: productOffersdata });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ success: false, message: 'Internal server error' });
 
+    } catch (error) {
+        error.statusCode = 500;
+        next(error);
     }
 }
 
 
-const loadAddProductOffer = async (req, res) => {
+const loadAddProductOffer = async (req, res,next) => {
     try {
         const productData = await Products.find({ is_delete: 0 });
         res.render("add-offer-product", { products: productData });
@@ -140,7 +141,7 @@ const loadAddProductOffer = async (req, res) => {
 }
 
 
-const addProductOffer = async (req, res) => {
+const addProductOffer = async (req, res,next) => {
     try {
         console.log(req.body);
         const { productId, offer, offerPrice, validity } = req.body;
@@ -167,7 +168,7 @@ const addProductOffer = async (req, res) => {
 }
 
 
-const loadEditProductOffer = async (req, res) => {
+const loadEditProductOffer = async (req, res,next) => {
     try {
         const productId = req.query.id;
         console.log(productId);
@@ -183,7 +184,7 @@ const loadEditProductOffer = async (req, res) => {
 }
 
 
-const editProductOffer = async (req, res) => {
+const editProductOffer = async (req, res,next) => {
 
     try {
         console.log(req.body);
@@ -193,10 +194,11 @@ const editProductOffer = async (req, res) => {
         const existingProductOffer = await ProductOffer.findOne({ product: productId, _id: { $ne: id } });
 
         if (existingProductOffer) {
-            // console.log("yes")
+
             return res.status(409).json({ success: false, message: 'Offer with this product already exists' });
+
         } else {
-            // console.log("no")
+            
             await ProductOffer.findOneAndUpdate(
                 { _id: id },
                 { $set: { product: productId, offer: offer, offer_price: offerPrice, validity } },
@@ -212,7 +214,7 @@ const editProductOffer = async (req, res) => {
 }
 
 
-const deleteProductOffer = async (req, res) => {
+const deleteProductOffer = async (req, res,next) => {
     try {
         const id = req.query.id;
         console.log("id", id);

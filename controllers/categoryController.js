@@ -1,6 +1,7 @@
 import Category from "../models/categoryModel.js";
 
-const loadCategory = async (req, res) => {
+
+const loadCategory = async (req, res, next) => {
     try {
 
         const categoryData = await Category.find({ is_delete: 0 });
@@ -13,7 +14,7 @@ const loadCategory = async (req, res) => {
 }
 
 
-const loadAddCategory = async (req, res) => {
+const loadAddCategory = async (req, res, next) => {
     try {
         res.render("add-Category");
 
@@ -24,7 +25,7 @@ const loadAddCategory = async (req, res) => {
 }
 
 
-const addCategory = async (req, res) => {
+const addCategory = async (req, res, next) => {
     try {
 
         const name = req.body.name;
@@ -54,7 +55,7 @@ const addCategory = async (req, res) => {
 }
 
 
-const loadUnlistedCategories = async (req, res) => {
+const loadUnlistedCategories = async (req, res, next) => {
     try {
         const categoryData = await Category.find({ is_delete: 1 });
         res.render("unlisted-categories", { categories: categoryData });
@@ -66,7 +67,7 @@ const loadUnlistedCategories = async (req, res) => {
 }
 
 
-const unlistCategory = async (req, res) => {
+const unlistCategory = async (req, res, next) => {
     try {
         const id = req.query.id;
         console.log(id, "hi")
@@ -84,7 +85,7 @@ const unlistCategory = async (req, res) => {
 }
 
 
-const retrieveCategory = async (req, res) => {
+const retrieveCategory = async (req, res, next) => {
     try {
         const id = req.query.id;
         console.log(id, "hi")
@@ -101,7 +102,7 @@ const retrieveCategory = async (req, res) => {
 }
 
 
-const loadEditCategory = async (req, res) => {
+const loadEditCategory = async (req, res, next) => {
     try {
         const id = req.query.id;
         const categoryData = await Category.findOne({ _id: id });
@@ -114,7 +115,7 @@ const loadEditCategory = async (req, res) => {
 }
 
 
-const editCategory = async (req, res) => {
+const editCategory = async (req, res, next) => {
     try {
         const id = req.body.id;
         const name = req.body.name;

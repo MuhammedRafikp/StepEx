@@ -13,7 +13,7 @@ const razorpay = new Razorpay({
     key_secret: RAZORPAY_SECRET_KEY
 });
 
-const loadWallet = async (req, res) => {
+const loadWallet = async (req, res, next) => {
     try {
 
         const userId = req.session._id;
@@ -24,14 +24,13 @@ const loadWallet = async (req, res) => {
         res.render("wallet", { user: userData, cartCount: cartItemCount, wallet: walletData });
 
     } catch (error) {
-        console.error(error.message);
-        res.status(500).json({ error: 'Internal server error.' });
-
+        error.statusCode = 500;
+        next(error);
     }
 }
 
 
-const loadAddMoney = async (req, res) => {
+const loadAddMoney = async (req, res, next) => {
     try {
         const userId = req.session._id;
         const userData = await User.findOne({ _id: userId });
@@ -41,8 +40,8 @@ const loadAddMoney = async (req, res) => {
         res.render("wallet-add-money", { user: userData, cartCount: cartItemCount, wallet: walletData, razorpaykey: RAZORPAY_ID_KEY });
 
     } catch (error) {
-        console.error(error.message);
-        res.status(500).json({ error: 'Internal server error.' });
+        error.statusCode = 500;
+        next(error);
     }
 }
 
@@ -53,7 +52,7 @@ const generatereceiptID = () => {
     return Math.floor(Math.random() * (max - min + 1) + min);
 }
 
-const createRazorPayforAddMoney = async (req, res) => {
+const createRazorPayforAddMoney = async (req, res, next) => {
     try {
         console.log(razorpay.key_id, razorpay.key_secret);
         const { amount } = req.body;
@@ -68,12 +67,12 @@ const createRazorPayforAddMoney = async (req, res) => {
 
         res.status(200).json({ success: true, order });
     } catch (error) {
-        console.error(error, "error");
-        res.status(500).json({ success: false, message: 'Failed to create Razorpay order' });
+        error.statusCode = 500;
+        next(error);
     }
 };
 
-const addMoney = async (req, res) => {
+const addMoney = async (req, res, next) => {
     try {
         const { amount } = req.body;
         const userId = req.session._id;
@@ -104,13 +103,14 @@ const addMoney = async (req, res) => {
         res.status(200).json({ success: true });
 
     } catch (error) {
-        console.error(error.message);
-        res.status(500).json({ error: 'Internal server error.' });
+        error.statusCode = 500;
+        next(error);
     }
 }
 
 
-const loadWithdrawMoney = async (req, res) => {
+const loadWithdrawMoney = async (req, res, next) => {
+
     try {
         const userId = req.session._id;
         const userData = await User.findOne({ _id: userId });
@@ -118,14 +118,16 @@ const loadWithdrawMoney = async (req, res) => {
         const cartItemCount = cart ? cart.items.length : 0;
         const walletData = await Wallet.findOne({ user_id: userId });
         res.render("wallet-withdraw-money", { user: userData, cartCount: cartItemCount, wallet: walletData });
+
     } catch (error) {
-        console.error(error.message);
-        res.status(500).json({ error: 'Internal server error.' });
+        error.statusCode = 500;
+        next(error);
     }
 }
 
 
-const WithdrawMoney = async (req, res) => {
+const WithdrawMoney = async (req, res, next) => {
+
     try {
         const userId = req.session._id;
 
@@ -161,13 +163,13 @@ const WithdrawMoney = async (req, res) => {
         return res.status(200).json({ message: 'Withdrawal successful.' });
 
     } catch (error) {
-        console.error(error.message);
-        return res.status(500).json({ error: 'Internal server error.' });
+        error.statusCode = 500;
+        next(error);
     }
 };
 
 
-const loadWalletHistory = async (req, res) => {
+const loadWalletHistory = async (req, res, next) => {
     try {
         const userId = req.session._id;
         const userData = await User.findOne({ _id: userId });
@@ -178,8 +180,8 @@ const loadWalletHistory = async (req, res) => {
         res.render("wallet-history", { user: userData, cartCount: cartItemCount, wallet: walletData });
 
     } catch (error) {
-        console.error(error.message);
-        res.status(500).json({ error: 'Internal server error.' });
+        error.statusCode = 500;
+        next(error);
     }
 }
 

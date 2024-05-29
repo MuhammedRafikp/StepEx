@@ -50,7 +50,7 @@ const loadShop = async (req, res, next) => {
         } else if (sortBy === 'low-to-high') {
             sortOption = { offer_price: 1 };
         } else {
-            sortOption = { createdAt: -1 }; // Default: new-to-old
+            sortOption = { createdAt: -1 }; 
         }
         console.log(sortOption, "sortOption");
         // Fetching products based on the filter, sort, and pagination
@@ -59,13 +59,10 @@ const loadShop = async (req, res, next) => {
         const totalProducts = await Products.countDocuments(filter);
         const totalPages = Math.ceil(totalProducts / limit);
 
-        // Otherwise, render the shop page with the filtered products
         const cartData = await Cart.findOne({ user_id: userId });
         const cartItemCount = cartData ? cartData.items.length : 0;
         const categoryData = await Category.find({ is_delete: 0 });
         const genders = ["Men", "Women", "Boys", "Girls"];
-
-
 
         res.render("shop", {
             user: userData, products: productsData, categories: categoryData, genders, cartCount: cartItemCount, totalPages, currentPage: page, selectedCategories: categoryFilter, selectedGenders: genderFilter,

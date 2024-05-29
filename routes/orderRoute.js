@@ -8,7 +8,6 @@ import { isLogin, isLogout } from "../middleware/auth.js";
 import { isBlocked } from "../middleware/isBlocked.js";
 import { laodOrders, loadOrderDetails, cancelOrder, returnOrder, orderRepaymentRazorPpay, orderRepayment } from "../controllers/ordersController.js";
 
-
 order_route.get("/orders", isBlocked, isLogin, laodOrders);
 
 order_route.get("/order/order-details", isBlocked, isLogin, loadOrderDetails);
