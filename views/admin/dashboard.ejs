@@ -108,11 +108,6 @@
                   </div>
                 </div>
 
-
-
-
-
-
                 <!-- <div class="col-md-12 grid-margin stretch-card">
                   <div class="card">
                     <div class="card-body">
@@ -178,9 +173,6 @@
                           <h5 class="text-start ">
                             <%= category.categoryDetails.name %>
                           </h5>
-                          <!-- <p class="card-text">$19.99</p> -->
-                          <!-- <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-                    <a href="#" class="btn btn-primary">Add to Cart</a> -->
                         </div>
                       </div>
                     </div>
@@ -204,11 +196,8 @@
   <script src="/admin_assets/js/dashboard.js"></script>
   <script src="/admin_assets/js/todolist.js"></script> -->
 
-
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-
 
   <script>
     
@@ -229,15 +218,15 @@
     console.log("xValues:", xValues, currentPeriod);
     console.log("zValues:", yValues);
 
-    var lineColors = "rgba(255, 99, 132, 1)"; // Red color for the line
+    var lineColors = "rgba(255, 99, 132, 1)"; 
 
     new Chart("myChart", {
-      type: "bar", // Change to bar chart for example
+      type: "bar",
       data: {
         labels: xValues,
         datasets: [{
           label: 'Total Sales',
-          backgroundColor: lineColors, // Use the same color for bars
+          backgroundColor: lineColors,
           borderColor: lineColors,
           data: yValues,
           fill: true
@@ -263,7 +252,5 @@
       window.location.href = `/admin/dashboard?timePeriod=${timePeriod}`;
     });
   </script>
-
-
 
   <%- include('../admin_layouts/footer.ejs') %>
