@@ -90,6 +90,41 @@ const loadDashboard = async (req, res, next) => {
             }
         }
 
+        const sales = await Order.aggregate([
+            { $unwind: "$items" },
+            { $match: { "items.status": { $nin: ["Cancelled", "Returned"] } } },
+            {
+                $lookup: {
+                    from: "products",
+                    localField: "items.product_id",
+                    foreignField: "_id",
+                    as: "productDetails"
+                }
+            },
+            { $unwind: "$productDetails" },
+            { $sort: { date: -1 } },
+            {
+                $group: {
+                    _id: null,
+                    totalRevenue: {
+                        $sum: {
+                            $subtract: [
+                                { $multiply: [{ $toDouble: "$items.price" }, { $toInt: "$items.quantity" }] },
+                                { $ifNull: ["$discount", 0] }
+                            ]
+                        }
+                    },
+                    totalSalesCount: { $sum: 1 } // Count each item as a sale
+                }
+            }
+        ]);
+
+        const revenue = sales[0] ? sales[0].totalRevenue : 0;
+        const totalSalesCount = sales[0] ? sales[0].totalSalesCount : 0;
+
+        const totalUsersCount = await User.find({}).count({});
+
+
         const bestSellingProducts = await Order.aggregate([
             { $unwind: "$items" },
             { $match: { "items.status": { $nin: ["Cancelled", "Returned"] } } },
@@ -139,6 +174,9 @@ const loadDashboard = async (req, res, next) => {
         console.log("xValues:", xValues, "yValues:", yValues);
 
         res.render("dashboard", {
+            revenue,
+            salesCount: totalSalesCount,
+            usersCount: totalUsersCount,
             xValues: JSON.stringify(xValues),
             yValues: JSON.stringify(yValues),
             products: bestSellingProducts,
